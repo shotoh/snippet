@@ -1,0 +1,29 @@
+services:
+  app:
+    build: ./app
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/app
+  server:
+    build: ./server
+    environment:
+      DB_HOST: mysql
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server:/server
+  mysql:
+    image: mysql:9.0.1
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+volumes:
+  db:
