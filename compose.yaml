@@ -1,10 +1,13 @@
 services:
   app:
     build: ./app
+    environment:
+      WATCHPACK_POLLING: true # hotswap, remove on prod
     ports:
       - 3000:3000
     volumes:
       - ./app:/app
+      - /app/node_modules
   server:
     build: ./server
     environment:
@@ -13,8 +16,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - 8080:8080
-    volumes:
-      - ./server:/server
     depends_on:
       mysql:
         condition: service_healthy

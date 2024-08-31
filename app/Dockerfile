@@ -1,6 +1,8 @@
 FROM node:20.17.0
 
-COPY package*.json ./
+WORKDIR /app
+
+COPY package.json package-lock.json ./
 RUN npm install
 COPY . ./
 

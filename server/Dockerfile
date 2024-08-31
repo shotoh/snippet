@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jre
 
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} server.jar
+WORKDIR /server
+COPY build/libs/*-SNAPSHOT.jar ./server.jar
 
-ENTRYPOINT ["java", "-jar", "server.jar"]
+ENTRYPOINT ["java", "-jar", "./server.jar"]
