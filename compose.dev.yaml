@@ -4,23 +4,13 @@ services:
       context: ./app
       target: dev
     environment:
+      REACT_APP_BASE_URL: ${REACT_APP_BASE_URL}
       WATCHPACK_POLLING: true # hotswap, remove on prod
     ports:
       - 3000:3000
     volumes:
       - ./app:/app
       - /app/node_modules
-  server:
-    build: ./server
-    environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - 8080:8080
-    depends_on:
-      mysql:
-        condition: service_healthy
   mysql:
     image: mysql:9.0.1
     environment:

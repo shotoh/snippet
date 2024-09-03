@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class UziApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UziApplication.class, args);
 	}
-
 }
