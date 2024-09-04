@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 export const SomeButton = () => {
+  const [showText, setShowText] = useState(false);
+
+  const handleClick = () => {
+    // Update this function to await for backend response
+    setShowText(!showText);
+  };
+
   return (
-    <button
-      class="relative
+    <div className="flex flex-col justify-center items-center">
+      <button
+        class="relative
                 overflow-hidden
                 rounded-md
                 shadow-md
@@ -16,8 +24,16 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-    >
-      Download 16GB RAM
-    </button>
+        onClick={handleClick}
+      >
+        Download 16GB RAM
+      </button>
+
+      {showText && (
+        <p class="text-center mt-4 text-white max-w-lg">
+          arghhahghahrhhghhghdfhdfhhghhghhfhshhshdhsgfgsjsjdhh
+        </p>
+      )}
+    </div>
   );
 };
