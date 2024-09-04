@@ -1,11 +1,10 @@
 import React from "react";
+import { SomeButton } from "./components/SomeButton.js";
 
 function App() {
   return (
-    <div className="">
-      <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
-        sacdas,dca9wdcwa
-      </button>
+    <div className="flex min-h-screen justify-center items-center bg-slate-100">
+      <SomeButton />
     </div>
   );
 }
