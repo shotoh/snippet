@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+//import {Route, Routes } from "react-router-dom";
+import Home from "./pages/Home.js";
+import MainNav from "./components/mainNav.js";
+import SocialMedia from "./pages/SocialMedia.js";
+import SimpleBody from "./components/SimpleBody.js";
 
 function App() {
+  let component;
+  
+  switch(window.location.pathname) {
+    case "/":
+    case "/home":
+      component = <Home />
+      break;
+      case "/socialmedia":
+      component = <SocialMedia/>
+      break;
+
+  }
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {component}
     </div>
   );
 }
