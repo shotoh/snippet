@@ -1,10 +1,27 @@
 import React from "react";
-import { SomeButton } from "./components/SomeButton.js";
+//import {Route, Routes } from "react-router-dom";
+import Home from "./pages/Home.js";
+import MainNav from "./components/mainNav.js";
+import SocialMedia from "./pages/SocialMedia.js";
+import SimpleBody from "./components/SimpleBody.js";
 
 function App() {
+  let component;
+  
+  switch(window.location.pathname) {
+    case "/":
+    case "/home":
+      component = <Home />
+      break;
+      case "/socialmedia":
+      component = <SocialMedia/>
+      break;
+
+  }
+  
   return (
-    <div className="flex min-h-screen justify-center items-center bg-gradient-to-br from-blue-800 to-cyan-600">
-      <SomeButton />
+    <div className="App">
+      {component}
     </div>
   );
 }
