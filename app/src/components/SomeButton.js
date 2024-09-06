@@ -48,14 +48,19 @@ export const SomeButton = () => {
       </button>
 
       {showText && (
-        <p className="text-center mt-4 text-white max-w-lg">
-          {/*Display fetched data*/}
-          {fetchedData ? JSON.stringify(fetchedData) : "Loading..."}
-        </p>
+        <ul class="text-center mt-4 text-white max-w-lg">
+          {fetchedData
+            ? fetchedData.map((user) => (
+                <li key={user.id}>
+                  {user.name} - {user.email}
+                </li>
+              ))
+            : "Loading..."}
+        </ul>
       )}
 
       {error && (
-        <p className="text-center mt-4 text-white max-w-lg">Error: {error}</p>
+        <p class="text-center mt-4 text-white max-w-lg">Error: {error}</p>
       )}
     </div>
   );
