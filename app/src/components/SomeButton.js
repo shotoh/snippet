@@ -2,16 +2,34 @@ import React, { useState } from "react";
 
 export const SomeButton = () => {
   const [showText, setShowText] = useState(false);
+  const [fetchedData, setFetchedData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleClick = () => {
-    // Update this function to await for backend response
-    setShowText(!showText);
+  const handleClick = async () => {
+    // If the button isn't clicked yet, fetch data - close text otherwise
+    if (!showText) {
+      try {
+        const response = await fetch("http://localhost:8080/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
   };
 
   return (
     <div className="flex flex-col justify-center items-center">
       <button
-        class="relative
+        className="relative
                 overflow-hidden
                 rounded-md
                 shadow-md
@@ -30,9 +48,19 @@ export const SomeButton = () => {
       </button>
 
       {showText && (
-        <p class="text-center mt-4 text-white max-w-lg">
-          arghhahghahrhhghhghdfhdfhhghhghhfhshhshdhsgfgsjsjdhh
-        </p>
+        <ul class="text-center mt-4 text-white max-w-lg">
+          {fetchedData
+            ? fetchedData.map((user) => (
+                <li key={user.id}>
+                  {user.name} - {user.email}
+                </li>
+              ))
+            : "Loading..."}
+        </ul>
+      )}
+
+      {error && (
+        <p class="text-center mt-4 text-white max-w-lg">Error: {error}</p>
       )}
     </div>
   );
