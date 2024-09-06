@@ -4,7 +4,6 @@ services:
       context: ./app
       target: dev
     environment:
-      REACT_APP_BASE_URL: ${REACT_APP_BASE_URL}
       WATCHPACK_POLLING: true # hotswap, remove on prod
     ports:
       - 3000:3000
