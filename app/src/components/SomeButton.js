@@ -5,15 +5,16 @@ export const SomeButton = () => {
   const [fetchedData, setFetchedData] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleClick = async () => {     
+  const handleClick = async () => {
     try {
-      const response = await fetch('http://localhost:8080/users'); 
+      const response = await fetch("http://localhost:8080/users");
       if (!response.ok) {
-        throw new Error('Failed to fetch data');
+        throw new Error("Failed to fetch data");
       }
       const data = await response.json();
       setFetchedData(data);
       setShowText(true);
+      setError(null);
     } catch (error) {
       setError(error.message);
       setShowText(false);
@@ -44,14 +45,12 @@ export const SomeButton = () => {
       {showText && (
         <p className="text-center mt-4 text-white max-w-lg">
           {/*Display fetched data*/}
-          {fetchedData ? JSON.stringify(fetchedData) : 'Loading...'}
+          {fetchedData ? JSON.stringify(fetchedData) : "Loading..."}
         </p>
       )}
 
       {error && (
-        <p className="text-center mt-4 text-white max-w-lg">
-          Error: {error}
-        </p>
+        <p className="text-center mt-4 text-white max-w-lg">Error: {error}</p>
       )}
     </div>
   );
