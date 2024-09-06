@@ -9,7 +9,7 @@ export const SomeButton = () => {
     // If the button isn't clicked yet, fetch data - close text otherwise
     if (!showText) {
       try {
-        const response = await fetch("http://localhost:8080/users");
+        const response = await fetch("/api/users");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
