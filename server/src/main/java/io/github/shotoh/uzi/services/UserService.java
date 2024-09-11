@@ -2,53 +2,57 @@ package io.github.shotoh.uzi.services;
 
 import io.github.shotoh.uzi.exceptions.ResourceAlreadyExistsException;
 import io.github.shotoh.uzi.exceptions.ResourceNotFoundException;
+import io.github.shotoh.uzi.mappers.UserMapper;
 import io.github.shotoh.uzi.models.User;
+import io.github.shotoh.uzi.models.UserDTO;
 import io.github.shotoh.uzi.repositories.UserRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserService {
     private final UserRepository repository;
+    private final UserMapper mapper;
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, UserMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public List<User> getAllUsers() {
-        return repository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public User createUser(User user) {
-        if (repository.existsById(user.getId())) {
-            throw new ResourceAlreadyExistsException("id", "User already exists with that id");
+    public UserDTO createUser(UserDTO userDTO) {
+        if (repository.existsById(userDTO.getId())) {
+            throw new ResourceAlreadyExistsException("id", "User already exists with this id");
         }
-        if (repository.existsByUsername(user.getUsername())) {
-            throw new ResourceAlreadyExistsException("username", "User already exists with that username");
+        if (repository.existsByUsername(userDTO.getUsername())) {
+            throw new ResourceAlreadyExistsException("username", "User already exists with this username");
         }
-        if (repository.existsByEmail(user.getEmail())) {
-            throw new ResourceAlreadyExistsException("email", "User already exists with that email");
+        if (repository.existsByEmail(userDTO.getEmail())) {
+            throw new ResourceAlreadyExistsException("email", "User already exists with this email");
         }
-        return repository.save(user);
+        User user = repository.save(mapper.toEntity(userDTO));
+        return mapper.toDTO(user);
     }
 
-    public User updateUser(User user) {
-        User userToUpdate = repository.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("id", "User not found with that id"));
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setEncryptedPass(user.getEncryptedPass());
-        userToUpdate.setDisplayName(user.getDisplayName());
-        userToUpdate.setProfilePicture(user.getProfilePicture());
-        userToUpdate.setBiography(user.getBiography());
-        repository.save(userToUpdate);
-        return userToUpdate; // TODO USE DTO
+    public UserDTO retrieveUser(long id) {
+        User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+        return mapper.toDTO(user);
     }
 
-    public void deleteUser(User user) {
-        //
+    public UserDTO updateUser(UserDTO userDTO) {
+        User user = repository.findById(userDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+        mapper.updateEntity(userDTO, user);
+        repository.save(user);
+        return mapper.toDTO(user);
+    }
+
+    public void deleteUser(long id) {
+        repository.deleteById(id);
     }
 }
