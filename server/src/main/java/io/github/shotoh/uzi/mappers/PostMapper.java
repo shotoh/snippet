@@ -16,5 +16,6 @@ public interface PostMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "title", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "content", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "timestamp", ignore = true)
     void updateEntity(PostDTO postDTO, @MappingTarget Post post);
 }
