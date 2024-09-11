@@ -1,7 +1,7 @@
 package io.github.shotoh.uzi.mappers;
 
-import io.github.shotoh.uzi.models.User;
-import io.github.shotoh.uzi.models.UserDTO;
+import io.github.shotoh.uzi.models.users.User;
+import io.github.shotoh.uzi.models.users.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

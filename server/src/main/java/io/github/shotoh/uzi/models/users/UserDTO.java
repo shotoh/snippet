@@ -1,4 +1,4 @@
-package io.github.shotoh.uzi.models;
+package io.github.shotoh.uzi.models.users;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

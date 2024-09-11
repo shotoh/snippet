@@ -1,4 +1,4 @@
-package io.github.shotoh.uzi.models;
+package io.github.shotoh.uzi.models.users;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

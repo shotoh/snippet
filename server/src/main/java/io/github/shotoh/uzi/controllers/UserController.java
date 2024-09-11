@@ -1,6 +1,6 @@
 package io.github.shotoh.uzi.controllers;
 
-import io.github.shotoh.uzi.models.UserDTO;
+import io.github.shotoh.uzi.models.users.UserDTO;
 import io.github.shotoh.uzi.responses.Success;
 import io.github.shotoh.uzi.services.UserService;
 import jakarta.validation.Valid;
