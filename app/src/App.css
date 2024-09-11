@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+.main-page {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  position: relative;
+  padding: 0;
+}
+
+.Top-posts {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  width: 600px;
+  height: 1012px;
+  background-color: rgba(202, 196, 208, 0.14);
+}
+
+.Feed {
+  position: absolute;
+  top: 66px;
+  left: 604px;
+  width: 916px;
+  height: 1014px;
+  background-color: #FFFFFF;
+}
+
+.Friends {
+  position: absolute;
+  top: 68px;
+  left: 1520px;
+  width: 400px;
+  height: 1012px;
+  background-color: rgba(202, 196, 208, 0.14);
+}
