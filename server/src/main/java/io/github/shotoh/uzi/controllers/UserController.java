@@ -1,6 +1,7 @@
 package io.github.shotoh.uzi.controllers;
 
 import io.github.shotoh.uzi.models.User;
+import io.github.shotoh.uzi.responses.Success;
 import io.github.shotoh.uzi.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
-        return ResponseEntity.ok(service.saveUser(user));
+    public ResponseEntity<Success> createUser(@RequestBody @Valid User user) {
+        return ResponseEntity.ok(new Success(service.createUser(user)));
     }
 }
