@@ -12,31 +12,13 @@ function App() {
   //let component;
 
 
-  /*
-  switch (window.location.pathname) {
-    case "/":
-    case "/home":
-      component = <Home />
-      break;
-    case "/socialmedia":
-      component = <SocialMedia />
-      break;
-
-  }
-      
-  <Routes>
-        <Route path="/" element={<SimpleBody />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/socialmedia" element={<SocialMedia />} />
-      </Routes>
-  
-  
-  */
 
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />}>
+          <Route path="" element={<SimpleBody /> } />
+        </Route>
         <Route path="/home" element={<Home />} >
             <Route path="products" element={<Products />} />
             <Route path="about" element={<About />} />
