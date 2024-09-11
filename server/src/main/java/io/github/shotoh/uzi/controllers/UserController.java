@@ -47,8 +47,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public Success<UserDTO> updateUser(@RequestBody @Valid UserDTO userDTO) {
-        return new Success<>(service.updateUser(userDTO));
+    public Success<UserDTO> updateUser(@PathVariable("id") long id, @RequestBody @Valid UserDTO userDTO) {
+        return new Success<>(service.updateUser(id, userDTO));
     }
 
     @DeleteMapping("/{id}")

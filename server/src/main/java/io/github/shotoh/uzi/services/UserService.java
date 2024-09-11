@@ -44,8 +44,8 @@ public class UserService {
         return mapper.toDTO(user);
     }
 
-    public UserDTO updateUser(UserDTO userDTO) {
-        User user = repository.findById(userDTO.getId())
+    public UserDTO updateUser(long id, UserDTO userDTO) {
+        User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
         mapper.updateEntity(userDTO, user);
         repository.save(user);
