@@ -21,12 +21,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(service.getAllUsers());
+    public ResponseEntity<Success<List<User>>> getAllUsers() {
+        return ResponseEntity.ok(new Success<>(service.getAllUsers()));
     }
 
     @PostMapping
-    public ResponseEntity<Success> createUser(@RequestBody @Valid User user) {
-        return ResponseEntity.ok(new Success(service.createUser(user)));
+    public ResponseEntity<Success<User>> createUser(@RequestBody @Valid User user) {
+        return ResponseEntity.ok(new Success<>(service.createUser(user)));
+    }
+
+    @PatchMapping
+    public ResponseEntity<Success<User>> updateUser(@RequestBody @Valid User user) {
+        return ResponseEntity.ok(new Success<>(service.updateUser(user)));
     }
 }
