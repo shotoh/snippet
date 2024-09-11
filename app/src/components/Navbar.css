@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 10px;
     background-color: #333;
   }
 
@@ -17,11 +17,10 @@
   }
 
   .navbar-logo img {
-    margin-right: 10px;
+    
     height: 50px;
     max-height: 100%;
     width: auto;
-    margin-right: 10px;
   }
   
   .navbar-links {
@@ -34,11 +33,13 @@
     margin-left: 20px;
   }
   
+
   .navbar-links a {
     color: #fff;
     text-decoration: none;
     font-size: 18px;
   }
+
   
   .navbar-links a:hover {
     color: #ddd;
