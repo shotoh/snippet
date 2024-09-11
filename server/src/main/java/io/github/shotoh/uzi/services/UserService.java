@@ -21,7 +21,7 @@ public class UserService {
         this.mapper = mapper;
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<UserDTO> retrieveUsers() {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
@@ -45,8 +45,7 @@ public class UserService {
     }
 
     public UserDTO updateUser(long id, UserDTO userDTO) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+        User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
         mapper.updateEntity(userDTO, user);
         repository.save(user);
         return mapper.toDTO(user);

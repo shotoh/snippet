@@ -9,6 +9,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(target = "timestamp", ignore = true)
     User toEntity(UserDTO userDTO);
     UserDTO toDTO (User user);
 
@@ -16,5 +17,6 @@ public interface UserMapper {
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "encryptedPass", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "timestamp", ignore = true)
     void updateEntity(UserDTO userDTO, @MappingTarget User user);
 }
