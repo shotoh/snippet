@@ -6,6 +6,3 @@
 
 # mac
 .DS_Store
-
-# react
-node_modules/
