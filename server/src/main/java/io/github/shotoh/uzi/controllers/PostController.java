@@ -1,5 +1,6 @@
 package io.github.shotoh.uzi.controllers;
 
+import io.github.shotoh.uzi.models.posts.PostCreateDTO;
 import io.github.shotoh.uzi.models.posts.PostDTO;
 import io.github.shotoh.uzi.responses.Success;
 import io.github.shotoh.uzi.services.PostService;
@@ -36,8 +37,8 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Success<PostDTO> createPost(@RequestBody @Validated(PostDTO.PostCreate.class) PostDTO postDTO) {
-        return new Success<>(service.createPost(postDTO));
+    public Success<PostDTO> createPost(@RequestBody @Validated(PostCreateDTO.class) PostCreateDTO postCreateDTO) {
+        return new Success<>(service.createPost(postCreateDTO));
     }
 
     @GetMapping("/{id}")

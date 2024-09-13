@@ -4,6 +4,7 @@ import io.github.shotoh.uzi.exceptions.ResourceAlreadyExistsException;
 import io.github.shotoh.uzi.exceptions.ResourceNotFoundException;
 import io.github.shotoh.uzi.mappers.PostMapper;
 import io.github.shotoh.uzi.models.posts.Post;
+import io.github.shotoh.uzi.models.posts.PostCreateDTO;
 import io.github.shotoh.uzi.models.posts.PostDTO;
 import io.github.shotoh.uzi.repositories.PostRepository;
 import java.util.List;
@@ -33,11 +34,11 @@ public class PostService {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public PostDTO createPost(PostDTO postDTO) {
-        if (repository.existsById(postDTO.getId())) {
+    public PostDTO createPost(PostCreateDTO postCreateDTO) {
+        if (repository.existsById(postCreateDTO.getId())) {
             throw new ResourceAlreadyExistsException("id", "Post already exists with this id");
         }
-        Post post = repository.save(mapper.toEntity(postDTO));
+        Post post = repository.save(mapper.toEntity(postCreateDTO));
         return mapper.toDTO(post);
     }
 
