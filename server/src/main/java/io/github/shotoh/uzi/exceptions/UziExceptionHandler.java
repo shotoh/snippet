@@ -26,11 +26,11 @@ public class UziExceptionHandler {
     @ExceptionHandler(value = ResourceNotFoundException.class)
     public ResponseEntity<Fail> exception(ResourceNotFoundException e) {
         ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.NOT_FOUND);
-        String resource = e.getResource();
-        if (resource == null) {
+        Map<String, String> errorMap = e.getErrorMap();
+        if (errorMap.isEmpty()) {
             return builder.body(new Fail());
         } else {
-            return builder.body(new Fail(Map.of(resource, e.getMessage())));
+            return builder.body(new Fail(errorMap));
         }
     }
 

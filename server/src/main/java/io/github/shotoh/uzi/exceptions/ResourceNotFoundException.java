@@ -1,18 +1,25 @@
 package io.github.shotoh.uzi.exceptions;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
 public class ResourceNotFoundException extends RuntimeException {
-    private final String resource;
+    private final Map<String, String> errorMap;
 
     public ResourceNotFoundException() {
         super();
-        this.resource = null;
+        this.errorMap = new HashMap<>();
     }
 
     public ResourceNotFoundException(String resource, String message) {
-        super(message);
-        this.resource = resource;
+        this();
+        this.errorMap.put(resource, message);
+    }
+
+    public ResourceNotFoundException(Map<String, String> errorMap) {
+        this();
+        this.errorMap.putAll(errorMap);
     }
 }
