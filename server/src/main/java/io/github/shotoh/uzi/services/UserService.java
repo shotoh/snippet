@@ -4,6 +4,7 @@ import io.github.shotoh.uzi.exceptions.ResourceAlreadyExistsException;
 import io.github.shotoh.uzi.exceptions.ResourceNotFoundException;
 import io.github.shotoh.uzi.mappers.UserMapper;
 import io.github.shotoh.uzi.models.users.User;
+import io.github.shotoh.uzi.models.users.UserCreateDTO;
 import io.github.shotoh.uzi.models.users.UserDTO;
 import io.github.shotoh.uzi.repositories.UserRepository;
 import java.util.List;
@@ -33,17 +34,17 @@ public class UserService {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
-        if (repository.existsById(userDTO.getId())) {
+    public UserDTO createUser(UserCreateDTO userCreateDTO) {
+        if (repository.existsById(userCreateDTO.getId())) {
             throw new ResourceAlreadyExistsException("id", "User already exists with this id");
         }
-        if (repository.existsByUsername(userDTO.getUsername())) {
+        if (repository.existsByUsername(userCreateDTO.getUsername())) {
             throw new ResourceAlreadyExistsException("username", "User already exists with this username");
         }
-        if (repository.existsByEmail(userDTO.getEmail())) {
+        if (repository.existsByEmail(userCreateDTO.getEmail())) {
             throw new ResourceAlreadyExistsException("email", "User already exists with this email");
         }
-        User user = repository.save(mapper.toEntity(userDTO));
+        User user = repository.save(mapper.toEntity(userCreateDTO));
         return mapper.toDTO(user);
     }
 
