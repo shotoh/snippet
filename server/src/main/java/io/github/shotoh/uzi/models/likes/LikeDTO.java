@@ -1,7 +1,7 @@
 package io.github.shotoh.uzi.models.likes;
 
-import io.github.shotoh.uzi.models.posts.Post;
-import io.github.shotoh.uzi.models.users.User;
+import io.github.shotoh.uzi.models.posts.PostDTO;
+import io.github.shotoh.uzi.models.users.UserDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 public class LikeDTO {
     private long id;
 
-    private User user;
+    private UserDTO user;
 
-    private Post post;
+    private PostDTO post;
 }

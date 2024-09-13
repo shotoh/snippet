@@ -19,8 +19,6 @@ public class UserDTO {
     @Email
     private String email;
 
-    private String encryptedPass;
-
     @Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
     private String displayName;
 
