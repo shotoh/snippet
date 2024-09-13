@@ -22,10 +22,6 @@ public class CommentService {
         this.mapper = mapper;
     }
 
-    public long getId(Comment comment) {
-        return comment.getId();
-    }
-
     public Comment getComment(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Comment not found with this id"));
     }

@@ -22,10 +22,6 @@ public class PostService {
         this.mapper = mapper;
     }
 
-    public long getId(Post post) {
-        return post.getId();
-    }
-
     public Post getPost(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
     }

@@ -22,10 +22,6 @@ public class UserService {
         this.mapper = mapper;
     }
 
-    public long getId(User user) {
-        return user.getId();
-    }
-
     public User getUser(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
     }

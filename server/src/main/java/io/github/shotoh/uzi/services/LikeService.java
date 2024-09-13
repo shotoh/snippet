@@ -22,10 +22,6 @@ public class LikeService {
         this.mapper = mapper;
     }
 
-    public long getId(Like like) {
-        return like.getId();
-    }
-
     public Like getLike(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Like not found with this id"));
     }
