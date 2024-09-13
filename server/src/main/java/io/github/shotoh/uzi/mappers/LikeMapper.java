@@ -7,7 +7,6 @@ import io.github.shotoh.uzi.services.PostService;
 import io.github.shotoh.uzi.services.UserService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = { UserService.class, PostService.class })
 public interface LikeMapper {
@@ -17,10 +16,4 @@ public interface LikeMapper {
     Like toEntity(LikeCreateDTO likeCreateDTO);
 
     LikeDTO toDTO(Like like);
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "post", ignore = true)
-    @Mapping(target = "timestamp", ignore = true)
-    void updateEntity(LikeDTO likeDTO, @MappingTarget Like like);
 }
