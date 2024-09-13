@@ -21,6 +21,14 @@ public class UserService {
         this.mapper = mapper;
     }
 
+    public long toId(User user) {
+        return user.getId();
+    }
+
+    public User toUser(long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+    }
+
     public List<UserDTO> retrieveUsers() {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
