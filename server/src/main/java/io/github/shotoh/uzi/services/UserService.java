@@ -21,11 +21,11 @@ public class UserService {
         this.mapper = mapper;
     }
 
-    public long toId(User user) {
+    public long getId(User user) {
         return user.getId();
     }
 
-    public User toUser(long id) {
+    public User getUser(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
     }
 
@@ -48,12 +48,12 @@ public class UserService {
     }
 
     public UserDTO retrieveUser(long id) {
-        User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+        User user = getUser(id);
         return mapper.toDTO(user);
     }
 
     public UserDTO updateUser(long id, UserDTO userDTO) {
-        User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
+        User user = getUser(id);
         mapper.updateEntity(userDTO, user);
         repository.save(user);
         return mapper.toDTO(user);

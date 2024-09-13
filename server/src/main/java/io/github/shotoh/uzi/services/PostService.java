@@ -21,6 +21,14 @@ public class PostService {
         this.mapper = mapper;
     }
 
+    public long getId(Post post) {
+        return post.getId();
+    }
+
+    public Post getPost(long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
+    }
+
     public List<PostDTO> retrievePosts() {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
@@ -34,13 +42,12 @@ public class PostService {
     }
 
     public PostDTO retrievePost(long id) {
-        Post post = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
+        Post post = getPost(id);
         return mapper.toDTO(post);
     }
 
     public PostDTO updatePost(long id, PostDTO postDTO) {
-        Post post = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
+        Post post = getPost(id);
         mapper.updateEntity(postDTO, post);
         repository.save(post);
         return mapper.toDTO(post);
