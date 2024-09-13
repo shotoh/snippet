@@ -11,14 +11,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", uses = UserService.class)
 public interface PostMapper {
-    @Mapping(target = "timestamp", ignore = true)
-    Post toEntity(PostDTO postDTO);
-
     @Mapping(source = "userId", target = "user")
     @Mapping(target = "timestamp", ignore = true)
     Post toEntity(PostCreateDTO postCreateDTO);
 
-    PostDTO toDTO (Post post);
+    PostDTO toDTO(Post post);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)

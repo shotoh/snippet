@@ -32,6 +32,6 @@ public class User {
 
     private String biography;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private long timestamp = Instant.now().toEpochMilli();
 }

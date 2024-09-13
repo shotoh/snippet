@@ -32,6 +32,6 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private long timestamp = Instant.now().toEpochMilli();
 }

@@ -11,12 +11,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "timestamp", ignore = true)
-    User toEntity(UserDTO userDTO);
-
-    @Mapping(target = "timestamp", ignore = true)
     User toEntity(UserCreateDTO userCreateDTO);
 
-    UserDTO toDTO (User user);
+    UserDTO toDTO(User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)

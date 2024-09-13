@@ -1,16 +1,17 @@
 package io.github.shotoh.uzi.models.likes;
 
-import io.github.shotoh.uzi.models.posts.Post;
-import io.github.shotoh.uzi.models.users.User;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class LikeDTO {
+public class LikeCreateDTO {
     private long id;
 
-    private User user;
+    @Positive
+    private long userId;
 
-    private Post post;
+    @Positive
+    private long postId;
 }
