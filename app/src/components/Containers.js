@@ -3,7 +3,7 @@ import React from 'react';
 export const TopPosts = () => {
   return (
     <div className="top-posts">
-      {/* Content for TopPosts container */}
+      <div className="media1"></div> {/* Top post placeholder */}
     </div>
   );
 };

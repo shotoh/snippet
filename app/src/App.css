@@ -71,3 +71,12 @@
   height: 1012px;
   background-color: rgba(202, 196, 208, 0.14);
 }
+
+.media1 {
+  width: 450px;
+  height: 250px;
+  margin-left: 50px;
+  margin-top: 370px;
+  position: relative;
+  background-color: #FF0000;
+}
