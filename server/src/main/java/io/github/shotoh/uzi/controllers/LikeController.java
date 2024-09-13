@@ -4,10 +4,10 @@ import io.github.shotoh.uzi.models.likes.LikeCreateDTO;
 import io.github.shotoh.uzi.models.likes.LikeDTO;
 import io.github.shotoh.uzi.responses.Success;
 import io.github.shotoh.uzi.services.LikeService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +35,7 @@ public class LikeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Success<LikeDTO> createLike(@RequestBody @Validated(LikeCreateDTO.class) LikeCreateDTO likeCreateDTO) {
+    public Success<LikeDTO> createLike(@RequestBody @Valid LikeCreateDTO likeCreateDTO) {
         return new Success<>(service.createLike(likeCreateDTO));
     }
 
