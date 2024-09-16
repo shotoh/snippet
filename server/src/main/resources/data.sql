@@ -25,3 +25,24 @@ VALUES
     (1, 1, 'comment1', 1401),
     (2, 1, 'comment2', 1501),
     (3, 3, 'comment3', 1601);
+
+INSERT INTO
+    `friends` (from_id, to_id, status, timestamp)
+VALUES
+    (1, 2, "PENDING", 1),
+    (2, 3, "FRIEND", 2),
+    (3, 2, "FRIEND", 2);
+
+INSERT INTO
+    `messages` (from_id, to_id, content, timestamp)
+VALUES
+    (1, 2, "hello", 2),
+    (2, 1, "hello again", 5),
+    (1, 3, "hi", 4);
+
+INSERT INTO
+    `medias` (post_id, source, timestamp)
+VALUES
+    (2, "media/bob.jpg", 2000),
+    (2, "media/pete.png", 2001),
+    (3, "media/hello.png", 2005);
