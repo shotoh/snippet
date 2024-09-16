@@ -1,1 +1,1 @@
-rootProject.name = "uzi"
+rootProject.name = "snippet"
