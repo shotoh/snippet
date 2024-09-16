@@ -43,33 +43,34 @@
   align-items: flex-start;
   position: relative;
   padding: 0;
+  height: 100px;
 }
 
-.Top-posts {
+.top-posts {
   position: absolute;
   top: 68px;
   left: 0;
   width: 600px;
   height: 1012px;
-  background-color: rgba(202, 196, 208, 0.14);
+  background-color: rgba(128, 30, 225);
 }
 
-.Feed {
+.feed {
   position: absolute;
   top: 66px;
   left: 604px;
   width: 916px;
   height: 1014px;
-  background-color: #FFFFFF;
+  background-color: #f41414;
 }
 
-.Friends {
+.friends {
   position: absolute;
   top: 68px;
   left: 1520px;
   width: 400px;
   height: 1012px;
-  background-color: rgba(202, 196, 208, 0.14);
+  background-color: rgba(116, 26, 206);
 }
 
 .media1 {
