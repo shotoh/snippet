@@ -25,4 +25,8 @@ public class UziApplication {
 			}
 		};
 	}
+
+	// todo list
+	// friend request and remove service/controller
+	// patch likes, add num likes to post
 }
