@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/medias")
+@RequestMapping(path = "/api/media")
 public class MediaController {
     private final MediaService service;
 
