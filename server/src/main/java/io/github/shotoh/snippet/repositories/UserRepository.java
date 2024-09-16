@@ -1,9 +1,12 @@
-package io.github.shotoh.uzi.repositories;
+package io.github.shotoh.snippet.repositories;
 
-import io.github.shotoh.uzi.models.User;
+import io.github.shotoh.snippet.models.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }
