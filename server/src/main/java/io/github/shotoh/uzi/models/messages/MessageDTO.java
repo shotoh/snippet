@@ -1,6 +1,5 @@
-package io.github.shotoh.uzi.models.comments;
+package io.github.shotoh.uzi.models.messages;
 
-import io.github.shotoh.uzi.models.posts.PostDTO;
 import io.github.shotoh.uzi.models.users.UserDTO;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -8,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class CommentDTO {
+public class MessageDTO {
     private long id;
 
-    private UserDTO user;
+    private UserDTO from;
 
-    private PostDTO post;
+    private UserDTO to;
 
     @Size(min = 1, max = 1023)
     private String content;

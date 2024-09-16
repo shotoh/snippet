@@ -7,9 +7,10 @@ import io.github.shotoh.uzi.models.comments.Comment;
 import io.github.shotoh.uzi.models.comments.CommentCreateDTO;
 import io.github.shotoh.uzi.models.comments.CommentDTO;
 import io.github.shotoh.uzi.repositories.CommentRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -38,15 +39,15 @@ public class CommentService {
         return mapper.toDTO(comment);
     }
 
+    public CommentDTO retrieveComment(long id) {
+        Comment comment = getComment(id);
+        return mapper.toDTO(comment);
+    }
+
     public CommentDTO updateComment(long id, CommentDTO commentDTO) {
         Comment comment = getComment(id);
         mapper.updateEntity(commentDTO, comment);
         repository.save(comment);
-        return mapper.toDTO(comment);
-    }
-
-    public CommentDTO retrieveComment(long id) {
-        Comment comment = getComment(id);
         return mapper.toDTO(comment);
     }
 

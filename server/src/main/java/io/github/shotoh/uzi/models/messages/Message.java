@@ -1,4 +1,4 @@
-package io.github.shotoh.uzi.models.posts;
+package io.github.shotoh.uzi.models.messages;
 
 import io.github.shotoh.uzi.models.users.User;
 import jakarta.persistence.*;
@@ -10,18 +10,19 @@ import java.time.Instant;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
-@Table(name = "posts")
-public class Post {
+@Table(name = "messages")
+public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+    @JoinColumn(name = "from_id", nullable = false, updatable = false)
+    private User from;
 
-    @Column(nullable = false)
-    private String title;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_id", nullable = false, updatable = false)
+    private User to;
 
     @Column(nullable = false)
     private String content;
