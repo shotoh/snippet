@@ -29,4 +29,6 @@ public class UziApplication {
 	// todo list
 	// friend request and remove service/controller
 	// patch likes, add num likes to post
+	// add one-to-many or many-to-many relations for comments, likes, and media in posts
+	// fix media, validate file path and store when creating?
 }
