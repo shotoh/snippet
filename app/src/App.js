@@ -5,7 +5,7 @@ import Products from "./pages/Products.js";
 import Contact from "./pages/Contact.js";
 import About from "./pages/About.js";
 import MainNav from "./components/mainNav.js";
-import Main from "./pages/Main.js";
+import MainPage from "./pages/MainPage.js";
 import SimpleBody from "./components/SimpleBody.js";
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="" element={<SimpleBody /> } />
         </Route>
-        <Route path="/snipit" element={<Main />} />
+        <Route path="/snipit" element={<MainPage />} />
       </Routes>
       
     </div>
