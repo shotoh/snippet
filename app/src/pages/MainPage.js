@@ -1,5 +1,6 @@
-import React from 'react';
-import { TopPosts, Feed, Friends } from '../components/Containers';
+import React from "react";
+import { TopPosts, Feed, Friends } from "../components/Containers";
+import "../App.css";
 
 const MainPage = () => {
   return (
