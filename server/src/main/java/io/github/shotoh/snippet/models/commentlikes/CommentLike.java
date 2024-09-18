@@ -1,6 +1,6 @@
-package io.github.shotoh.snippet.models.likes;
+package io.github.shotoh.snippet.models.commentlikes;
 
-import io.github.shotoh.snippet.models.posts.Post;
+import io.github.shotoh.snippet.models.comments.Comment;
 import io.github.shotoh.snippet.models.users.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,8 +19,8 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
-@Table(name = "likes")
-public class Like {
+@Table(name = "comment_likes")
+public class CommentLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -30,8 +30,8 @@ public class Like {
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false, updatable = false)
-    private Post post;
+    @JoinColumn(name = "comment_id", nullable = false, updatable = false)
+    private Comment comment;
 
     @Column(nullable = false, updatable = false)
     private long timestamp = Instant.now().toEpochMilli();
