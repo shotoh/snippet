@@ -27,7 +27,27 @@ export const SomeButton = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex justify-center items-center space-x-4">
+      {/* Left button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 8GB of RAM")}
+      >
+        Users
+      </button>
+      
       <button
         className="relative
                 overflow-hidden
@@ -44,7 +64,127 @@ export const SomeButton = () => {
                 hover:from-green-600 hover:to-lime-500"
         onClick={handleClick}
       >
-        Download 16GB RAM
+        Posts
+      </button>
+
+      {/* Right button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 32GB of RAM")}
+      >
+        Comments
+      </button>
+
+      {/* Right most button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 64GB of RAM")}
+      >
+        Likes
+      </button>
+
+      {/* 5th button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 64GB of RAM")}
+      >
+        Friends
+      </button>
+
+      {/* 6th button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 64GB of RAM")}
+      >
+        Messages 
+      </button>
+
+      {/* 7th button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 64GB of RAM")}
+      >
+        Media
+      </button>
+
+      {/* 8th button */}
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-4
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={() => console.log("Downloaded 64GB of RAM")}
+      >
+        Clear
       </button>
 
       {showText && (
