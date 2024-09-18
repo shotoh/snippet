@@ -43,7 +43,7 @@
   align-items: flex-start;
   position: relative;
   padding: 0;
-  height: 100px;
+  height: 100vh;
 }
 
 .top-posts {
@@ -51,8 +51,8 @@
   top: 68px;
   left: 0;
   width: 600px;
-  height: 1012px;
-  background-color: rgba(128, 30, 225);
+  height: 100%;
+  background-color: #1471f4;
 }
 
 .feed {
@@ -60,7 +60,7 @@
   top: 66px;
   left: 604px;
   width: 916px;
-  height: 1014px;
+  height: 100%;
   background-color: #f41414;
 }
 
@@ -69,8 +69,8 @@
   top: 68px;
   left: 1520px;
   width: 400px;
-  height: 1012px;
-  background-color: rgba(116, 26, 206);
+  height: 100%;
+  background-color: #1471f4;
 }
 
 .media1 {
@@ -80,4 +80,10 @@
   margin-top: 370px;
   position: relative;
   background-color: #FF0000;
+}
+
+.media1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

@@ -1,9 +1,16 @@
 import React from 'react';
+const macrosoftLogo = require("../images/macrosoftLogo.png");
 
 export const TopPosts = () => {
   return (
     <div className="top-posts">
-      <div className="media1"></div> {/* Top post placeholder */}
+      <div className="media1">
+        <img
+          src={macrosoftLogo}
+          alt="Macrosoft Logo"
+          className="mr-2 w-12 h-12"
+        />
+    </div>
     </div>
   );
 };
