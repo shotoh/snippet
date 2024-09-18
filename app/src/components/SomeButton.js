@@ -5,8 +5,28 @@ export const SomeButton = () => {
   const [fetchedData, setFetchedData] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleClick = async () => {
+  const clickPosts = async () => {
     // If the button isn't clicked yet, fetch data - close text otherwise
+    if (!showText) {
+      try {
+        const response = await fetch("/api/posts");
+        if (!response.ok) {
+          throw new Error("Failed to fetch posts");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+
+  const clickUsers = async () => {
     if (!showText) {
       try {
         const response = await fetch("/api/users");
@@ -26,9 +46,150 @@ export const SomeButton = () => {
     }
   };
 
+  const clickComments = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/comments");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+
+  const clickLikesComment = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+
+  const clickFriends = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+  
+  const clickMessages = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+
+  const clickMedia = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  };
+
+  const clickCommentLikes = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/comment_likes");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  }
+
+  const clickPostLikes = async () => {
+    if (!showText) {
+      try {
+        const response = await fetch("/api/post_likes");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setFetchedData(data);
+        setShowText(true);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setShowText(false);
+      }
+    } else {
+      setShowText(false);
+    }
+  }
+
+
+
   return (
     <div className="flex justify-center items-center space-x-4">
-      {/* Left button */}
       <button
         className="relative
                 overflow-hidden
@@ -43,7 +204,7 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 8GB of RAM")}
+        onClick={clickUsers}
       >
         Users
       </button>
@@ -62,12 +223,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={handleClick}
+        onClick={clickPosts}
       >
         Posts
       </button>
 
-      {/* Right button */}
       <button
         className="relative
                 overflow-hidden
@@ -82,12 +242,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 32GB of RAM")}
+        onClick={clickComments}
       >
         Comments
       </button>
 
-      {/* Right most button */}
       <button
         className="relative
                 overflow-hidden
@@ -102,12 +261,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 64GB of RAM")}
+        onClick={clickLikesComment}
       >
-        Likes
+        Comment Likes
       </button>
 
-      {/* 5th button */}
       <button
         className="relative
                 overflow-hidden
@@ -122,12 +280,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 64GB of RAM")}
+        onClick={clickFriends}
       >
         Friends
       </button>
 
-      {/* 6th button */}
       <button
         className="relative
                 overflow-hidden
@@ -142,12 +299,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 64GB of RAM")}
+        onClick={clickMessages}
       >
         Messages 
       </button>
 
-      {/* 7th button */}
       <button
         className="relative
                 overflow-hidden
@@ -162,12 +318,11 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 64GB of RAM")}
+        onClick={clickMedia}
       >
         Media
       </button>
 
-      {/* 8th button */}
       <button
         className="relative
                 overflow-hidden
@@ -175,20 +330,39 @@ export const SomeButton = () => {
                 shadow-md
                 shadow-black/20
                 bg-gradient-to-r from-green-700 to-lime-600
-                py-3 px-4
+                py-3 px-5
                 text-lg
                 font-medium
                 uppercase
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => console.log("Downloaded 64GB of RAM")}
+        onClick={clickCommentLikes}
       >
-        Clear
+        Comment Likes
+      </button>
+
+      <button
+        className="relative
+                overflow-hidden
+                rounded-md
+                shadow-md
+                shadow-black/20
+                bg-gradient-to-r from-green-700 to-lime-600
+                py-3 px-5
+                text-lg
+                font-medium
+                uppercase
+                tracking-wider
+                text-white
+                hover:from-green-600 hover:to-lime-500"
+        onClick={clickPostLikes}
+      >
+        Post likes
       </button>
 
       {showText && (
-        <ul class="text-center mt-4 text-white max-w-lg">
+        <ul className="text-center mt-4 text-white max-w-lg">
           {fetchedData
             ? fetchedData.map((user) => (
                 <li key={user.id}>
@@ -200,7 +374,7 @@ export const SomeButton = () => {
       )}
 
       {error && (
-        <p class="text-center mt-4 text-white max-w-lg">Error: {error}</p>
+        <p className="text-center mt-4 text-white max-w-lg">Error: {error}</p>
       )}
     </div>
   );
