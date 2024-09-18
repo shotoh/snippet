@@ -105,7 +105,7 @@ export const SomeButton = () => {
       setShowText(false);
     }
   };
-  
+
   const clickMessages = async () => {
     if (!showText) {
       try {
@@ -208,7 +208,7 @@ export const SomeButton = () => {
       >
         Users
       </button>
-      
+
       <button
         className="relative
                 overflow-hidden
@@ -301,7 +301,7 @@ export const SomeButton = () => {
                 hover:from-green-600 hover:to-lime-500"
         onClick={clickMessages}
       >
-        Messages 
+        Messages
       </button>
 
       <button
