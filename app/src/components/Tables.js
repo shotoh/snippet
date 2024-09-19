@@ -186,26 +186,31 @@ export const MessagesTable = ({ data, headers }) => (
 );
 
 export const MediaTable = ({ data, headers }) => (
-  <table className="table-auto border-collapse border border-white mt-4">
-    <thead>
-      <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((item, index) => (
-        <tr key={index}>
+    <table className="table-auto border-collapse border border-white mt-4">
+      <thead>
+        <tr>
           {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
-            </td>
+            <th key={header} className="border border-white px-4 py-2">
+              {header.charAt(0).toUpperCase() + header.slice(1)}
+            </th>
           ))}
         </tr>
-      ))}
-    </tbody>
-  </table>
-);
+      </thead>
+      <tbody>
+        {data.map((item, index) => (
+          <tr key={index}>
+            {headers.map((header) => {
+              const cellData = item[header]; 
+              return (
+                <td key={header} className="border border-white px-4 py-2">
+                  {typeof cellData === 'object'
+                    ? JSON.stringify(cellData)
+                    : cellData}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );

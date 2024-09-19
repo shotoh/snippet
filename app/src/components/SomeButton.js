@@ -172,7 +172,7 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => handleClick('medias')}
+        onClick={() => handleClick('media')}
       >
         Media
       </button>
@@ -230,7 +230,7 @@ export const SomeButton = () => {
         <MessagesTable data={fetchedData} headers={headers} />
       )}
 
-      {fetchedData.length > 0 && currentEndpoint === "medias" && (
+      {fetchedData.length > 0 && currentEndpoint === "media" && (
         <MediaTable data={fetchedData} headers={headers} />
       )}
     </div>
