@@ -191,7 +191,7 @@ export const SomeButton = () => {
                 tracking-wider
                 text-white
                 hover:from-green-600 hover:to-lime-500"
-        onClick={() => handleClick('post_likes')}
+        onClick={() => handleClick('post-likes')}
       >
         Post likes
       </button>
@@ -218,7 +218,7 @@ export const SomeButton = () => {
         <PostLikesTable data={fetchedData} headers={headers} />
       )}
 
-      {fetchedData.length > 0 && currentEndpoint === "comment_likes" && (
+      {fetchedData.length > 0 && currentEndpoint === "comment-likes" && (
         <CommentLikesTable data={fetchedData} headers={headers} />
       )}
       

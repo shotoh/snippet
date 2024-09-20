@@ -97,7 +97,7 @@ VALUES
     (4, 5, 'who are you', 874873242);
 
 INSERT INTO
-    `media` (post_id, source, timestamp)
+    `medias` (post_id, source, timestamp)
 VALUES
     (2, 'top_frag.jpg', 74983297842),
     (2, 'victory_royale.png', 4763287423),
