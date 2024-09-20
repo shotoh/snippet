@@ -47,7 +47,6 @@ export const PostTable = ({ data }) => {
     { key: 'title', title: 'Title' },
     { key: 'content', title: 'Content' },
     { key: 'user.id', title: 'User ID' }, // Accessing nested property 'user.id'
-    { key: 'post.id', title: 'Post ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
@@ -57,6 +56,7 @@ export const CommentTable = ({ data }) => {
     { key: 'id', title: 'ID' },
     { key: 'content', title: 'Content' },
     { key: 'user.id', title: 'User ID' },
+    { key: 'post.id', title: 'Post ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
@@ -65,6 +65,7 @@ export const PostLikesTable = ({ data }) => {
   const columns = [
     { key: 'post.id', title: 'Post ID' }, // Accessing nested property 'post.id'
     { key: 'user.id', title: 'User ID' },
+    { key: 'id', title: 'ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
@@ -73,14 +74,17 @@ export const CommentLikesTable = ({ data }) => {
   const columns = [
     { key: 'comment.id', title: 'Comment ID' }, // Accessing nested property 'comment.id'
     { key: 'user.id', title: 'User ID' },
+    { key: 'id', title: 'ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
 
 export const FriendsTable = ({ data }) => {
   const columns = [
-    { key: 'user.id', title: 'User ID' }, // Accessing nested property 'user.id'
-    { key: 'friend.id', title: 'Friend ID' },
+    { key: 'from.id', title: 'From ID' }, // Accessing nested property 'user.id'
+    { key: 'to.id', title: 'To ID' },
+    { key: 'id', title: 'ID' },
+    { key: 'status', title: 'Status' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
@@ -89,8 +93,8 @@ export const MessagesTable = ({ data }) => {
   const columns = [
     { key: 'id', title: 'ID' },
     { key: 'content', title: 'Content' },
-    { key: 'sender.id', title: 'Sender ID' },
-    { key: 'receiver.id', title: 'Receiver ID' },
+    { key: 'from.id', title: 'From ID' },
+    { key: 'to.id', title: 'To ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
@@ -99,7 +103,7 @@ export const MediaTable = ({ data }) => {
   const columns = [
     { key: 'post.id', title: 'Post ID' }, // Accessing nested property 'post.id'
     { key: 'source', title: 'Source' },
-    { key: 'timestamp', title: 'Timestamp' },
+    { key: 'id', title: 'ID' },
   ];
   return <DataTable data={data} columns={columns} />;
 };
