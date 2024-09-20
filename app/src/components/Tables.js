@@ -1,97 +1,18 @@
 import React from "react";
 
-export const UserTable = ({ data, headers }) => (
-  <table className="table-auto border-collapse border border-white mt-4">
-    <thead>
-      <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((item, index) => (
-        <tr key={index}>
-          {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
-
-export const PostTable = ({ data, headers }) => (
-    <table className="table-auto border-collapse border border-white mt-4">
-      <thead>
-        <tr>
-          {headers.map((header) => (
-            <th key={header} className="border border-white px-4 py-2">
-              {header.charAt(0).toUpperCase() + header.slice(1)}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index}>
-            {headers.map((header) => {
-              const cellData = item[header]; 
-  
-              return (
-                <td key={header} className="border border-white px-4 py-2">
-                  {header === "user_id" && typeof cellData === "object"
-                    ? cellData.id || 'Unknown' 
-                    : typeof cellData === "object"
-                    ? JSON.stringify(cellData) 
-                    : cellData} 
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-
-export const CommentTable = ({ data, headers }) => {
-  return (
-    <table className="table-auto border-collapse border border-white mt-4">
-      <thead>
-        <tr>
-          {headers.map((header) => (
-            <th key={header} className="border border-white px-4 py-2">
-              {header.charAt(0).toUpperCase() + header.slice(1)}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index}>
-            {headers.map((header) => (
-              <td key={header} className="border border-white px-4 py-2">
-                {item[header]}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+// Helper function to get nested properties from an object
+const getNestedValue = (obj, key) => {
+  return key.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
 
-export const PostLikesTable = ({ data, headers }) => (
+// A generic DataTable component for all the tables
+export const DataTable = ({ data, columns }) => (
   <table className="table-auto border-collapse border border-white mt-4">
     <thead>
       <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
+        {columns.map((col) => (
+          <th key={col.key} className="border border-white px-4 py-2">
+            {col.title}
           </th>
         ))}
       </tr>
@@ -99,9 +20,9 @@ export const PostLikesTable = ({ data, headers }) => (
     <tbody>
       {data.map((item, index) => (
         <tr key={index}>
-          {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
+          {columns.map((col) => (
+            <td key={col.key} className="border border-white px-4 py-2">
+              {getNestedValue(item, col.key) || 'N/A'}
             </td>
           ))}
         </tr>
@@ -110,107 +31,75 @@ export const PostLikesTable = ({ data, headers }) => (
   </table>
 );
 
-export const CommentLikesTable = ({ data, headers }) => (
-  <table className="table-auto border-collapse border border-white mt-4">
-    <thead>
-      <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((item, index) => (
-        <tr key={index}>
-          {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+// Define column structures for each table
+export const UserTable = ({ data }) => {
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'username', title: 'Username' },
+    { key: 'email', title: 'Email' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
 
-export const FriendsTable = ({ data, headers }) => (
-  <table className="table-auto border-collapse border border-white mt-4">
-    <thead>
-      <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((item, index) => (
-        <tr key={index}>
-          {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+export const PostTable = ({ data }) => {
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'title', title: 'Title' },
+    { key: 'content', title: 'Content' },
+    { key: 'user.id', title: 'User ID' }, // Accessing nested property 'user.id'
+    { key: 'post.id', title: 'Post ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
 
-export const MessagesTable = ({ data, headers }) => (
-  <table className="table-auto border-collapse border border-white mt-4">
-    <thead>
-      <tr>
-        {headers.map((header) => (
-          <th key={header} className="border border-white px-4 py-2">
-            {header.charAt(0).toUpperCase() + header.slice(1)}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((item, index) => (
-        <tr key={index}>
-          {headers.map((header) => (
-            <td key={header} className="border border-white px-4 py-2">
-              {item[header]}
-            </td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+export const CommentTable = ({ data }) => {
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'content', title: 'Content' },
+    { key: 'user.id', title: 'User ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
 
-export const MediaTable = ({ data, headers }) => (
-    <table className="table-auto border-collapse border border-white mt-4">
-      <thead>
-        <tr>
-          {headers.map((header) => (
-            <th key={header} className="border border-white px-4 py-2">
-              {header.charAt(0).toUpperCase() + header.slice(1)}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index}>
-            {headers.map((header) => {
-              const cellData = item[header]; 
-              return (
-                <td key={header} className="border border-white px-4 py-2">
-                  {typeof cellData === 'object'
-                    ? JSON.stringify(cellData)
-                    : cellData}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+export const PostLikesTable = ({ data }) => {
+  const columns = [
+    { key: 'post.id', title: 'Post ID' }, // Accessing nested property 'post.id'
+    { key: 'user.id', title: 'User ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
+
+export const CommentLikesTable = ({ data }) => {
+  const columns = [
+    { key: 'comment.id', title: 'Comment ID' }, // Accessing nested property 'comment.id'
+    { key: 'user.id', title: 'User ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
+
+export const FriendsTable = ({ data }) => {
+  const columns = [
+    { key: 'user.id', title: 'User ID' }, // Accessing nested property 'user.id'
+    { key: 'friend.id', title: 'Friend ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
+
+export const MessagesTable = ({ data }) => {
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'content', title: 'Content' },
+    { key: 'sender.id', title: 'Sender ID' },
+    { key: 'receiver.id', title: 'Receiver ID' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
+
+export const MediaTable = ({ data }) => {
+  const columns = [
+    { key: 'post.id', title: 'Post ID' }, // Accessing nested property 'post.id'
+    { key: 'source', title: 'Source' },
+    { key: 'timestamp', title: 'Timestamp' },
+  ];
+  return <DataTable data={data} columns={columns} />;
+};
