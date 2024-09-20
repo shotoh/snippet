@@ -5,7 +5,7 @@ export default function Products() {
         <h1 className="text-4xl font-bold">Products</h1>
         <div className="m-2" id="products">
           <h2 className="text-2xl text-blue-800 font-bold">
-            <a href="/snipit">Snip/it</a>
+            <a href="/snipit">Snippet</a>
           </h2>
           <div class="info" className="px-4 space-y-4">
             <h1 className="text-xl font-bold">
