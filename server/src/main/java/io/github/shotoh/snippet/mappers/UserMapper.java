@@ -9,6 +9,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(source = "password", target = "encryptedPassword")
     @Mapping(target = "timestamp", ignore = true)
     User toEntity(UserCreateDTO userCreateDTO);
 
@@ -17,7 +18,7 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "email", ignore = true)
-    @Mapping(target = "encryptedPass", ignore = true)
+    @Mapping(target = "encryptedPassword", ignore = true)
     @Mapping(target = "timestamp", ignore = true)
     void updateEntity(UserDTO userDTO, @MappingTarget User user);
 }

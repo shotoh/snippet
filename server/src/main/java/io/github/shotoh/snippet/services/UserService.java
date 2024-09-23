@@ -9,17 +9,21 @@ import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.repositories.UserRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final UserRepository repository;
     private final UserMapper mapper;
+    private final PasswordEncoder encoder;
 
     @Autowired
     public UserService(UserRepository repository, UserMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
+        this.encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     public User getUser(long id) {
@@ -40,6 +44,8 @@ public class UserService {
         if (repository.existsByEmail(userCreateDTO.getEmail())) {
             throw new ResourceAlreadyExistsException("email", "User already exists with this email");
         }
+        String encryptedPassword = encryptPassword(userCreateDTO.getPassword());
+        userCreateDTO.setPassword(encryptedPassword);
         User user = repository.save(mapper.toEntity(userCreateDTO));
         return mapper.toDTO(user);
     }
@@ -58,5 +64,9 @@ public class UserService {
 
     public void deleteUser(long id) {
         repository.deleteById(id);
+    }
+
+    public String encryptPassword(String password) {
+        return encoder.encode(password);
     }
 }
