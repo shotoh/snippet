@@ -1,6 +1,7 @@
 package io.github.shotoh.snippet.security;
 
 import io.github.shotoh.snippet.filters.JwtFilter;
+import io.github.shotoh.snippet.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final SnippetUserDetailsService service;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public WebSecurityConfig(SnippetUserDetailsService service) {
+    public WebSecurityConfig(SnippetUserDetailsService service, JwtUtils jwtUtils) {
         this.service = service;
+        this.jwtUtils = jwtUtils;
     }
 
     @Bean
@@ -39,7 +42,7 @@ public class WebSecurityConfig {
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .addFilterBefore(new JwtFilter(service), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(service, jwtUtils), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
