@@ -7,11 +7,11 @@ import io.github.shotoh.snippet.models.users.User;
 import io.github.shotoh.snippet.models.users.UserCreateDTO;
 import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.repositories.UserRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -20,10 +20,10 @@ public class UserService {
     private final PasswordEncoder encoder;
 
     @Autowired
-    public UserService(UserRepository repository, UserMapper mapper) {
+    public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder) {
         this.repository = repository;
         this.mapper = mapper;
-        this.encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        this.encoder = encoder;
     }
 
     public User getUser(long id) {
