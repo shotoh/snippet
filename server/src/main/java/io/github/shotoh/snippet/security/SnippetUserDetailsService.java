@@ -6,18 +6,15 @@ import io.github.shotoh.snippet.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class SnippetUserDetailsService implements UserDetailsService {
     private final UserRepository repository;
-    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository repository) {
+    public SnippetUserDetailsService(UserRepository repository) {
         this.repository = repository;
-        this.encoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -29,7 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(username)
                 .password(user.getEncryptedPassword())
-                .passwordEncoder(encoder::encode)
                 .roles("USER")
                 .build();
     }
