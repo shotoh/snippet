@@ -1,5 +1,5 @@
 INSERT INTO
-    `users` (username, email, encrypted_pass, timestamp)
+    `users` (username, email, encrypted_password, timestamp)
 VALUES
     ('Spongebob', 'spongebob@gmail.com', 'a', 1),
     ('Patrick', 'patrick@gmail.com', 'b', 200099),

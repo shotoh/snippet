@@ -23,7 +23,7 @@ public class UserCreateDTO {
     private String email;
 
     @NotNull
-    private String encryptedPass;
+    private String password;
 
     @Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
     private String displayName;
