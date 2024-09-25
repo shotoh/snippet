@@ -8,6 +8,8 @@ import MainNav from "./components/MainNav.js";
 import Main from "./pages/Main.js";
 import SimpleBody from "./components/SimpleBody.js";
 
+import ProfilePage from "./pages/Signup/ProfilePage.js";
+
 function App() {
   //let component;
 
@@ -24,6 +26,8 @@ function App() {
           <Route path="" element={<SimpleBody />} />
         </Route>
         <Route path="/snippet" element={<Main />} />
+        {/* Temporary route to profile page, to be officially implemented */}
+        <Route path="/profilepage" element={<ProfilePage />} />
       </Routes>
     </div>
   );
