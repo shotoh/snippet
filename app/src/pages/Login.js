@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { NavLink} from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
 
 export default function Login() {
     
     const [isLoading, setLoading] = useState(false);
-
-    const handleClick = () => setLoading(true);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     const [formValues, setFormValues] = useState({
         user: '',
@@ -20,16 +20,39 @@ export default function Login() {
         setFormValues({ ...formValues, [name]: value });
     };   
     
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        //Values to get
-        //formValues.user
-        //formValues.pasword
+        setLoading(true);
+        setErrorMessage('');
 
-        
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: formValues.user,
+                    password: formValues.password,
+                }),
+            });
 
-        console.log(formValues.user + " " + formValues.password);
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success') {
+                //Save token to localStorage
+                localStorage.setItem('authToken', result.data.token);
+
+                //Home is a placeholder for main page since we dont have it yet
+                navigate('/home');
+            } else {
+                setErrorMessage('Invalid username or password');
+                setLoading(false);
+            }
+        } catch (error) {
+            setErrorMessage('Error occured while logging in');
+            setLoading(false);
+        }
     };
     
     return (
@@ -45,13 +68,13 @@ export default function Login() {
             <Form className="p-1  w-1/2 mx-auto mt-10" onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formEmail">
                 <Form.Control 
-                type="username"
+                type="text"
                 name="user"
                 placeholder="Username or email"
                 disabled={isLoading}
                 onChange={handleChange}
+                required
                 />
-                
             </Form.Group>
 
             <Form.Group className="mb-3 text-right" controlId="formPassword">
@@ -61,18 +84,22 @@ export default function Login() {
                 placeholder="Password"
                 disabled={isLoading}
                 onChange={handleChange}
+                required
                 />
                 <Form.Text className="text-muted">
                 <a href="">Forgot Password?</a>
                 </Form.Text>
             </Form.Group>
+
             <Button variant="primary" type="submit" 
                 className="w-full mb-3 px-auto"
                 disabled={isLoading}
-                onClick={!isLoading ? handleClick : null}
                 >
                 {isLoading ? "Logging in..." : "Log in"}
             </Button>
+
+            {errorMessage && <p className="text-danger">{errorMessage}</p>}
+
             <p>Don't have an account?</p>
             <NavLink className="no-underline text-inherit" to="/signup">
                 <Button variant="secondary" className="w-full px-auto mb-3">
@@ -82,21 +109,8 @@ export default function Login() {
                 </Button>
             </NavLink>
             </Form>
-
-
-            
-
-
-
             </Card.Body>
-        
-
-
         </Card>
-        
-        
-        
       </div>
     );
-
-  }
+}
