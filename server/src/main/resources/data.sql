@@ -1,5 +1,5 @@
 INSERT INTO
-    `users` (username, email, encrypted_pass, timestamp)
+    `users` (username, email, encrypted_password, timestamp)
 VALUES
     ('Spongebob', 'spongebob@gmail.com', 'a', 1),
     ('Patrick', 'patrick@gmail.com', 'b', 200099),
@@ -27,7 +27,7 @@ VALUES
     (1, 'q', 'iudshfjdsd', 4873264);
 
 INSERT INTO
-    `likes` (user_id, post_id, timestamp)
+    `post_likes` (user_id, post_id, timestamp)
 VALUES
     (1, 1, 84093274),
     (1, 2, 84932787),
@@ -53,6 +53,20 @@ VALUES
     (8, 4, 'money money money', 87721939),
     (4, 5, 'the answer is 3 -8 -2', 89738621),
     (10, 10, 'fkdsjnfkds', 87236287);
+
+INSERT INTO
+    `comment_likes` (user_id, comment_id, timestamp)
+VALUES
+    (2, 1, 840932374),
+    (2, 2, 8493232787),
+    (3, 1, 849373484),
+    (7, 2, 37274459832),
+    (10, 10, 435274832),
+    (6, 3, 834723298),
+    (6, 2, 834937204),
+    (6, 6, 38272432132),
+    (2, 10, 2943832492),
+    (5, 8, 2838274982);
 
 INSERT INTO
     `friends` (from_id, to_id, status, timestamp)
