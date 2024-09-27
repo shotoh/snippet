@@ -7,7 +7,7 @@ import TrendingBar from "../../components/MainPage/TrendingBar";
 
 const MainPage = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-slate-200">
       <NavBar />
     </div>
   );
