@@ -70,7 +70,7 @@ export default function Login() {
                 <Form.Control 
                 type="text"
                 name="user"
-                placeholder="Username or email"
+                placeholder="Username"
                 disabled={isLoading}
                 onChange={handleChange}
                 required
