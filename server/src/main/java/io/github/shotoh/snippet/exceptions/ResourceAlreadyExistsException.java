@@ -1,7 +1,9 @@
 package io.github.shotoh.snippet.exceptions;
 
-import java.util.Map;
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class ResourceAlreadyExistsException extends RuntimeException {
@@ -9,7 +11,7 @@ public class ResourceAlreadyExistsException extends RuntimeException {
 
     public ResourceAlreadyExistsException() {
         super();
-        this.errorMap = null;
+        this.errorMap = new HashMap<>();
     }
 
     public ResourceAlreadyExistsException(String resource, String message) {
