@@ -22,9 +22,10 @@ export default function SignUp() {
         event.preventDefault();
     
         // Simple validation check (expand this as needed)
-        const isFormValid = formValues.username && formValues.email.includes('@') && formValues.password.length >= 8;
+        const isFormValid = formValues.username && /\d/.test(formValues.password) && formValues.email.includes('@') && formValues.password.length >= 8;
 
         if (isFormValid) {
+            
             setLoading(true);
             setValidated(true);
             setErrorMessage('');
@@ -49,6 +50,7 @@ export default function SignUp() {
                 }
             } catch (error) {
                 setLoading(false);
+                setValidated(false);
                 setErrorMessage('Error occured');
             }
         } else {
@@ -67,7 +69,7 @@ export default function SignUp() {
             <Card.Body>
             <Card.Title className="text-center mt-1"><b><h2>Create new account</h2></b></Card.Title>
 
-            <Form noValidate validated={validated} onSubmit={handleSubmit} className="p-1  w-1/2 mx-auto mt-5">
+            <Form noValidate validated={validated} onSubmit={!isLoading ? handleSubmit : null} className="p-1  w-1/2 mx-auto mt-5">
             {/* Username Field */}
             <FloatingLabel controlId="floatingUsername" label="Username" className="mb-3">
                 <Form.Control
@@ -84,6 +86,8 @@ export default function SignUp() {
                 Please enter your username.
                 </Form.Control.Feedback>
             </FloatingLabel>
+
+
 
             {/* Email Field */}
             <FloatingLabel controlId="floatingEmail" label="Email address" className="mb-3">
