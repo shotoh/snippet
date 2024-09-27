@@ -9,16 +9,19 @@ const MainPage = () => {
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
       <NavBar />
-      <div className="flex-grow grid grid-cols-12 gap-4 mt-4">
-        <div className="col-span-4 bg-orange-400">
+      <div className="flex-grow grid grid-cols-12 gap-4 mt-4 pr-4">
+        {/* Trending Bar */}
+        <div className="col-span-3 bg-orange-400">
           <TrendingBar />
         </div>
 
-        <div className="col-span-5 px-4 bg-sky-500">
+        {/* Feed */}
+        <div className="col-span-6 bg-sky-500">
           <Feed />
         </div>
 
-        <div className="col-span-3 mr-4 bg-purple-400">
+        {/* Friends Bar */}
+        <div className="col-span-3 bg-purple-400">
           <FriendsBar />
         </div>
       </div>
