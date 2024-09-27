@@ -1,12 +1,12 @@
 import React from "react";
 import { Navbar } from "react-bootstrap";
 
-export default function NavBar() {
+export default function NavBar(props) {
   return (
     <Navbar className="flex min-w-full h-20 !bg-primaryLight border-b-4 border-secondaryLight">
       <WebsiteLogo />
       <NavButtons />
-      <UserProfile />
+      <UserProfile username={props.username} />
     </Navbar>
   );
 }
