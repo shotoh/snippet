@@ -7,6 +7,7 @@ import io.github.shotoh.snippet.models.users.User;
 import io.github.shotoh.snippet.models.users.UserCreateDTO;
 import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.repositories.UserRepository;
+import java.security.Principal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,10 @@ public class UserService {
 		this.repository = repository;
 		this.mapper = mapper;
 		this.encoder = encoder;
+	}
+
+	public long getId(Principal principal) {
+		return Long.parseLong(principal.getName());
 	}
 
 	public User getUser(long id) {

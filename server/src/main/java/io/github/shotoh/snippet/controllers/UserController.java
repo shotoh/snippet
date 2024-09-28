@@ -5,6 +5,7 @@ import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.UserService;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,28 @@ public class UserController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Success<Void> deleteUser(@PathVariable("id") long id) {
 		service.deleteUser(id);
+		return new Success<>();
+	}
+
+	@GetMapping("/me")
+	@PreAuthorize("hasRole('USER')")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<UserDTO> retrieveMyUser(Principal principal) {
+		return new Success<>(service.retrieveUser(service.getId(principal)));
+	}
+
+	@PatchMapping("/me")
+	@PreAuthorize("hasRole('USER')")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<UserDTO> updateMyUser(Principal principal, @RequestBody @Valid UserDTO userDTO) {
+		return new Success<>(service.updateUser(service.getId(principal), userDTO));
+	}
+
+	@DeleteMapping("/me")
+	@PreAuthorize("hasRole('USER')")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Success<Void> deleteMyUser(Principal principal) {
+		service.deleteUser(service.getId(principal));
 		return new Success<>();
 	}
 }
