@@ -72,7 +72,7 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public String encryptPassword(String password) {
+    private String encryptPassword(String password) {
         return encoder.encode(password);
     }
 }
