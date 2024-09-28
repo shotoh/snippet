@@ -30,6 +30,12 @@ public class UserService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
     }
 
+    public User getUserByUsername(String username) {
+        User user = repository.findByUsername(username);
+        if (user == null) throw new ResourceNotFoundException("username", "User not found with this username");
+        return user;
+    }
+
     public List<UserDTO> retrieveUsers() {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }

@@ -3,27 +3,31 @@ package io.github.shotoh.snippet.services;
 import io.github.shotoh.snippet.models.auth.AuthDTO;
 import io.github.shotoh.snippet.models.auth.TokenDTO;
 import io.github.shotoh.snippet.models.users.UserCreateDTO;
-import io.github.shotoh.snippet.security.SnippetUserDetailsService;
-import io.github.shotoh.snippet.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final SnippetUserDetailsService snippetUserDetailsService;
-    private final JwtUtils jwtUtils;
+    private final JwtEncoder jwtEncoder;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UserService userService, SnippetUserDetailsService snippetUserDetailsService, JwtUtils jwtUtils) {
+    public AuthService(AuthenticationManager authenticationManager, UserService userService, JwtEncoder jwtEncoder) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.snippetUserDetailsService = snippetUserDetailsService;
-        this.jwtUtils = jwtUtils;
+        this.jwtEncoder = jwtEncoder;
     }
 
     public void register(UserCreateDTO userCreateDTO) {
@@ -31,8 +35,20 @@ public class AuthService {
     }
 
     public TokenDTO login(AuthDTO authDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getPassword()));
-        UserDetails userDetails = snippetUserDetailsService.loadUserByUsername(authDTO.getUsername());
-        return new TokenDTO(jwtUtils.generateToken(userDetails));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getPassword()));
+        long id = userService.getUserByUsername(authentication.getName()).getId();
+        return new TokenDTO(id, generateToken(id, authentication));
+    }
+
+    public String generateToken(long id, Authentication authentication) {
+        Instant now = Instant.now();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .subject(String.valueOf(id))
+                .build();
+        JwtEncoderParameters encoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
+        return jwtEncoder.encode(encoderParameters).getTokenValue();
     }
 }
