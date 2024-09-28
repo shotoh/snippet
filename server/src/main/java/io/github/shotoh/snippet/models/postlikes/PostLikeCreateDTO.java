@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class PostLikeCreateDTO {
-    private long id;
+	private long id;
 
-    @Positive
-    private long userId;
+	@Positive
+	private long userId;
 
-    @Positive
-    private long postId;
+	@Positive
+	private long postId;
 }

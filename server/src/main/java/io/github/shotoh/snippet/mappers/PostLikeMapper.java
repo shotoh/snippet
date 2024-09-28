@@ -8,12 +8,12 @@ import io.github.shotoh.snippet.services.UserService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = { UserService.class, PostService.class })
+@Mapper(componentModel = "spring", uses = {UserService.class, PostService.class})
 public interface PostLikeMapper {
-    @Mapping(source = "userId", target = "user")
-    @Mapping(source = "postId", target = "post")
-    @Mapping(target = "timestamp", ignore = true)
-    PostLike toEntity(PostLikeCreateDTO postLikeCreateDTO);
+	@Mapping(source = "userId", target = "user")
+	@Mapping(source = "postId", target = "post")
+	@Mapping(target = "timestamp", ignore = true)
+	PostLike toEntity(PostLikeCreateDTO postLikeCreateDTO);
 
-    PostLikeDTO toDTO(PostLike postLike);
+	PostLikeDTO toDTO(PostLike postLike);
 }

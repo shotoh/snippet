@@ -13,40 +13,40 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PostLikeService {
-    private final PostLikeRepository repository;
-    private final PostLikeMapper mapper;
+	private final PostLikeRepository repository;
+	private final PostLikeMapper mapper;
 
-    @Autowired
-    public PostLikeService(PostLikeRepository repository, PostLikeMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+	@Autowired
+	public PostLikeService(PostLikeRepository repository, PostLikeMapper mapper) {
+		this.repository = repository;
+		this.mapper = mapper;
+	}
 
-    public PostLike getPostLike(long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Like not found with this id"));
-    }
+	public PostLike getPostLike(long id) {
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Like not found with this id"));
+	}
 
-    public List<PostLikeDTO> retrievePostLikes() {
-        return repository.findAll().stream().map(mapper::toDTO).toList();
-    }
+	public List<PostLikeDTO> retrievePostLikes() {
+		return repository.findAll().stream().map(mapper::toDTO).toList();
+	}
 
-    public PostLikeDTO createPostLike(PostLikeCreateDTO postLikeCreateDTO) {
-        if (repository.existsById(postLikeCreateDTO.getId())) {
-            throw new ResourceAlreadyExistsException("id", "Like already exists with this id");
-        }
-        if (repository.existsByUserIdAndPostId(postLikeCreateDTO.getUserId(), postLikeCreateDTO.getPostId())) {
-            throw new ResourceAlreadyExistsException("userId", "Like already exists with this user and post id");
-        }
-        PostLike postLike = repository.save(mapper.toEntity(postLikeCreateDTO));
-        return mapper.toDTO(postLike);
-    }
+	public PostLikeDTO createPostLike(PostLikeCreateDTO postLikeCreateDTO) {
+		if (repository.existsById(postLikeCreateDTO.getId())) {
+			throw new ResourceAlreadyExistsException("id", "Like already exists with this id");
+		}
+		if (repository.existsByUserIdAndPostId(postLikeCreateDTO.getUserId(), postLikeCreateDTO.getPostId())) {
+			throw new ResourceAlreadyExistsException("userId", "Like already exists with this user and post id");
+		}
+		PostLike postLike = repository.save(mapper.toEntity(postLikeCreateDTO));
+		return mapper.toDTO(postLike);
+	}
 
-    public PostLikeDTO retrievePostLike(long id) {
-        PostLike postLike = getPostLike(id);
-        return mapper.toDTO(postLike);
-    }
+	public PostLikeDTO retrievePostLike(long id) {
+		PostLike postLike = getPostLike(id);
+		return mapper.toDTO(postLike);
+	}
 
-    public void deletePostLike(long id) {
-        repository.deleteById(id);
-    }
+	public void deletePostLike(long id) {
+		repository.deleteById(id);
+	}
 }

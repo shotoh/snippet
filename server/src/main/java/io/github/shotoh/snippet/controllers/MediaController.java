@@ -5,52 +5,51 @@ import io.github.shotoh.snippet.models.medias.MediaDTO;
 import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.MediaService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/api/media")
 @PreAuthorize("hasRole('ADMIN')")
 public class MediaController {
-    private final MediaService service;
+	private final MediaService service;
 
-    @Autowired
-    public MediaController(MediaService service) {
-        this.service = service;
-    }
+	@Autowired
+	public MediaController(MediaService service) {
+		this.service = service;
+	}
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Success<List<MediaDTO>> retrieveMedias() {
-        return new Success<>(service.retrieveMedias());
-    }
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public Success<List<MediaDTO>> retrieveMedias() {
+		return new Success<>(service.retrieveMedias());
+	}
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Success<MediaDTO> createMedia(@RequestBody @Valid MediaCreateDTO mediaCreateDTO) {
-        return new Success<>(service.createMedia(mediaCreateDTO));
-    }
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Success<MediaDTO> createMedia(@RequestBody @Valid MediaCreateDTO mediaCreateDTO) {
+		return new Success<>(service.createMedia(mediaCreateDTO));
+	}
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Success<MediaDTO> retrieveMedia(@PathVariable("id") long id) {
-        return new Success<>(service.retrieveMedia(id));
-    }
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<MediaDTO> retrieveMedia(@PathVariable("id") long id) {
+		return new Success<>(service.retrieveMedia(id));
+	}
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Success<MediaDTO> updateMedia(@PathVariable("id") long id, @RequestBody @Valid MediaDTO mediaDTO) {
-        return new Success<>(service.updateMedia(id, mediaDTO));
-    }
+	@PatchMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<MediaDTO> updateMedia(@PathVariable("id") long id, @RequestBody @Valid MediaDTO mediaDTO) {
+		return new Success<>(service.updateMedia(id, mediaDTO));
+	}
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Success<Void> deleteMedia(@PathVariable("id") long id) {
-        service.deleteMedia(id);
-        return new Success<>();
-    }
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Success<Void> deleteMedia(@PathVariable("id") long id) {
+		service.deleteMedia(id);
+		return new Success<>();
+	}
 }

@@ -1,6 +1,7 @@
 package io.github.shotoh.snippet.security;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,67 +25,65 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.spec.SecretKeySpec;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final SnippetUserDetailsService service;
+	private final SnippetUserDetailsService service;
 
-    @Value("${TOKEN_KEY}")
-    private String key;
+	@Value("${TOKEN_KEY}")
+	private String key;
 
-    @Autowired
-    public SecurityConfig(SnippetUserDetailsService service) {
-        this.service = service;
-    }
+	@Autowired
+	public SecurityConfig(SnippetUserDetailsService service) {
+		this.service = service;
+	}
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer((auth) -> auth.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(authenticationConverter())))
-                .build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		return http
+				.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests((authorize) -> authorize
+						.requestMatchers("/api/auth/register").permitAll()
+						.requestMatchers("/api/auth/login").permitAll()
+						.anyRequest().authenticated()
+				)
+				.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.oauth2ResourceServer((auth) -> auth.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(authenticationConverter())))
+				.build();
+	}
 
-    @Bean
-    public JwtEncoder jwtEncoder() {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(key.getBytes()));
-    }
+	@Bean
+	public JwtEncoder jwtEncoder() {
+		return new NimbusJwtEncoder(new ImmutableSecret<>(key.getBytes()));
+	}
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        byte[] bytes = key.getBytes();
-        SecretKeySpec originalKey = new SecretKeySpec(bytes, 0, bytes.length,"HmacSHA256");
-        return NimbusJwtDecoder.withSecretKey(originalKey).macAlgorithm(MacAlgorithm.HS256).build();
-    }
+	@Bean
+	public JwtDecoder jwtDecoder() {
+		byte[] bytes = key.getBytes();
+		SecretKeySpec originalKey = new SecretKeySpec(bytes, 0, bytes.length, "HmacSHA256");
+		return NimbusJwtDecoder.withSecretKey(originalKey).macAlgorithm(MacAlgorithm.HS256).build();
+	}
 
-    @Bean
-    public JwtAuthenticationConverter authenticationConverter() {
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        authoritiesConverter.setAuthorityPrefix("");
-        converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
-        return converter;
-    }
+	@Bean
+	public JwtAuthenticationConverter authenticationConverter() {
+		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+		JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+		authoritiesConverter.setAuthorityPrefix("");
+		converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+		return converter;
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(PasswordEncoder encoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(service);
-        authenticationProvider.setPasswordEncoder(encoder);
-        return new ProviderManager(authenticationProvider);
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(PasswordEncoder encoder) {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(service);
+		authenticationProvider.setPasswordEncoder(encoder);
+		return new ProviderManager(authenticationProvider);
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

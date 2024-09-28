@@ -10,23 +10,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SnippetUserDetailsService implements UserDetailsService {
-    private final UserRepository repository;
+	private final UserRepository repository;
 
-    @Autowired
-    public SnippetUserDetailsService(UserRepository repository) {
-        this.repository = repository;
-    }
+	@Autowired
+	public SnippetUserDetailsService(UserRepository repository) {
+		this.repository = repository;
+	}
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = repository.findByUsername(username);
-        if (user == null) {
-            throw new BadCredentialsException("Bad credentials");
-        }
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(username)
-                .password(user.getEncryptedPassword())
-                .roles("USER")
-                .build();
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		User user = repository.findByUsername(username);
+		if (user == null) {
+			throw new BadCredentialsException("Bad credentials");
+		}
+		return org.springframework.security.core.userdetails.User.builder()
+				.username(username)
+				.password(user.getEncryptedPassword())
+				.roles(user.getRole())
+				.build();
+	}
 }
