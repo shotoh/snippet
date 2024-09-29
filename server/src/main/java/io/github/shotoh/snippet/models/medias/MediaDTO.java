@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class MediaDTO {
-    private long id;
+	private long id;
 
-    private PostDTO post;
+	private PostDTO post;
 
-    @Size(min = 1, max = 1023)
-    private String source;
+	@Size(min = 1, max = 1023)
+	private String source;
 }

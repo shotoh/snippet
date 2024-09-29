@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.posts.PostCreateDTO;
 import io.github.shotoh.snippet.models.posts.PostDTO;
@@ -12,43 +12,43 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/posts")
-@PreAuthorize("hasRole('USER')")
-public class PostController {
+@RequestMapping(path = "/api/admin/posts")
+@PreAuthorize("hasRole('ADMIN')")
+public class PostAdminController {
 	private final PostService service;
 
 	@Autowired
-	public PostController(PostService service) {
+	public PostAdminController(PostService service) {
 		this.service = service;
 	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveAllPosts() {
+	public Success<List<PostDTO>> retrievePosts() {
 		return new Success<>(service.retrievePosts());
-	}
-
-	@GetMapping("/user/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveMyPosts(@PathVariable("id") long id) {
-		return new Success<>(service.retrievePostsByUser(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<PostDTO> createMyPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
+	public Success<PostDTO> createPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
 		return new Success<>(service.createPost(postCreateDTO));
+	}
+
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<PostDTO> retrievePost(@PathVariable("id") long id) {
+		return new Success<>(service.retrievePost(id));
 	}
 
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<PostDTO> updateMyPost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
+	public Success<PostDTO> updatePost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
 		return new Success<>(service.updatePost(id, postDTO));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteMyPost(@PathVariable("id") long id) {
+	public Success<Void> deletePost(@PathVariable("id") long id) {
 		service.deletePost(id);
 		return new Success<>();
 	}
