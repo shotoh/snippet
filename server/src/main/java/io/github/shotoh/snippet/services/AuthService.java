@@ -7,7 +7,6 @@ import io.github.shotoh.snippet.models.auth.AuthDTO;
 import io.github.shotoh.snippet.models.auth.TokenDTO;
 import io.github.shotoh.snippet.models.users.User;
 import io.github.shotoh.snippet.repositories.UserRepository;
-import java.security.Principal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -19,10 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,7 +64,7 @@ public class AuthService {
 		List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		if (roles.contains("ROLE_ADMIN")) return;
 		if (!roles.contains("ROLE_USER")) throw new UnauthorizedException();
-		long userId = Long.parseLong(((Principal) authentication.getPrincipal()).getName());
+		long userId = Long.parseLong(((Jwt) authentication.getPrincipal()).getSubject());
 		if (userId != objectId) throw new UnauthorizedException();
 	}
 
