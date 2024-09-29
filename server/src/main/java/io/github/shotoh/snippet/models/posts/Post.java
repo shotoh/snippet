@@ -1,5 +1,6 @@
 package io.github.shotoh.snippet.models.posts;
 
+import io.github.shotoh.snippet.models.SnippetModel;
 import io.github.shotoh.snippet.models.users.User;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "posts")
-public class Post {
+public class Post implements SnippetModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -29,4 +30,9 @@ public class Post {
 
 	@Column(nullable = false, updatable = false)
 	private long timestamp = Instant.now().toEpochMilli();
+
+	@Override
+	public long userId() {
+		return user.userId();
+	}
 }

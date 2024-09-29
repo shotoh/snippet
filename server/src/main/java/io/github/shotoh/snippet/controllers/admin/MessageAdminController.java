@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.messages.MessageCreateDTO;
 import io.github.shotoh.snippet.models.messages.MessageDTO;
@@ -12,13 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/messages")
+@RequestMapping(path = "/api/admin/messages")
 @PreAuthorize("hasRole('ADMIN')")
-public class MessageController {
+public class MessageAdminController {
 	private final MessageService service;
 
 	@Autowired
-	public MessageController(MessageService service) {
+	public MessageAdminController(MessageService service) {
 		this.service = service;
 	}
 

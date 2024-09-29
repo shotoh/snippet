@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.postlikes.PostLikeCreateDTO;
 import io.github.shotoh.snippet.models.postlikes.PostLikeDTO;
@@ -12,13 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/post-likes")
+@RequestMapping(path = "/api/admin/post-likes")
 @PreAuthorize("hasRole('ADMIN')")
-public class PostLikeController {
+public class PostLikeAdminController {
 	private final PostLikeService service;
 
 	@Autowired
-	public PostLikeController(PostLikeService service) {
+	public PostLikeAdminController(PostLikeService service) {
 		this.service = service;
 	}
 

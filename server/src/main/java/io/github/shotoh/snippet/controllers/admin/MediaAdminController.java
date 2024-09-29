@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.medias.MediaCreateDTO;
 import io.github.shotoh.snippet.models.medias.MediaDTO;
@@ -12,13 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/media")
+@RequestMapping(path = "/api/admin/media")
 @PreAuthorize("hasRole('ADMIN')")
-public class MediaController {
+public class MediaAdminController {
 	private final MediaService service;
 
 	@Autowired
-	public MediaController(MediaService service) {
+	public MediaAdminController(MediaService service) {
 		this.service = service;
 	}
 

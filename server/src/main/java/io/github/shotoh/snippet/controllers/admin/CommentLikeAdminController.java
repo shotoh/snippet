@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.commentlikes.CommentLikeCreateDTO;
 import io.github.shotoh.snippet.models.commentlikes.CommentLikeDTO;
@@ -12,13 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/comment-likes")
+@RequestMapping(path = "/api/admin/comment-likes")
 @PreAuthorize("hasRole('ADMIN')")
-public class CommentLikeController {
+public class CommentLikeAdminController {
 	private final CommentLikeService service;
 
 	@Autowired
-	public CommentLikeController(CommentLikeService service) {
+	public CommentLikeAdminController(CommentLikeService service) {
 		this.service = service;
 	}
 

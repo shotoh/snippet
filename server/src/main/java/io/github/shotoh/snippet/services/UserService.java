@@ -7,7 +7,6 @@ import io.github.shotoh.snippet.models.users.User;
 import io.github.shotoh.snippet.models.users.UserCreateDTO;
 import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.repositories.UserRepository;
-import java.security.Principal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,25 +18,18 @@ public class UserService {
 	private final UserMapper mapper;
 	private final PasswordEncoder encoder;
 
+	private final AuthService authService;
+
 	@Autowired
-	public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder) {
+	public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder, AuthService authService) {
 		this.repository = repository;
 		this.mapper = mapper;
 		this.encoder = encoder;
-	}
-
-	public long getId(Principal principal) {
-		return Long.parseLong(principal.getName());
+		this.authService = authService;
 	}
 
 	public User getUser(long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
-	}
-
-	public User getUserByUsername(String username) {
-		User user = repository.findByUsername(username);
-		if (user == null) throw new ResourceNotFoundException("username", "User not found with this username");
-		return user;
 	}
 
 	public List<UserDTO> retrieveUsers() {
@@ -67,13 +59,16 @@ public class UserService {
 
 	public UserDTO updateUser(long id, UserDTO userDTO) {
 		User user = getUser(id);
+		authService.check(user);
 		mapper.updateEntity(userDTO, user);
 		repository.save(user);
 		return mapper.toDTO(user);
 	}
 
 	public void deleteUser(long id) {
-		repository.deleteById(id);
+		User user = getUser(id);
+		authService.check(user);
+		repository.deleteById(user.getId());
 	}
 
 	private String encryptPassword(String password) {

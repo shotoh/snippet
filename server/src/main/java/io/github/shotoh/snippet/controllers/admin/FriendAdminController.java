@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
 import io.github.shotoh.snippet.models.friends.FriendDTO;
 import io.github.shotoh.snippet.responses.Success;
@@ -10,13 +10,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/friends")
+@RequestMapping(path = "/api/admin/friends")
 @PreAuthorize("hasRole('ADMIN')")
-public class FriendController {
+public class FriendAdminController {
 	private final FriendService service;
 
 	@Autowired
-	public FriendController(FriendService service) {
+	public FriendAdminController(FriendService service) {
 		this.service = service;
 	}
 

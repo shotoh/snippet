@@ -1,5 +1,6 @@
 package io.github.shotoh.snippet.models.comments;
 
+import io.github.shotoh.snippet.models.SnippetModel;
 import io.github.shotoh.snippet.models.posts.Post;
 import io.github.shotoh.snippet.models.users.User;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "comments")
-public class Comment {
+public class Comment implements SnippetModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -31,4 +32,9 @@ public class Comment {
 
 	@Column(nullable = false, updatable = false)
 	private long timestamp = Instant.now().toEpochMilli();
+
+	@Override
+	public long userId() {
+		return user.userId();
+	}
 }

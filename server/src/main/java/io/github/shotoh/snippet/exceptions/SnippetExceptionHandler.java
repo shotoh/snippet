@@ -50,6 +50,13 @@ public class SnippetExceptionHandler {
 	public ResponseEntity<Fail> exception(BadCredentialsException e) {
 		Map<String, String> errors = new HashMap<>();
 		errors.put("authentication", "Bad credentials");
-		return ResponseEntity.badRequest().body(new Fail(errors));
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Fail(errors));
+	}
+
+	@ExceptionHandler(value = UnauthorizedException.class)
+	public ResponseEntity<Fail> exception(UnauthorizedException e) {
+		Map<String, String> errors = new HashMap<>();
+		errors.put("authorization", "Unauthorized to perform this action");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Fail(errors));
 	}
 }
