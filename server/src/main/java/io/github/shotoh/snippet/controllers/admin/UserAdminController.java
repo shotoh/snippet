@@ -1,5 +1,6 @@
-package io.github.shotoh.snippet.controllers;
+package io.github.shotoh.snippet.controllers.admin;
 
+import io.github.shotoh.snippet.models.users.UserCreateDTO;
 import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.UserService;
@@ -11,37 +12,43 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/users")
-@PreAuthorize("hasRole('USER')")
-public class UserController {
+@RequestMapping(path = "/api/admin/users")
+@PreAuthorize("hasRole('ADMIN')")
+public class UserAdminController {
 	private final UserService service;
 
 	@Autowired
-	public UserController(UserService service) {
+	public UserAdminController(UserService service) {
 		this.service = service;
 	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<UserDTO>> retrieveAllUsers() {
+	public Success<List<UserDTO>> retrieveUsers() {
 		return new Success<>(service.retrieveUsers());
+	}
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Success<UserDTO> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+		return new Success<>(service.createUser(userCreateDTO));
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<UserDTO> retrieveMyUser(@PathVariable("id") long id) {
+	public Success<UserDTO> retrieveUser(@PathVariable("id") long id) {
 		return new Success<>(service.retrieveUser(id));
 	}
 
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<UserDTO> updateMyUser(@PathVariable("id") long id, @RequestBody @Valid UserDTO userDTO) {
+	public Success<UserDTO> updateUser(@PathVariable("id") long id, @RequestBody @Valid UserDTO userDTO) {
 		return new Success<>(service.updateUser(id, userDTO));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteMyUser(@PathVariable("id") long id) {
+	public Success<Void> deleteUser(@PathVariable("id") long id) {
 		service.deleteUser(id);
 		return new Success<>();
 	}

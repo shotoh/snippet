@@ -6,14 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class MessageDTO {
-    private long id;
+	private long id;
 
-    private UserDTO from;
+	private UserDTO from;
 
-    private UserDTO to;
+	private UserDTO to;
 
-    @Size(min = 1, max = 1023)
-    private String content;
+	@Size(min = 1, max = 1023)
+	private String content;
 }

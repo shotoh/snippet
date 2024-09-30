@@ -7,14 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class CommentDTO {
-    private long id;
+	private long id;
 
-    private UserDTO user;
+	private UserDTO user;
 
-    private PostDTO post;
+	private PostDTO post;
 
-    @Size(min = 1, max = 1023)
-    private String content;
+	@Size(min = 1, max = 1023)
+	private String content;
 }

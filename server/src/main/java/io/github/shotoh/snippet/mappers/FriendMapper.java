@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = UserService.class)
 public interface FriendMapper {
-    FriendDTO toDTO(Friend friend);
+	FriendDTO toDTO(Friend friend);
 }

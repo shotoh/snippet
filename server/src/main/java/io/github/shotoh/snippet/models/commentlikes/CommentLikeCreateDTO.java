@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class CommentLikeCreateDTO {
-    private long id;
+	private long id;
 
-    @Positive
-    private long userId;
+	@Positive
+	private long userId;
 
-    @Positive
-    private long commentId;
+	@Positive
+	private long commentId;
 }
