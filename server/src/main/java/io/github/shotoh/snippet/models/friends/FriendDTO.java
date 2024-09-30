@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class FriendDTO {
-    private long id;
+	private long id;
 
-    private UserDTO from;
+	private UserDTO from;
 
-    private UserDTO to;
+	private UserDTO to;
 
-    private FriendStatus status;
+	private FriendStatus status;
 }

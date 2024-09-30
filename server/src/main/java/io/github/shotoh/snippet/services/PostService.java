@@ -13,44 +13,56 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PostService {
-    private final PostRepository repository;
-    private final PostMapper mapper;
+	private final PostRepository repository;
+	private final PostMapper mapper;
 
-    @Autowired
-    public PostService(PostRepository repository, PostMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+	private final AuthService authService;
 
-    public Post getPost(long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
-    }
+	@Autowired
+	public PostService(PostRepository repository, PostMapper mapper, AuthService authService) {
+		this.repository = repository;
+		this.mapper = mapper;
+		this.authService = authService;
+	}
 
-    public List<PostDTO> retrievePosts() {
-        return repository.findAll().stream().map(mapper::toDTO).toList();
-    }
+	public Post getPost(long id) {
+		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
+	}
 
-    public PostDTO createPost(PostCreateDTO postCreateDTO) {
-        if (repository.existsById(postCreateDTO.getId())) {
-            throw new ResourceAlreadyExistsException("id", "Post already exists with this id");
-        }
-        Post post = repository.save(mapper.toEntity(postCreateDTO));
-        return mapper.toDTO(post);
-    }
+	public List<PostDTO> retrievePosts() {
+		return repository.findAll().stream().map(mapper::toDTO).toList();
+	}
 
-    public PostDTO retrievePost(long id) {
-        Post post = getPost(id);
-        return mapper.toDTO(post);
-    }
+	public List<PostDTO> retrievePostsByUser(long userId) {
+		return repository.findAllByUserId(userId).stream().map(mapper::toDTO).toList();
+	}
 
-    public PostDTO updatePost(long id, PostDTO postDTO) {
-        Post post = getPost(id);
-        mapper.updateEntity(postDTO, post);
-        repository.save(post);
-        return mapper.toDTO(post);
-    }
+	public PostDTO createPost(PostCreateDTO postCreateDTO) {
+		if (repository.existsById(postCreateDTO.getId())) {
+			throw new ResourceAlreadyExistsException("id", "Post already exists with this id");
+		}
+		authService.check(postCreateDTO.getUserId());
+		Post post = repository.save(mapper.toEntity(postCreateDTO));
 
-    public void deletePost(long id) {
-        repository.deleteById(id);
-    }
+		return mapper.toDTO(post);
+	}
+
+	public PostDTO retrievePost(long id) {
+		Post post = getPost(id);
+		return mapper.toDTO(post);
+	}
+
+	public PostDTO updatePost(long id, PostDTO postDTO) {
+		Post post = getPost(id);
+		authService.check(post);
+		mapper.updateEntity(postDTO, post);
+		repository.save(post);
+		return mapper.toDTO(post);
+	}
+
+	public void deletePost(long id) {
+		Post post = getPost(id);
+		authService.check(post);
+		repository.deleteById(post.getId());
+	}
 }

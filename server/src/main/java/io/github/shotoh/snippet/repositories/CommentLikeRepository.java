@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
-    boolean existsByUserIdAndCommentId(long userId, long commentId);
+	boolean existsByUserIdAndCommentId(long userId, long commentId);
 }
