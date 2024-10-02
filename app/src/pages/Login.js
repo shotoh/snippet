@@ -44,7 +44,7 @@ export default function Login() {
                 localStorage.setItem('authToken', result.data.token);
 
                 //Home is a placeholder for main page since we dont have it yet
-                navigate('/home');
+                navigate('/snippet');
             } else {
                 setErrorMessage('Invalid username or password');
                 setLoading(false);
