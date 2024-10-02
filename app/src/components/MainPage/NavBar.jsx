@@ -1,5 +1,11 @@
 import React from "react";
 import { Navbar } from "react-bootstrap";
+import Dropdown from 'react-bootstrap/Dropdown';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import NavLink from "react-bootstrap/NavLink";
+import "./xtra.css";
+import { useState } from 'react';
+import { Modal, Button, Carousel, Form } from 'react-bootstrap';
 
 export default function NavBar(props) {
   return (
@@ -49,8 +55,18 @@ function NavButtons() {
 }
 
 function UserProfile({ username = "User" }) {
+  /*
+  function CreatePost() {
+    console.log("yipeee");
+  }
+  */
   return (
+    
+    
+
     <Navbar.Collapse className="justify-end mr-8">
+  <NavDropdown
+    title={
       <div className="flex items-center py-1.5 px-4 rounded-lg cursor-pointer hover:backdrop-brightness-90 transition ease-in-out">
         <Navbar.Text className="text-white font-montserrat text-center mr-4 leading-tight">
           <span>Welcome back,</span> <br />
@@ -64,6 +80,86 @@ function UserProfile({ username = "User" }) {
           alt="User profile"
         />
       </div>
-    </Navbar.Collapse>
+    }
+    id="nav-dropdown"
+    className="no-caret"
+  >
+    
+    <NavDropdown.Item as="button" onClick={handleCreatePost}>Create Post</NavDropdown.Item>
+    <NavDropdown.Item href="/profilepage">Profile</NavDropdown.Item>
+    <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+    <NavDropdown.Divider />
+    <NavDropdown.Item href="/login">Logout</NavDropdown.Item>
+  </NavDropdown>
+</Navbar.Collapse>
   );
 }
+
+
+const CreatePostModal = ({ show, handleClose }) => {
+  const [mediaFiles, setMediaFiles] = useState([]);
+
+  const handleMediaChange = (event) => {
+    const files = Array.from(event.target.files);
+    setMediaFiles(files);
+  };
+
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      centered
+      backdrop="static"
+    >
+      <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
+        {mediaFiles.length === 0 ? (
+          <Button
+            variant="primary"
+            onClick={() => document.getElementById('mediaInput').click()}
+            className="mb-4"
+          >
+            Select Images/Videos
+          </Button>
+        ) : (
+          <Carousel className="w-100 mb-4">
+            {mediaFiles.map((file, index) => (
+              <Carousel.Item key={index}>
+                {file.type.startsWith('video') ? (
+                  <video
+                    className="d-block w-100"
+                    controls
+                    src={URL.createObjectURL(file)}
+                  />
+                ) : (
+                  <img
+                    className="d-block w-100"
+                    src={URL.createObjectURL(file)}
+                    alt={`media-${index}`}
+                  />
+                )}
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        )}
+        <Form.Control
+          type="file"
+          id="mediaInput"
+          onChange={handleMediaChange}
+          accept="image/*,video/*"
+          multiple
+          style={{ display: 'none' }}
+        />
+        <Form.Control
+          as="textarea"
+          rows={4}
+          placeholder="Write your post here..."
+          className="w-100 mb-3"
+        />
+        <Button variant="success" onClick={handleClose} className="align-self-end">
+          Create
+        </Button>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
