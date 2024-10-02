@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class PostLikeDTO {
-    private long id;
+	private long id;
 
-    private UserDTO user;
+	private UserDTO user;
 
-    private PostDTO post;
+	private PostDTO post;
 }

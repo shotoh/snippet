@@ -7,14 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class MediaCreateDTO {
-    private long id;
+	private long id;
 
-    @Positive
-    private long postId;
+	@Positive
+	private long postId;
 
-    @NotNull
-    @Size(min = 1, max = 1023)
-    private String source;
+	@NotNull
+	@Size(min = 1, max = 1023)
+	private String source;
 }

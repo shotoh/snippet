@@ -6,23 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserDTO {
-    private static final int USERNAME_MIN_LEN = 3;
-    private static final int USERNAME_MAX_LEN = 31;
+	private static final int USERNAME_MIN_LEN = 3;
+	private static final int USERNAME_MAX_LEN = 31;
 
-    private long id;
+	private long id;
 
-    @Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
-    private String username;
+	@Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
+	private String username;
 
-    @Email
-    private String email;
+	@Email
+	private String email;
 
-    @Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
-    private String displayName;
+	@Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
+	private String displayName;
 
-    private String profilePicture;
+	private String profilePicture;
 
-    private String biography;
+	private String biography;
 }

@@ -7,17 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class MessageCreateDTO {
-    private long id;
+	private long id;
 
-    @Positive
-    private long fromId;
+	@Positive
+	private long fromId;
 
-    @Positive
-    private long toId;
+	@Positive
+	private long toId;
 
-    @NotNull
-    @Size(min = 1, max = 1023)
-    private String content;
+	@NotNull
+	@Size(min = 1, max = 1023)
+	private String content;
 }
