@@ -11,22 +11,43 @@ export default function NavBar(props) {
   const [showModal, setShowModal] = useState(false);
   const [mediaFiles, setMediaFiles] = useState([]);
 
+  const [error, setError] = useState(null);
+  
+
   
   const CreatePost = () => {
-    setShowModal(false);
+    
+    //Remove '|| true' for forced media posts
+    if(mediaFiles.length !== 0 || true) {
+      setShowModal(false);
 
-    //Things to grab here
-    console.log(mediaFiles.length);
-    console.log(document.getElementById("postText").value);
+      //Things to grab here
+      console.log(mediaFiles.length);
+      console.log(document.getElementById("postText").value);
+    } else {
+      setError("Need at least one image or video to post");
+    }
+    
+    
   };
 
   const handleOpen = () => {
     setShowModal(true);
+    setMediaFiles([]);
   }
 
   const handleMediaChange = (event) => {
     const files = Array.from(event.target.files);
-    setMediaFiles(files);
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'video/mp4'];
+    const filteredFiles = Array.from(event.target.files).filter(file =>
+      allowedTypes.includes(file.type)
+    );
+    if(files.length > filteredFiles.length) {
+      setError("One or more files are in an unaccepted format");
+    } else {
+      setError(null);
+    }
+    setMediaFiles(filteredFiles);
   };
 
   const handleClose = () => {
@@ -80,13 +101,13 @@ export default function NavBar(props) {
         show={show}
         onHide={handleClose}
         centered
-        backdrop="true"
+        backdrop={mediaFiles == 0 ? "true" : "static"}
       >
         <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
           {mediaFiles.length !== 0 && (
             
             <Carousel 
-            interval={null} className="w-100 mb-4">
+            interval={null} controls={mediaFiles.length > 1} indicators={mediaFiles.length > 1} className="w-100 mb-4">
               {mediaFiles.map((file, index) => (
                 <Carousel.Item key={index}>
                   {file.type.startsWith('video') ? (
@@ -115,11 +136,12 @@ export default function NavBar(props) {
             >
               Select Images/Videos
             </Button>
+            {error && <p className="text-red-500 text-md">{error}</p>}
           <Form.Control
             type="file"
             id="mediaInput"
             onChange={handleMediaChange}
-            accept="image/*,video/*"
+            accept="image/png, image/jpeg, image/gif, video/mp4"
             multiple
             style={{ display: 'none' }}
           />
