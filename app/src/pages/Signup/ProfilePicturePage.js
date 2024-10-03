@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import companyLogo from "../../images/macrosoftLogo.png";
 
-export default function ProfilePage() {
+export default function ProfilePicturePage() {
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
 
