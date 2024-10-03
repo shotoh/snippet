@@ -9,7 +9,7 @@ import SignUp from "./pages/SignUp.js";
 import MainNav from "./components/MainNav.js";
 import Main from "./pages/Main.js";
 import SimpleBody from "./components/SimpleBody.js";
-import ProfilePage from "./pages/Signup/ProfilePage.js";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.js";
 import MainPage from "./pages/MainPage/MainPage.js";
 
 function App() {
