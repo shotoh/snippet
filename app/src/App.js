@@ -9,7 +9,7 @@ import SignUp from "./pages/SignUp.js";
 import MainNav from "./components/MainNav.js";
 import Main from "./pages/Main.js";
 import SimpleBody from "./components/SimpleBody.js";
-import ProfilePicturePage from "./pages/Signup/ProfilePicturePage.js";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.js";
 import MainPage from "./pages/MainPage/MainPage.js";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         </Route>
         <Route path="/snippet" element={<MainPage />} />
         {/* Temporary route to profile page, to be officially implemented */}
-        <Route path="/profilepage" element={<ProfilePicturePage />} />
+        <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
