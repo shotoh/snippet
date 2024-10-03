@@ -9,14 +9,11 @@ import { Modal, Button, Carousel, Form } from 'react-bootstrap';
 
 export default function NavBar(props) {
   const [showModal, setShowModal] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState([]);
-
   
   const CreatePost = () => {
     setShowModal(false);
 
     //Things to grab here
-    console.log(mediaFiles.length);
     console.log(document.getElementById("postText").value);
   };
 
@@ -24,14 +21,9 @@ export default function NavBar(props) {
     setShowModal(true);
   }
 
-  const handleMediaChange = (event) => {
-    const files = Array.from(event.target.files);
-    setMediaFiles(files);
-  };
 
   const handleClose = () => {
     setShowModal(false);
-    setMediaFiles([]);
   };
   
   function UserProfile({ username = "User" }) {
@@ -83,42 +75,10 @@ export default function NavBar(props) {
         backdrop="true"
       >
         <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
-          {mediaFiles.length !== 0 && (
-            
-            <Carousel 
-            interval={null} className="w-100 mb-4">
-              {mediaFiles.map((file, index) => (
-                <Carousel.Item key={index}>
-                  {file.type.startsWith('video') ? (
-                    <video
-                      className="d-block w-auto max-h-80"
-                      controls
-                      autoplay
-                      src={URL.createObjectURL(file)}
-                    />
-                  ) : (
-                    <img
-                      className="d-block w-auto h-72 mx-auto"
-                      
-                      src={URL.createObjectURL(file)}
-                      alt={`media-${index}`}
-                    />
-                  )}
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          )}
-          <Button
-              variant="primary"
-              onClick={() => document.getElementById('mediaInput').click()}
-              className="mb-4"
-            >
-              Select Images/Videos
-            </Button>
+          
           <Form.Control
             type="file"
             id="mediaInput"
-            onChange={handleMediaChange}
             accept="image/*,video/*"
             multiple
             style={{ display: 'none' }}
