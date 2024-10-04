@@ -6,42 +6,48 @@ import FriendsBar from "../../components/MainPage/FriendsBar";
 
 const MainPage = () => {
   const [posts, setPosts] = useState([]);
+  const [error, setError] = useState('');
+
+  const fetchPosts = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('User is not authenticated');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/posts', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        setPosts(result.data);
+      } else {
+        setError('Error loading posts');
+      }
+    } catch (err) {
+      console.error('Error loading posts:', err);
+      setError('Error loading posts');
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch('/api/posts');
-        const result = await response.json();
-
-        if (response.ok && result.status === 'success') {
-          setPosts(result.data);
-        }
-      } catch (err) {
-        console.error('Error loading posts:', err);
-      }
-    };
-    fetchPosts();
+    fetchPosts(); // Fetch posts when the component loads
   }, []);
 
-  const handleNewPost = (newPost) => {
-    setPosts([newPost, ...posts]);
-  };
-  
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <NavBar onPostCreated={handleNewPost} />
+      <NavBar onPostCreated={fetchPosts} />
       <div className="flex-grow grid grid-cols-12 gap-4 mt-4 pr-4">
-        {/* Trending Bar */}
         <div className="col-span-3 bg-orange-400">
           <TrendingBar />
         </div>
-
-        {/* Feed */}
         <div className="col-span-6 bg-sky-500">
-          <Feed posts={posts} />
+          <Feed posts={posts} error={error} />
         </div>
-
-        {/* Friends Bar */}
         <div className="col-span-3 bg-purple-400">
           <FriendsBar />
         </div>

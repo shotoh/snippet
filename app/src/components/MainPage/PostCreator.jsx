@@ -23,7 +23,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
       return;
     }
 
-    const userId = parseJwt(token).sub; 
+    const userId = parseJwt(token).sub;
 
     try {
       const response = await fetch('/api/posts', {
@@ -35,14 +35,14 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
         body: JSON.stringify({
           title: postTitle,
           content: postContent,
-          userId: userId,  
+          userId: userId,
         }),
       });
 
       const result = await response.json();
       if (response.ok && result.status === 'success') {
-        onPostCreate(result.data); 
-        handleClose();
+        onPostCreate(); // Call the function passed as a prop to refresh posts
+        handleClose(); // Close modal
       } else {
         setError('Error creating post');
       }
@@ -63,12 +63,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      centered
-      backdrop="static"
-    >
+    <Modal show={show} onHide={handleClose} centered backdrop="static">
       <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
         <Form.Control
           type="text"
