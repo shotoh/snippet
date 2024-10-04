@@ -1,38 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import NavLink from "react-bootstrap/NavLink";
 import "./xtra.css";
-import { useState } from 'react';
-import { Modal, Button, Carousel, Form } from 'react-bootstrap';
+import PostCreator from './PostCreator';
 
-export default function NavBar(props) {
+export default function NavBar({ onPostCreated, username = "User"}) {
   const [showModal, setShowModal] = useState(false);
+  const handleOpen = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
   
-  const CreatePost = () => {
-    setShowModal(false);
-
-    //Things to grab here
-    console.log(document.getElementById("postText").value);
-  };
-
-  const handleOpen = () => {
-    setShowModal(true);
-  }
-
-
-  const handleClose = () => {
+  const handlePostCreate = (newPost) => {
+    onPostCreated(newPost);
     setShowModal(false);
   };
   
-  function UserProfile({ username = "User" }) {
-  
+  function UserProfile() {
     return (
-      
-      
-  
-      <Navbar.Collapse className="justify-end mr-8">
+    <Navbar.Collapse className="justify-end mr-8">
     <NavDropdown
       title={
         <div className="flex items-center py-1.5 px-4 rounded-lg cursor-pointer hover:backdrop-brightness-90 transition ease-in-out">
@@ -52,7 +38,6 @@ export default function NavBar(props) {
       id="nav-dropdown"
       className="no-caret"
     >
-      
       <NavDropdown.Item as="button" onClick={handleOpen}>Create Post</NavDropdown.Item>
       <NavDropdown.Item href="/profilepage">Profile</NavDropdown.Item>
       <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
@@ -63,60 +48,15 @@ export default function NavBar(props) {
     );
   }
 
-  const CreatePostModal = ({ show, handleClose, handleCreate }) => {
-    
-  
-    return (
-      
-      <Modal
-        show={show}
-        onHide={handleClose}
-        centered
-        backdrop="true"
-      >
-        <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
-          
-          <Form.Control
-            type="file"
-            id="mediaInput"
-            accept="image/*,video/*"
-            multiple
-            style={{ display: 'none' }}
-          />
-          <Form.Control
-            as="textarea"
-            id="postText"
-            rows={3}
-            placeholder="Write your post here..."
-            className="w-100 mb-3"
-          />
-          <div className="flex justify-between w-full">
-          <Button variant="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="success" onClick={handleCreate}>
-            Create
-          </Button>
-          </div>
-          
-          
-        </Modal.Body>
-      </Modal>
-    );
-  };
-
-
-
   return (
     <div>
       <Navbar className="flex min-w-full h-20 !bg-primaryLight border-b-4 border-secondaryLight">
       <WebsiteLogo />
       <NavButtons />
-      <UserProfile username={props.username} />
+      <UserProfile />
       </Navbar>
-      <CreatePostModal show={showModal} handleClose={handleClose} handleCreate={CreatePost}/>
+      <PostCreator show={showModal} handleClose={handleClose} onPostCreate={handlePostCreate}/>
     </div>
-    
   );
 }
 
@@ -156,9 +96,3 @@ function NavButtons() {
     </Navbar.Collapse>
   );
 }
-
-
-
-
-
-
