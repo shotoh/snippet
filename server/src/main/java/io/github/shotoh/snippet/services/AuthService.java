@@ -71,4 +71,12 @@ public class AuthService {
 	public void check(SnippetModel object) {
 		check(object.userId());
 	}
+
+	public long userId() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) throw new UnauthorizedException();
+		List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+		if (!roles.contains("ROLE_USER")) throw new UnauthorizedException();
+		return Long.parseLong(((Jwt) authentication.getPrincipal()).getSubject());
+	}
 }
