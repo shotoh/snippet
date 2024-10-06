@@ -6,6 +6,7 @@ import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.CommentService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +25,10 @@ public class CommentController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentDTO>> retrieveComments() {
-		return new Success<>(service.retrieveComments());
-	}
-
-	@GetMapping("/post/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentDTO>> retrieveCommentsOfPost(@PathVariable("id") long id) {
-		return new Success<>(service.retrieveCommentsByPost(id));
+	public Success<List<CommentDTO>> retrieveComments(@RequestParam(name = "post") Optional<Long> postId) {
+		return postId
+				.map(id -> new Success<>(service.retrieveCommentsByPost(id)))
+				.orElseGet(() -> new Success<>(service.retrieveComments()));
 	}
 
 	@PostMapping

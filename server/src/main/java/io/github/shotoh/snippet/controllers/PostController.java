@@ -6,6 +6,7 @@ import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.PostService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +25,10 @@ public class PostController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrievePosts() {
-		return new Success<>(service.retrievePosts());
-	}
-
-	@GetMapping("/user/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrievePostsOfUser(@PathVariable("id") long id) {
-		return new Success<>(service.retrievePostsByUser(id));
+	public Success<List<PostDTO>> retrievePosts(@RequestParam(name = "user") Optional<Long> userId) {
+		return userId
+                .map(id -> new Success<>(service.retrievePostsByUser(id)))
+                .orElseGet(() -> new Success<>(service.retrievePosts()));
 	}
 
 	@PostMapping
