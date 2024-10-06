@@ -27,7 +27,7 @@ public class CommentController {
 	@ResponseStatus(HttpStatus.OK)
 	public Success<List<CommentDTO>> retrieveComments(@RequestParam(name = "post") Optional<Long> postId) {
 		return postId
-				.map(id -> new Success<>(service.retrieveCommentsByPost(id)))
+				.map(post -> new Success<>(service.retrieveCommentsByPost(post)))
 				.orElseGet(() -> new Success<>(service.retrieveComments()));
 	}
 

@@ -27,7 +27,7 @@ public class PostController {
 	@ResponseStatus(HttpStatus.OK)
 	public Success<List<PostDTO>> retrievePosts(@RequestParam(name = "user") Optional<Long> userId) {
 		return userId
-                .map(id -> new Success<>(service.retrievePostsByUser(id)))
+                .map(user -> new Success<>(service.retrievePostsByUser(user)))
                 .orElseGet(() -> new Success<>(service.retrievePosts()));
 	}
 

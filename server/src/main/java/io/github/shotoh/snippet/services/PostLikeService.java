@@ -16,10 +16,13 @@ public class PostLikeService {
 	private final PostLikeRepository repository;
 	private final PostLikeMapper mapper;
 
+	private final AuthService authService;
+
 	@Autowired
-	public PostLikeService(PostLikeRepository repository, PostLikeMapper mapper) {
+	public PostLikeService(PostLikeRepository repository, PostLikeMapper mapper, AuthService authService) {
 		this.repository = repository;
 		this.mapper = mapper;
+		this.authService = authService;
 	}
 
 	public PostLike getPostLike(long id) {
@@ -30,10 +33,16 @@ public class PostLikeService {
 		return repository.findAll().stream().map(mapper::toDTO).toList();
 	}
 
+	public List<PostLikeDTO> retrievePostLikesByPost(long postId) {
+		return repository.findAllByPostId(postId).stream().map(mapper::toDTO).toList();
+	}
+
+	public PostLikeDTO retrievePostLikeByUserAndPost(long userId, long postId) {
+		return mapper.toDTO(repository.findPostLikeByUserIdAndPostId(userId, postId));
+	}
+
 	public PostLikeDTO createPostLike(PostLikeCreateDTO postLikeCreateDTO) {
-		if (repository.existsById(postLikeCreateDTO.getId())) {
-			throw new ResourceAlreadyExistsException("id", "Like already exists with this id");
-		}
+		postLikeCreateDTO.setUserId(authService.userId());
 		if (repository.existsByUserIdAndPostId(postLikeCreateDTO.getUserId(), postLikeCreateDTO.getPostId())) {
 			throw new ResourceAlreadyExistsException("userId", "Like already exists with this user and post id");
 		}
@@ -47,6 +56,8 @@ public class PostLikeService {
 	}
 
 	public void deletePostLike(long id) {
-		repository.deleteById(id);
+		PostLike postLike = getPostLike(id);
+		authService.check(postLike);
+		repository.deleteById(postLike.getId());
 	}
 }
