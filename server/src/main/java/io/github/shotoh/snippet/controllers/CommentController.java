@@ -28,6 +28,12 @@ public class CommentController {
 		return new Success<>(service.retrieveComments());
 	}
 
+	@GetMapping("/post/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Success<List<CommentDTO>> retrieveMyPosts(@PathVariable("id") long id) {
+		return new Success<>(service.retrieveCommentsByPost(id));
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Success<CommentDTO> createComment(@RequestBody @Valid CommentCreateDTO commentCreateDTO) {
