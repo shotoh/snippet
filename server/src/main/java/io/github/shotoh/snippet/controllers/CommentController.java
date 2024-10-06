@@ -30,7 +30,7 @@ public class CommentController {
 
 	@GetMapping("/post/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentDTO>> retrieveMyPosts(@PathVariable("id") long id) {
+	public Success<List<CommentDTO>> retrieveCommentsOfPost(@PathVariable("id") long id) {
 		return new Success<>(service.retrieveCommentsByPost(id));
 	}
 

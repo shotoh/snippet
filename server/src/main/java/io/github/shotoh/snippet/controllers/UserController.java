@@ -23,25 +23,25 @@ public class UserController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<UserDTO>> retrieveAllUsers() {
+	public Success<List<UserDTO>> retrieveUsers() {
 		return new Success<>(service.retrieveUsers());
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<UserDTO> retrieveMyUser(@PathVariable("id") long id) {
+	public Success<UserDTO> retrieveUser(@PathVariable("id") long id) {
 		return new Success<>(service.retrieveUser(id));
 	}
 
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<UserDTO> updateMyUser(@PathVariable("id") long id, @RequestBody @Valid UserDTO userDTO) {
+	public Success<UserDTO> updateUser(@PathVariable("id") long id, @RequestBody @Valid UserDTO userDTO) {
 		return new Success<>(service.updateUser(id, userDTO));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteMyUser(@PathVariable("id") long id) {
+	public Success<Void> deleteUser(@PathVariable("id") long id) {
 		service.deleteUser(id);
 		return new Success<>();
 	}

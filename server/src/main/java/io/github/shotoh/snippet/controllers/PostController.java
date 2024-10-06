@@ -24,31 +24,31 @@ public class PostController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveAllPosts() {
+	public Success<List<PostDTO>> retrievePosts() {
 		return new Success<>(service.retrievePosts());
 	}
 
 	@GetMapping("/user/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveMyPosts(@PathVariable("id") long id) {
+	public Success<List<PostDTO>> retrievePostsOfUser(@PathVariable("id") long id) {
 		return new Success<>(service.retrievePostsByUser(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<PostDTO> createMyPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
+	public Success<PostDTO> createPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
 		return new Success<>(service.createPost(postCreateDTO));
 	}
 
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<PostDTO> updateMyPost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
+	public Success<PostDTO> updatePost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
 		return new Success<>(service.updatePost(id, postDTO));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteMyPost(@PathVariable("id") long id) {
+	public Success<Void> deletePost(@PathVariable("id") long id) {
 		service.deletePost(id);
 		return new Success<>();
 	}
