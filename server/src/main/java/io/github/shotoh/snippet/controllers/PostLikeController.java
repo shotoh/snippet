@@ -25,12 +25,10 @@ public class PostLikeController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostLikeDTO>> retrievePostLikes(@RequestParam(name = "user") Optional<Long> userId, @RequestParam(name = "post") Optional<Long> postId) {
-		return postId
-				.map(post -> userId
-						.map(user -> new Success<>(List.of(service.retrievePostLikeByUserAndPost(user, post))))
-						.orElseGet(() -> new Success<>(service.retrievePostLikesByPost(post)))
-				).orElseGet(() -> new Success<>(service.retrievePostLikes()));
+	public Success<List<PostLikeDTO>> retrievePostLikes(@RequestParam(name = "post") long postId, @RequestParam(name = "user") Optional<Long> userId) {
+		return userId
+				.map(user -> new Success<>(List.of(service.retrievePostLikeByUserAndPost(user, postId))))
+				.orElseGet(() -> new Success<>(service.retrievePostLikesByPost(postId)));
 	}
 
 	@PostMapping

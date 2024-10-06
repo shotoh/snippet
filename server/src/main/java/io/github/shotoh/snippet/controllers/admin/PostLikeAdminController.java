@@ -5,7 +5,6 @@ import io.github.shotoh.snippet.models.postlikes.PostLikeDTO;
 import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.PostLikeService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,12 +19,6 @@ public class PostLikeAdminController {
 	@Autowired
 	public PostLikeAdminController(PostLikeService service) {
 		this.service = service;
-	}
-
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostLikeDTO>> retrievePostLikes() {
-		return new Success<>(service.retrievePostLikes());
 	}
 
 	@PostMapping

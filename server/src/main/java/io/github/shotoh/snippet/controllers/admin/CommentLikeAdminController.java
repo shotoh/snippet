@@ -22,12 +22,6 @@ public class CommentLikeAdminController {
 		this.service = service;
 	}
 
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentLikeDTO>> retrieveCommentLikes() {
-		return new Success<>(service.retrieveCommentLikes());
-	}
-
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Success<CommentLikeDTO> createCommentLike(@RequestBody @Valid CommentLikeCreateDTO commentLikeCreateDTO) {

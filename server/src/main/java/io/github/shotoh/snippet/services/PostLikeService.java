@@ -29,16 +29,14 @@ public class PostLikeService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Like not found with this id"));
 	}
 
-	public List<PostLikeDTO> retrievePostLikes() {
-		return repository.findAll().stream().map(mapper::toDTO).toList();
-	}
-
 	public List<PostLikeDTO> retrievePostLikesByPost(long postId) {
 		return repository.findAllByPostId(postId).stream().map(mapper::toDTO).toList();
 	}
 
 	public PostLikeDTO retrievePostLikeByUserAndPost(long userId, long postId) {
-		return mapper.toDTO(repository.findPostLikeByUserIdAndPostId(userId, postId));
+		PostLike postLike = repository.findPostLikeByUserIdAndPostId(userId, postId);
+		authService.check(postLike);
+		return mapper.toDTO(postLike);
 	}
 
 	public PostLikeDTO createPostLike(PostLikeCreateDTO postLikeCreateDTO) {

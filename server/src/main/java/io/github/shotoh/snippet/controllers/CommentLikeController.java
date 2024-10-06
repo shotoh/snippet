@@ -25,18 +25,10 @@ public class CommentLikeController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentLikeDTO>> retrievePostLikes(@RequestParam(name = "user") Optional<Long> userId, @RequestParam(name = "comment") Optional<Long> commentId) {
-		return commentId
-				.map(comment -> userId
-						.map(user -> new Success<>(List.of(service.retrieveCommentLikeByUserAndComment(user, comment))))
-						.orElseGet(() -> new Success<>(service.retrieveCommentLikesByComment(comment)))
-				).orElseGet(() -> new Success<>(service.retrieveCommentLikes()));
-	}
-
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<CommentLikeDTO>> retrieveCommentLikes() {
-		return new Success<>(service.retrieveCommentLikes());
+	public Success<List<CommentLikeDTO>> retrieveCommentLikes(@RequestParam(name = "comment") long commentId, @RequestParam(name = "user") Optional<Long> userId) {
+		return userId
+				.map(user -> new Success<>(List.of(service.retrieveCommentLikeByUserAndComment(user, commentId))))
+				.orElseGet(() -> new Success<>(service.retrieveCommentLikesByComment(commentId)));
 	}
 
 	@PostMapping

@@ -29,16 +29,14 @@ public class CommentLikeService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Like not found with this id"));
 	}
 
-	public List<CommentLikeDTO> retrieveCommentLikes() {
-		return repository.findAll().stream().map(mapper::toDTO).toList();
-	}
-
 	public List<CommentLikeDTO> retrieveCommentLikesByComment(long commentId) {
 		return repository.findAllByCommentId(commentId).stream().map(mapper::toDTO).toList();
 	}
 
 	public CommentLikeDTO retrieveCommentLikeByUserAndComment(long userId, long commentId) {
-		return mapper.toDTO(repository.findCommentLikeByUserIdAndCommentId(userId, commentId));
+		CommentLike commentLike = repository.findCommentLikeByUserIdAndCommentId(userId, commentId);
+		authService.check(commentLike);
+		return mapper.toDTO(commentLike);
 	}
 
 	public CommentLikeDTO createCommentLike(CommentLikeCreateDTO commentLikeCreateDTO) {
