@@ -6,6 +6,7 @@ import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.PostService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,31 +25,27 @@ public class PostController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveAllPosts() {
-		return new Success<>(service.retrievePosts());
-	}
-
-	@GetMapping("/user/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Success<List<PostDTO>> retrieveMyPosts(@PathVariable("id") long id) {
-		return new Success<>(service.retrievePostsByUser(id));
+	public Success<List<PostDTO>> retrievePosts(@RequestParam(name = "user") Optional<Long> userId) {
+		return userId
+                .map(user -> new Success<>(service.retrievePostsByUser(user)))
+                .orElseGet(() -> new Success<>(service.retrievePosts()));
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<PostDTO> createMyPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
+	public Success<PostDTO> createPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
 		return new Success<>(service.createPost(postCreateDTO));
 	}
 
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<PostDTO> updateMyPost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
+	public Success<PostDTO> updatePost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {
 		return new Success<>(service.updatePost(id, postDTO));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteMyPost(@PathVariable("id") long id) {
+	public Success<Void> deletePost(@PathVariable("id") long id) {
 		service.deletePost(id);
 		return new Success<>();
 	}

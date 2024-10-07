@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.models.postlikes;
+package io.github.shotoh.snippet.models.friends;
 
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostLikeCreateDTO {
-	private long userId;
+public class FriendCreateDTO {
+	private long fromId;
 
 	@Positive
-	private long postId;
+	private long toId;
 }

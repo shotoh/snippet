@@ -28,7 +28,7 @@ public class Friend implements SnippetModel {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private FriendStatus status;
+	private FriendStatus status = FriendStatus.PENDING;
 
 	@Column(nullable = false, updatable = false)
 	private long timestamp = Instant.now().toEpochMilli();

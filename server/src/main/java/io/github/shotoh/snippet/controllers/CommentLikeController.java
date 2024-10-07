@@ -1,4 +1,4 @@
-package io.github.shotoh.snippet.controllers.admin;
+package io.github.shotoh.snippet.controllers;
 
 import io.github.shotoh.snippet.models.commentlikes.CommentLikeCreateDTO;
 import io.github.shotoh.snippet.models.commentlikes.CommentLikeDTO;
@@ -6,20 +6,29 @@ import io.github.shotoh.snippet.responses.Success;
 import io.github.shotoh.snippet.services.CommentLikeService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/admin/comment-likes")
-@PreAuthorize("hasRole('ADMIN')")
-public class CommentLikeAdminController {
+@RequestMapping(path = "/api/comment-likes")
+@PreAuthorize("hasRole('USER')")
+public class CommentLikeController {
 	private final CommentLikeService service;
 
 	@Autowired
-	public CommentLikeAdminController(CommentLikeService service) {
+	public CommentLikeController(CommentLikeService service) {
 		this.service = service;
+	}
+
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public Success<List<CommentLikeDTO>> retrieveCommentLikes(@RequestParam(name = "comment") long commentId, @RequestParam(name = "user") Optional<Long> userId) {
+		return userId
+				.map(user -> new Success<>(List.of(service.retrieveCommentLikeByUserAndComment(user, commentId))))
+				.orElseGet(() -> new Success<>(service.retrieveCommentLikesByComment(commentId)));
 	}
 
 	@PostMapping

@@ -12,6 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", uses = {UserService.class, PostService.class})
 public interface CommentMapper {
+	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "userId", target = "user")
 	@Mapping(source = "postId", target = "post")
 	@Mapping(target = "timestamp", ignore = true)
