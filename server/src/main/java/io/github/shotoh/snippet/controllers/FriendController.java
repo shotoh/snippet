@@ -25,7 +25,7 @@ public class FriendController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<FriendDTO>> retrieveFriendsByFrom(@RequestParam(name = "from") long fromId, @RequestParam(name = "to") Optional<Long> toId) {
+	public Success<List<FriendDTO>> retrieveFriends(@RequestParam(name = "from") long fromId, @RequestParam(name = "to") Optional<Long> toId) {
 		return toId
 				.map(to -> new Success<>(List.of(service.retrieveFriendByFromAndTo(fromId, to))))
 				.orElseGet(() -> new Success<>(service.retrieveFriendsByFrom(fromId)));

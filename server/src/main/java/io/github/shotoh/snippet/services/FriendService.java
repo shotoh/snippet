@@ -45,7 +45,7 @@ public class FriendService {
 		long fromId = friendCreateDTO.getFromId();
 		long toId = friendCreateDTO.getToId();
 		if (repository.existsByFromIdAndToId(friendCreateDTO.getFromId(), friendCreateDTO.getToId())) {
-			throw new ResourceAlreadyExistsException("fromId", "Friend already exists with this from user");
+			throw new ResourceAlreadyExistsException("fromId", "Friend already exists with this user");
 		}
 		Friend friend = mapper.toEntity(friendCreateDTO);
 		if (repository.existsByFromIdAndToId(toId, fromId)) {
