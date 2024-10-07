@@ -2,6 +2,8 @@ package io.github.shotoh.snippet.services;
 
 import io.github.shotoh.snippet.exceptions.ResourceNotFoundException;
 import io.github.shotoh.snippet.mappers.MessageMapper;
+import io.github.shotoh.snippet.models.friends.Friend;
+import io.github.shotoh.snippet.models.friends.FriendStatus;
 import io.github.shotoh.snippet.models.messages.Message;
 import io.github.shotoh.snippet.models.messages.MessageCreateDTO;
 import io.github.shotoh.snippet.models.messages.MessageDTO;
@@ -16,12 +18,14 @@ public class MessageService {
 	private final MessageMapper mapper;
 
 	private final AuthService authService;
+	private final FriendService friendService;
 
 	@Autowired
-	public MessageService(MessageRepository repository, MessageMapper mapper, AuthService authService) {
+	public MessageService(MessageRepository repository, MessageMapper mapper, AuthService authService, FriendService friendService) {
 		this.repository = repository;
 		this.mapper = mapper;
 		this.authService = authService;
+		this.friendService = friendService;
 	}
 
 	public Message getMessage(long id) {
@@ -29,11 +33,14 @@ public class MessageService {
 	}
 
 	public List<MessageDTO> retrieveMessagesByFromAndTo(long fromId, long toId) {
+		authService.check(fromId);
 		return repository.findAllByFromIdAndToId(fromId, toId).stream().map(mapper::toDTO).toList();
 	}
 
 	public MessageDTO createMessage(MessageCreateDTO messageCreateDTO) {
 		messageCreateDTO.setFromId(authService.userId());
+		Friend friend = friendService.getFriendByFromAndTo(messageCreateDTO.getFromId(), messageCreateDTO.getToId());
+		if (friend == null || friend.getStatus() != FriendStatus.FRIEND) throw new ResourceNotFoundException("from", "These users are not friends");
 		Message message = repository.save(mapper.toEntity(messageCreateDTO));
 		return mapper.toDTO(message);
 	}

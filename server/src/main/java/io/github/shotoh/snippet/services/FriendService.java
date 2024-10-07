@@ -30,12 +30,17 @@ public class FriendService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Friend not found with this id"));
 	}
 
+	public Friend getFriendByFromAndTo(long fromId, long toId) {
+		return repository.findFriendByFromIdAndToId(fromId, toId);
+	}
+
 	public List<FriendDTO> retrieveFriendsByFrom(long fromId) {
 		return repository.findAllByFromId(fromId).stream().map(mapper::toDTO).toList();
 	}
 
 	public FriendDTO retrieveFriendByFromAndTo(long fromId, long toId) {
-		Friend friend = repository.findFriendByFromIdAndToId(fromId, toId);
+		Friend friend = getFriendByFromAndTo(fromId, toId);
+		if (friend == null) throw new ResourceNotFoundException("from", "Friend not found with these users");
 		authService.check(friend);
 		return mapper.toDTO(friend);
 	}
