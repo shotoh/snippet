@@ -10,8 +10,36 @@ import PostCreator from "../../components/MainPage/PostCreator";
 const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const handleCreatePost = () => {
-    setShowModal(true);
+  const [trendingPosts, setTrendingPosts] = useState([]);
+  const [trendingError, setTrendingError] = useState("");
+
+  const [friends, setFriends] = useState([]);
+  const [friendsError, setFriendsError] = useState("");
+
+  const fetchPosts = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('User is not authenticated');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/posts', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        setPosts(result.data);
+      } else {
+        setError('Error loading posts');
+      }
+    } catch (err) {
+      console.error('Error loading posts:', err);
+      setError('Error loading posts');
+    }
   };
 
   const handleCloseModal = () => {
@@ -25,7 +53,7 @@ const MainPage = () => {
       <div className="flex-grow grid grid-cols-12 gap-4 mt-4 pr-4">
         {/* Trending Bar */}
         <div className="col-span-3 bg-orange-400">
-          <TrendingBar />
+          <TrendingBar posts={trendingPosts} error={trendingError} />
         </div>
 
         {/* Feed */}
@@ -35,7 +63,7 @@ const MainPage = () => {
 
         {/* Friends Bar */}
         <div className="col-span-3 bg-purple-400">
-          <FriendsBar />
+          <FriendsBar  friends={friends} error={friendsError}/>
         </div>
       </div>
 

@@ -10,12 +10,7 @@ const PostCreator = ({ show, handleClose }) => {
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      centered
-      backdrop="static"
-    >
+    <Modal show={show} onHide={handleClose} centered backdrop="true">
       <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
         {mediaFiles.length === 0 ? (
           <Button

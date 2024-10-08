@@ -1,7 +1,7 @@
 import React from "react";
 import TrendingCard from "./TrendingCard.jsx";
 
-export default function TrendingBar() {
+export default function TrendingBar({ posts, error }) {
   
   const fetchPosts = async (event) => {
       
@@ -9,7 +9,7 @@ export default function TrendingBar() {
 
 
   const createTrendingCard = () => {
-      
+
   }
   
   
@@ -23,9 +23,24 @@ export default function TrendingBar() {
         <TrendingCard 
           backgroundImage="https://variety.com/wp-content/uploads/2018/12/Jack-Black.jpg"
           circleImage="https://yt3.googleusercontent.com/ytc/AIdro_mv2AHfwkrm0yOrdapvdVzoW0x3t-pBnADG-VXB3uqqeHo=s160-c-k-c0x00ffffff-no-rj"
-
+          userURL={"/login"}
         />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {posts.length === 0 ? (
+        <p>No posts available</p>
+      ) : (
+        posts.map((post) => (
+          <TrendingCard
+            backgroundImage={post.backgroundImage}
+            circleImage={post.circleImage}
+            postURL={post.postURL}
+            userURL={post.userURL}
+            />
+        ))
+      )}
       </div>
+      
     </div>
+    
   );
 }
