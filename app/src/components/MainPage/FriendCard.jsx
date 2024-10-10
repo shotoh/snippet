@@ -1,18 +1,28 @@
 import React from "react";
 import { Card, Image } from 'react-bootstrap';
 import {Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {Button } from 'react-bootstrap';
 
-function FriendCard({userImage, userDisplayName}) {
+function FriendCard({userImage, userDisplayName, userURL, onAccept, onReject}) {
     
+    const navigate = useNavigate();
+ 
+    const onCircleClick = () => {
+        navigate(userURL);
+        
+    }
     
     return (
-        <Link to="/">
-        <Card>
-            <div className="flex justify-around no-underline">
+        <div className="flex flex-row w-full">
+            <Link to={userURL} className="no-underline flex-grow">
+        <Button variant="light" className="w-full">
+            <div className="flex justify-around">
                 <Image 
                 src={userImage}
+                alt="User image"
                 roundedCircle
-                
+                className="my-auto"
                 style={{
                     width: '50px',
                     height: '50px',
@@ -20,16 +30,34 @@ function FriendCard({userImage, userDisplayName}) {
                     border: '0px solid white',
                 }}
                 />
-                <Card.Body className="no-underline">{userDisplayName}</Card.Body>
+                <Card.Body className="my-auto ml-2 text-left">{userDisplayName}</Card.Body>
+                
                 
             </div>
             
-        </Card>
+        </Button>
+        
         </Link>
+
+
+        {onAccept !== undefined && onReject !== undefined && 
+                <div className="flex items-center">
+                <Button variant="success" className="mr-2" onClick={onAccept}>
+                    ✓
+                </Button>
+                <Button variant="danger" onClick={onReject}>
+                    ✗
+                </Button>
+                </div>
+                }
+        </div>
+        
         
         
       );  
 } 
+
+
 
 
 export default FriendCard;

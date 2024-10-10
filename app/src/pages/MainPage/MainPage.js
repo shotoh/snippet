@@ -16,6 +16,9 @@ const MainPage = () => {
   const [friends, setFriends] = useState([]);
   const [friendsError, setFriendsError] = useState("");
 
+  const [error, setError] = useState("");
+  const [posts, setPosts] = useState([]);
+
   const fetchPosts = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -50,7 +53,7 @@ const MainPage = () => {
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
       <NavBar/>
-      <div className="flex-grow grid grid-cols-12 gap-4 mt-4 pr-4">
+      <div className="flex-grow grid grid-cols-12 gap-3 mt-4 pr-4">
         {/* Trending Bar */}
         <div className="col-span-3 bg-orange-400">
           <TrendingBar posts={trendingPosts} error={trendingError} />
@@ -62,7 +65,9 @@ const MainPage = () => {
         </div>
 
         {/* Friends Bar */}
-        <div className="col-span-3 bg-purple-400">
+        <div className="col-span-3 bg-white rounded-lg  !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight mb-4"
+          style={{"height":"85vh"}}
+        >
           <FriendsBar  friends={friends} error={friendsError}/>
         </div>
       </div>
