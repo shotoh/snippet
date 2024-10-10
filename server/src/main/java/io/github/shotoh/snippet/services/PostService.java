@@ -1,6 +1,5 @@
 package io.github.shotoh.snippet.services;
 
-import io.github.shotoh.snippet.exceptions.ResourceAlreadyExistsException;
 import io.github.shotoh.snippet.exceptions.ResourceNotFoundException;
 import io.github.shotoh.snippet.mappers.PostMapper;
 import io.github.shotoh.snippet.models.posts.Post;
@@ -38,12 +37,8 @@ public class PostService {
 	}
 
 	public PostDTO createPost(PostCreateDTO postCreateDTO) {
-		if (repository.existsById(postCreateDTO.getId())) {
-			throw new ResourceAlreadyExistsException("id", "Post already exists with this id");
-		}
-		authService.check(postCreateDTO.getUserId());
+		postCreateDTO.setUserId(authService.userId());
 		Post post = repository.save(mapper.toEntity(postCreateDTO));
-
 		return mapper.toDTO(post);
 	}
 

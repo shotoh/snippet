@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import TrendingBar from "../../components/MainPage/TrendingBar";
 import Feed from "../../components/MainPage/Feed";
@@ -83,7 +82,10 @@ const MainPage = () => {
     setShowModal(false);
   };
   
-  
+  useEffect(() => {
+    fetchPosts(); // Fetch posts when the component loads
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
       <NavBar/>

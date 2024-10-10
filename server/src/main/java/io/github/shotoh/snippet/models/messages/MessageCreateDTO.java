@@ -11,9 +11,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MessageCreateDTO {
-	private long id;
-
-	@Positive
 	private long fromId;
 
 	@Positive

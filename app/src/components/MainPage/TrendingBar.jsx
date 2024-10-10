@@ -9,7 +9,6 @@ export default function TrendingBar({ posts, error }) {
 
 
   const createTrendingCard = () => {
-
   }
   
   

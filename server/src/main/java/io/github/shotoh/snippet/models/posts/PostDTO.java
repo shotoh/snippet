@@ -14,9 +14,6 @@ public class PostDTO {
 
 	private UserDTO user;
 
-	@Size(min = 1, max = 63)
-	private String title;
-
 	@Size(min = 1, max = 1023)
 	private String content;
 }

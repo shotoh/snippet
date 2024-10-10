@@ -1,6 +1,5 @@
 package io.github.shotoh.snippet.services;
 
-import io.github.shotoh.snippet.exceptions.ResourceAlreadyExistsException;
 import io.github.shotoh.snippet.exceptions.ResourceNotFoundException;
 import io.github.shotoh.snippet.mappers.CommentMapper;
 import io.github.shotoh.snippet.models.comments.Comment;
@@ -16,10 +15,13 @@ public class CommentService {
 	private final CommentRepository repository;
 	private final CommentMapper mapper;
 
+	private final AuthService authService;
+
 	@Autowired
-	public CommentService(CommentRepository repository, CommentMapper mapper) {
+	public CommentService(CommentRepository repository, CommentMapper mapper, AuthService authService) {
 		this.repository = repository;
 		this.mapper = mapper;
+		this.authService = authService;
 	}
 
 	public Comment getComment(long id) {
@@ -30,10 +32,12 @@ public class CommentService {
 		return repository.findAll().stream().map(mapper::toDTO).toList();
 	}
 
+	public List<CommentDTO> retrieveCommentsByPost(long postId) {
+		return repository.findAllByPostId(postId).stream().map(mapper::toDTO).toList();
+	}
+
 	public CommentDTO createComment(CommentCreateDTO commentCreateDTO) {
-		if (repository.existsById(commentCreateDTO.getId())) {
-			throw new ResourceAlreadyExistsException("id", "Comment already exists with this id");
-		}
+		commentCreateDTO.setUserId(authService.userId());
 		Comment comment = repository.save(mapper.toEntity(commentCreateDTO));
 		return mapper.toDTO(comment);
 	}
@@ -45,12 +49,15 @@ public class CommentService {
 
 	public CommentDTO updateComment(long id, CommentDTO commentDTO) {
 		Comment comment = getComment(id);
+		authService.check(comment);
 		mapper.updateEntity(commentDTO, comment);
 		repository.save(comment);
 		return mapper.toDTO(comment);
 	}
 
 	public void deleteComment(long id) {
-		repository.deleteById(id);
+		Comment comment = getComment(id);
+		authService.check(comment);
+		repository.deleteById(comment.getId());
 	}
 }

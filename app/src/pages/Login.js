@@ -50,8 +50,6 @@ export default function Login() {
             if (response.ok && result.status === 'success') {
                 //Save token to localStorage
                 localStorage.setItem('authToken', result.data.token);
-
-                //Home is a placeholder for main page since we dont have it yet
                 navigate('/snippet');
             } else {
                 setErrorMessage('Invalid username or password');

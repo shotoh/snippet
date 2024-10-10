@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {UserService.class, CommentService.class})
 public interface CommentLikeMapper {
+	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "userId", target = "user")
 	@Mapping(source = "commentId", target = "comment")
 	@Mapping(target = "timestamp", ignore = true)

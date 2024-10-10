@@ -10,17 +10,17 @@ VALUES ('Spongebob', 'spongebob@gmail.com', 'a', 'USER', 1),
        ('Edwin', 'edwin@gmail.com', 'i', 'USER', 9001),
        ('Rick', 'rick@yahoo.com', 'j', 'USER', 102223);
 
-INSERT INTO `posts` (user_id, title, content, timestamp)
-VALUES (1, 'How to make a rock', 'step 1 use a stick', 3846834),
-       (1, 'Top frag', 'look at this picture', 4274935),
-       (3, 'Why Squidward (me) is the best', 'fantastic kazoo player', 999999),
-       (5, 'money', 'money', 9283874),
-       (8, 'help me with numerical methods', '2x1 + 5x2 + 2x3 = -28', 8374385),
-       (2, 'computer skill', 'got an A in computer', 2372647),
-       (6, 'help me', 'help', 7483652),
-       (3, 'I am on top of a mountain', '3981749821', 8273864),
-       (10, 'First Post', 'can I have a congrats', 8739463),
-       (1, 'q', 'iudshfjdsd', 4873264);
+INSERT INTO `posts` (user_id, content, timestamp)
+VALUES (1, 'step 1 use a stick', 3846834),
+       (1, 'look at this picture', 4274935),
+       (3, 'fantastic kazoo player', 999999),
+       (5, 'money', 9283874),
+       (8, '2x1 + 5x2 + 2x3 = -28', 8374385),
+       (2, 'got an A in computer', 2372647),
+       (6, 'help', 7483652),
+       (3, '3981749821', 8273864),
+       (10, 'can I have a congrats', 8739463),
+       (1, 'iudshfjdsd', 4873264);
 
 INSERT INTO `post_likes` (user_id, post_id, timestamp)
 VALUES (1, 1, 84093274),

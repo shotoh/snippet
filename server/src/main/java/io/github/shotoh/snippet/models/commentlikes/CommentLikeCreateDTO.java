@@ -9,9 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommentLikeCreateDTO {
-	private long id;
-
-	@Positive
 	private long userId;
 
 	@Positive

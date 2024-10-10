@@ -52,11 +52,14 @@ const PostCreator = ({ show, handleClose }) => {
         <Form.Control
           as="textarea"
           rows={4}
-          placeholder="Write your post here..."
+          placeholder="Write post content here"
           className="w-100 mb-3"
+          value={postContent}
+          onChange={(e) => setPostContent(e.target.value)}
         />
-        <Button variant="success" onClick={handleClose} className="align-self-end">
-          Create
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <Button variant="success" onClick={handleCreatePost} className="align-self-end" disabled={loading}>
+          {loading ? 'Creating...' : 'Create'}
         </Button>
       </Modal.Body>
     </Modal>

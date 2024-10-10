@@ -10,18 +10,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserDTO {
-	private static final int USERNAME_MIN_LEN = 3;
-	private static final int USERNAME_MAX_LEN = 31;
-
 	private long id;
 
-	@Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
+	@Size(min = 1, max = 31)
 	private String username;
 
 	@Email
 	private String email;
 
-	@Size(min = USERNAME_MIN_LEN, max = USERNAME_MAX_LEN)
+	@Size(min = 1, max = 31)
 	private String displayName;
 
 	private String profilePicture;

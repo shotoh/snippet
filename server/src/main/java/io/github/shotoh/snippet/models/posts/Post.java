@@ -23,9 +23,6 @@ public class Post implements SnippetModel {
 	private User user;
 
 	@Column(nullable = false)
-	private String title;
-
-	@Column(nullable = false)
 	private String content;
 
 	@Column(nullable = false, updatable = false)

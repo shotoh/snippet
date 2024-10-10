@@ -11,6 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", uses = UserService.class)
 public interface MessageMapper {
+	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "fromId", target = "from")
 	@Mapping(source = "toId", target = "to")
 	@Mapping(target = "timestamp", ignore = true)
