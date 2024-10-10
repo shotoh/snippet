@@ -19,6 +19,8 @@ const MainPage = () => {
   const [error, setError] = useState("");
   const [posts, setPosts] = useState([]);
 
+  
+
   const fetchPosts = async () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -43,7 +45,39 @@ const MainPage = () => {
       console.error('Error loading posts:', err);
       setError('Error loading posts');
     }
+
+    /*
+    try {
+
+      const url = `/api/friends?from=${fromId}`;
+
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const result = await response.json();
+
+      if(response.ok && result.status === 'success') {
+        console.log("worked!");
+        console.log(result.data);
+        setFriends(result.data);
+      }
+
+
+    } catch(err) {
+      console.error("error loading friends:", err);
+
+    }
+      */
   };
+
+  const createFriendRequest = async (username) => {
+    console.log(username);
+  }
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -68,7 +102,7 @@ const MainPage = () => {
         <div className="col-span-3 bg-white rounded-lg  !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight mb-4"
           style={{"height":"85vh"}}
         >
-          <FriendsBar  friends={friends} error={friendsError}/>
+          <FriendsBar  friends={friends} error={friendsError} sendFriendRequest={createFriendRequest}/>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import {Image} from "react-bootstrap";
 import { useState } from "react";
 import FriendRequests from "./FriendRequests";
 
-export default function FriendsBar({ friends, friendRequests, error }) {
+export default function FriendsBar({ friends, friendRequests, error, sendFriendRequest }) {
   
   const [notifications, setNotifications] = useState(2);
   const [showModal, setShowModal] = useState(false);
@@ -30,7 +30,7 @@ export default function FriendsBar({ friends, friendRequests, error }) {
   return (
     <div className="px-2 h-full flex flex-col justify-between h-full">
 
-      <FriendRequests friends={dummyFriendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)}/>
+      <FriendRequests friends={dummyFriendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)} sendFriendRequest={sendFriendRequest}/>
 
       <div id="FriendsTop" className="flex ml-5 my-2 w-full">
         <h1 className="tracking-wide"><b>Friends</b></h1>
