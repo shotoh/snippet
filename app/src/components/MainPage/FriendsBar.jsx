@@ -12,6 +12,8 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
   const [dummyFriendRequests, setDummyFriendRequests] = useState([
     { userImage: 'https://www.models-resource.com/resources/big_icons/15/14997.png?updated=1460924471', userDisplayName: 'Kowalski', userURL: '/profile/kowalksi', },
     { userImage: 'https://images.genius.com/6ee6e843687e01ce4385cc481cd7bc17.750x750x1.jpg', userDisplayName: 'Phil Swift', userURL: '/profile/philswift' },
+    { userImage: 'https://images.genius.com/6ee6e843687e01ce4385cc481cd7bc17.750x750x1.jpg', userDisplayName: 'Phil Swift', userURL: '/profile/philswift' },
+
   ]);
 
 
@@ -71,7 +73,7 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
               openModal();
           }}
           >
-            {notifications} {/* Number inside the circle */}
+            {friendRequests !== undefined ? friendRequests.length : 0} {/* Number inside the circle */}
           </span>
           }
           

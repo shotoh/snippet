@@ -3,7 +3,6 @@ import NavBar from "../../components/MainPage/NavBar";
 import TrendingBar from "../../components/MainPage/TrendingBar";
 import Feed from "../../components/MainPage/Feed";
 import FriendsBar from "../../components/MainPage/FriendsBar";
-import { useState } from 'react';
 import PostCreator from "../../components/MainPage/PostCreator";
 
 const MainPage = () => {
@@ -45,10 +44,15 @@ const MainPage = () => {
       setError('Error loading posts');
     }
 
-    /*
+    
+  };
+
+  const fetchFriends = async(username) => {
+    //WIP
+    const token = localStorage.getItem('authToken');
     try {
 
-      const url = `/api/friends?from=${fromId}`;
+      const url = `/api/friends?from=${username}`;
 
 
       const response = await fetch(url, {
@@ -71,11 +75,38 @@ const MainPage = () => {
       console.error("error loading friends:", err);
 
     }
-      */
-  };
+    
+  }
 
   const createFriendRequest = async (username) => {
     console.log(username);
+    //WIP
+    const token = localStorage.getItem('authToken');
+    try {
+
+      const url = `/api/friends?from=${username}`;
+
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      const result = await response.json();
+
+      if(response.ok && result.status === 'success') {
+        console.log("worked!");
+        console.log(result.data);
+        setFriends(result.data);
+      }
+
+
+    } catch(err) {
+      console.error("error loading friends:", err);
+
+    }
   }
 
   const handleCloseModal = () => {
