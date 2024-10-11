@@ -18,4 +18,6 @@ public class MessageDTO {
 
 	@Size(min = 1, max = 1023)
 	private String content;
+
+	private long timestamp;
 }
