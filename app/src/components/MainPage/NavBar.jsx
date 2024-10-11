@@ -8,13 +8,25 @@ import PostCreator from './PostCreator';
 
 export default function NavBar({ onPostCreated, username = "User"}) {
   const [showModal, setShowModal] = useState(false);
-  const handleOpen = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
   
   const handlePostCreate = (newPost) => {
     onPostCreated(newPost);
     setShowModal(false);
+
+    //Things to grab here
+    console.log(document.getElementById("postText").value);
   };
+
+  const handleOpen = () => {
+    setShowModal(true);
+  }
+
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
+  
+  function UserProfile({ username = "User" }) {
   
   function UserProfile() {
     return (
@@ -47,6 +59,50 @@ export default function NavBar({ onPostCreated, username = "User"}) {
   </Navbar.Collapse>
     );
   }
+
+  const CreatePostModal = ({ show, handleClose, handleCreate }) => {
+    
+  
+    return (
+      
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        backdrop="true"
+      >
+        <Modal.Body className="d-flex flex-column justify-content-center align-items-center">
+          
+          <Form.Control
+            type="file"
+            id="mediaInput"
+            accept="image/*,video/*"
+            multiple
+            style={{ display: 'none' }}
+          />
+          <Form.Control
+            as="textarea"
+            id="postText"
+            rows={3}
+            placeholder="Write your post here..."
+            className="w-100 mb-3"
+          />
+          <div className="flex justify-between w-full">
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="success" onClick={handleCreate}>
+            Create
+          </Button>
+          </div>
+          
+          
+        </Modal.Body>
+      </Modal>
+    );
+  };
+
+
 
   return (
     <div>
