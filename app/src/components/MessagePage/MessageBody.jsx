@@ -1,27 +1,32 @@
 import React, { useEffect, useRef } from "react";
 
 // Main MessageBody Component
-export default function MessageBody({ messages, userId }) {
+export default function MessageBody({
+  messages,
+  userId,
+  shouldScrollToBottom,
+  setShouldScrollToBottom,
+}) {
   const messagesContainerRef = useRef(null);
 
-  // Scroll to the bottom when messages change
+  // Scroll to the bottom when shouldScrollToBottom is true
   useEffect(() => {
-    if (messagesContainerRef.current) {
+    if (shouldScrollToBottom && messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
+      setShouldScrollToBottom(false); // Reset the flag
     }
-  }, [messages]);
+  }, [shouldScrollToBottom, setShouldScrollToBottom]);
 
   return (
     <div ref={messagesContainerRef} className="flex-grow overflow-y-auto p-4">
       <div className="flex flex-col gap-1">
         {messages.map((message, index) => {
-          // Determine if the sender of the current message is the same as the previous message
           const isSameSenderAsPrevious =
             index > 0 && messages[index - 1].from.id === message.from.id;
 
-          // Check if the message was sent by the current user
-          const isSelf = message.from.id === userId;
+          const messageFromId = Number(message.from.id);
+          const isSelf = messageFromId === Number(userId);
 
           return isSelf ? (
             <MessageBubbleSelf

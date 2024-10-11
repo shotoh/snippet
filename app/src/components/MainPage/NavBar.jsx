@@ -11,11 +11,6 @@ export default function NavBar({ onPostCreated, username = "User" }) {
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-
-
-
-  
-
   const handlePostCreate = (newPost) => {
     onPostCreated(newPost);
     setShowModal(false);
