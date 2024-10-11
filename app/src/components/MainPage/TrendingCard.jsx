@@ -1,7 +1,23 @@
 import React from 'react';
 import { Card, Image } from 'react-bootstrap';
+import {  useNavigate } from "react-router-dom";
 
-const TrendingCard = ({ backgroundImage, circleImage, onCardClick, onCircleClick }) => {
+
+const TrendingCard = ({ backgroundImage, circleImage, postURL, userURL }) => {
+  const navigate = useNavigate();
+
+ 
+
+  const onCardClick = () => {
+      navigate(postURL);
+  }
+
+  const onCircleClick = () => {
+      navigate(userURL);
+      
+  }
+
+  
   return (
     <Card
       className="custom-card"
