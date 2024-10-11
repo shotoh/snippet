@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import { InputGroup, Form } from "react-bootstrap";
 
+import MessageHeader from "../../components/MessagePage/MessageHeader";
+
 export default function MessagesPage() {
   // Friends of user
   const [friends, setFriends] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState({
+    username: "someguy",
+    displayName: "Some Guy",
+    profilePicture: require("../../images/jackblack.jpg"),
+  });
 
   // Helper function to parse JWT token
   const parseJwt = (token) => {
@@ -79,42 +85,48 @@ export default function MessagesPage() {
     <div>
       {/* Navbar */}
       <NavBar />
+      <div
+        className="container mx-auto mt-4 mb-4 border-2 p-0 border-secondaryLight"
+        style={{ height: "calc(100vh - 100px)" }}
+      >
+        {/* Message section */}
+        <div className="d-flex h-100">
+          {/* Left Sidebar */}
+          <div
+            className="col-3 border-r-2 border-secondaryLight pt-4 px-2 bg-sky-200"
+            style={{ overflowY: "scroll" }}
+          >
+            <h4>Messages</h4>
+            {/* Search Input */}
+            <InputGroup className="mb-3">
+              <Form.Control
+                placeholder="Search Messages"
+                aria-label="Search Messages"
+              />
+              <InputGroup.Text>
+                <i className="bi bi-search"></i>
+              </InputGroup.Text>
+            </InputGroup>
 
-      {/* Message section */}
-      <div className="d-flex" style={{ height: "calc(100vh - 70px)" }}>
-        {/* Left Sidebar */}
-        <div className="col-3 border-end p-3" style={{ overflowY: "scroll" }}>
-          <h4>Messages</h4>
-          {/* Search Input */}
-          <InputGroup className="mb-3">
-            <Form.Control
-              placeholder="Search Messages"
-              aria-label="Search Messages"
-            />
-            <InputGroup.Text>
-              <i className="bi bi-search"></i>
-            </InputGroup.Text>
-          </InputGroup>
+            {/* Message Placeholder */}
+            <ul className="list-unstyled">
+              <p>
+                No messages available. Message data will appear here once
+                fetched.
+              </p>
+            </ul>
+          </div>
 
-          {/* Message Placeholder */}
-          <ul className="list-unstyled">
-            <p>
-              No messages available. Message data will appear here once fetched.
-            </p>
-          </ul>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="col-9 d-flex justify-content-center align-items-center bg-blue-300">
-          {selectedMessage ? (
-            <div>
-              {/* display content selected message */}
-              <h4>{selectedMessage.username}</h4>
-              <p>{selectedMessage.text}</p>
-            </div>
-          ) : (
-            <p>Select a message to view its content.</p> //placeholder for selected DM
-          )}
+          {/* Right Sidebar */}
+          <div className="col-9">
+            {selectedMessage ? (
+              <div>
+                <MessageHeader selectedMessage={selectedMessage} />
+              </div>
+            ) : (
+              <p>Select a message to view its content.</p> //placeholder for selected DM
+            )}
+          </div>
         </div>
       </div>
     </div>
