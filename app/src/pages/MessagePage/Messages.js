@@ -18,6 +18,8 @@ export default function MessagesPage() {
 
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
+
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
   const authToken = localStorage.getItem("authToken");
 
   // Helper function to parse JWT token
@@ -88,12 +90,11 @@ export default function MessagesPage() {
   // Load/unload messages whenever a friend is selected
   useEffect(() => {
     let intervalId;
-    if (selectedFriend) {
-      loadMessages();
+      loadMessages(true); // User selected a friend, should scroll
       // Start polling every 3 seconds
       intervalId = setInterval(() => {
-        loadMessages();
-      }, 3000); // Adjust the interval as needed
+        loadMessages(false); // Interval call, should not scroll
+      }, 3000);
     } else {
       setMessages([]);
     }
@@ -104,7 +105,7 @@ export default function MessagesPage() {
   }, [selectedFriend]);
 
   // Load messages for selected friend
-  const loadMessages = async () => {
+  const loadMessages = async (shouldScroll = false) => {
     if (!userId) {
       console.error("User ID is not available.");
       return;
@@ -128,8 +129,16 @@ export default function MessagesPage() {
       const result = await response.json();
 
       if (response.ok && result.status === "success") {
-        // Set messages to state
-        setMessages(result.data);
+        const newMessages = result.data;
+
+        // Check if messages have changed
+        const messagesChanged =
+          JSON.stringify(messages) !== JSON.stringify(newMessages);
+
+        if (messagesChanged) {
+          setMessages(newMessages);
+          setShouldScrollToBottom(shouldScroll);
+        }
       } else {
         setError("Error loading messages");
       }
@@ -141,6 +150,7 @@ export default function MessagesPage() {
   // Handler for new messages sent by the user
   const handleNewMessage = (newMessage) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setShouldScrollToBottom(true); // Scroll to bottom when user sends a message
   };
 
   return (
@@ -191,7 +201,13 @@ export default function MessagesPage() {
             {selectedFriend ? (
               <>
                 <MessageHeader selectedFriend={selectedFriend} />
-                <MessageBody messages={messages} userId={userId} />
+                <MessageBody
+                  messages={messages}
+                  userId={userId}
+                  shouldScrollToBottom={shouldScrollToBottom}
+                  setShouldScrollToBottom={setShouldScrollToBottom}
+                />
+
                 <MessageBar
                   selectedFriend={selectedFriend}
                   userId={userId}
