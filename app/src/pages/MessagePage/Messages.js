@@ -87,11 +87,20 @@ export default function MessagesPage() {
 
   // Load/unload messages whenever a friend is selected
   useEffect(() => {
+    let intervalId;
     if (selectedFriend) {
       loadMessages();
+      // Start polling every 3 seconds
+      intervalId = setInterval(() => {
+        loadMessages();
+      }, 3000); // Adjust the interval as needed
     } else {
       setMessages([]);
     }
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [selectedFriend]);
 
   // Load messages for selected friend
