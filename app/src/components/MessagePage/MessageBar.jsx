@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Form } from "react-bootstrap";
 
-export default function MessageBar({
-  selectedFriend,
-  userId,
-  authToken,
-  onNewMessage,
-}) {
+function MessageBar({ selectedFriend, userId, authToken, onNewMessage }) {
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState(null);
+
+  const inputRef = useRef(null);
+
+  // Focus the input field after sending the message
+  useEffect(() => {
+    if (!isSending && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isSending]);
 
   const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
@@ -61,6 +65,7 @@ export default function MessageBar({
   return (
     <div className="px-3 pb-3 flex items-center flex-col">
       <Form.Control
+        ref={inputRef}
         type="text"
         placeholder={`Message ${selectedFriend.displayName}...`}
         value={message}
@@ -73,3 +78,5 @@ export default function MessageBar({
     </div>
   );
 }
+
+export default React.memo(MessageBar);
