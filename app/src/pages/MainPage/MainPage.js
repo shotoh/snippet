@@ -117,7 +117,7 @@ const MainPage = () => {
   };
   
   useEffect(() => {
-    fetchPosts(); // Fetch posts when the component loads
+    fetchPosts(); 
   }, []);
 
   return (
