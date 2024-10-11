@@ -99,8 +99,8 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
         
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        {friends.length === 0 ? (
-          <p>Error: Fetched 0 Friends</p>
+        {friends && friends.length === 0 ? (
+          <p>No friends</p>
         ) : (
           friends.map((friend) => (
             <FriendCard

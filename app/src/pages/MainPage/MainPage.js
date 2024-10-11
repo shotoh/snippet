@@ -20,6 +20,8 @@ const MainPage = () => {
   const [error, setError] = useState("");
   const [posts, setPosts] = useState([]);
 
+  const [username, setUsername] = useState("");
+
 
   const authToken = localStorage.getItem("authToken");
 
@@ -223,6 +225,7 @@ const MainPage = () => {
       if(response.ok && result.status === 'success') {
         console.log("worked!");
         console.log(result.data);
+        fetchFriends();
         return "Sent";
       }
 
@@ -233,7 +236,43 @@ const MainPage = () => {
     }
   }
 
-  
+  const getUsername = async() => {
+    //WIP
+    const token = localStorage.getItem('authToken');
+    try {
+
+      //Find Friend
+      let url = `/api/users`
+
+      let response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if(!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+      const users = await response.json();
+      const userData = users.data;
+
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+      // Find the user by the specific username
+      const foundUser = userData.find(user => user.id === userIdFromToken);
+
+      if (foundUser) {
+        setUsername(foundUser.username);
+      } else {
+        console.log("User not found");
+        return "User Not Found";
+      }
+    }
+      catch(err) {
+        console.error("error getting username:", err);
+      }
+  }
 
 
   const handleCloseModal = () => {
@@ -243,12 +282,13 @@ const MainPage = () => {
   useEffect(() => {
     fetchPosts(); 
     fetchFriends();
-    fetchFriendRequests();
+    //fetchFriendRequests();
+    getUsername();
   }, []);
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <NavBar/>
+      <NavBar username={username}/>
       <div className="flex-grow grid grid-cols-12 gap-3 mt-4 pr-4">
         {/* Trending Bar */}
         <div className="col-span-3 bg-orange-400">
