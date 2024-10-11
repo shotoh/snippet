@@ -84,16 +84,19 @@ const MainPage = () => {
     const token = localStorage.getItem('authToken');
     try {
 
-      const url = `/api/friends?from=${username}`;
+      const url = `/api/friends`;
 
 
       const response = await fetch(url, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-        }
+        },
+        body: JSON.stringify({
+          toId: {username}, // The body for the friend creation
+        }),
       });
-
+      console.log("response ok: " + response.ok);
       const result = await response.json();
 
       if(response.ok && result.status === 'success') {
@@ -128,7 +131,7 @@ const MainPage = () => {
 
         {/* Feed */}
         <div className="col-span-6 bg-sky-500">
-          <Feed />
+          <Feed posts={posts}/>
         </div>
 
         {/* Friends Bar */}
