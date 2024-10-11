@@ -3,6 +3,8 @@ import NavBar from "../../components/MainPage/NavBar";
 import { InputGroup, Form } from "react-bootstrap";
 
 import MessageHeader from "../../components/MessagePage/MessageHeader";
+import MessageBody from "../../components/MessagePage/MessageBody";
+import MessageBar from "../../components/MessagePage/MessageBar";
 
 export default function MessagesPage() {
   // Friends of user
@@ -93,10 +95,10 @@ export default function MessagesPage() {
         <div className="d-flex h-100">
           {/* Left Sidebar */}
           <div
-            className="col-3 border-r-2 border-secondaryLight pt-4 px-2 bg-sky-200"
+            className="col-3 border-r-2 border-secondaryLight pt-4 px-3"
             style={{ overflowY: "scroll" }}
           >
-            <h4>Messages</h4>
+            <h2 className="font-montserrat font-bold">Messages</h2>
             {/* Search Input */}
             <InputGroup className="mb-3">
               <Form.Control
@@ -118,11 +120,13 @@ export default function MessagesPage() {
           </div>
 
           {/* Right Sidebar */}
-          <div className="col-9">
+          <div className="col-9 d-flex flex-column h-100 ">
             {selectedMessage ? (
-              <div>
+              <>
                 <MessageHeader selectedMessage={selectedMessage} />
-              </div>
+                <MessageBody selectedMessage={selectedMessage} />
+                <MessageBar selectedMessage={selectedMessage} />
+              </>
             ) : (
               <p>Select a message to view its content.</p> //placeholder for selected DM
             )}
