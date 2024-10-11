@@ -15,7 +15,7 @@ export default function MessagesPage() {
   const [userId, setUserId] = useState(null);
 
   const [selectedFriend, setSelectedFriend] = useState({
-    id: 12,
+    id: 11,
     username: "someguy",
     displayName: "Some Guy",
     profilePicture: require("../../images/jackblack.jpg"),
@@ -45,7 +45,7 @@ export default function MessagesPage() {
       }
 
       // Get user ID from token and set it in state
-      const userIdFromToken = parseJwt(token).sub;
+      const userIdFromToken = parseInt(parseJwt(token).sub);
       setUserId(userIdFromToken);
 
       console.log("[TOKEN]:", token);
