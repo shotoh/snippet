@@ -5,6 +5,7 @@ import { InputGroup, Form } from "react-bootstrap";
 import MessageHeader from "../../components/MessagePage/MessageHeader";
 import MessageBody from "../../components/MessagePage/MessageBody";
 import MessageBar from "../../components/MessagePage/MessageBar";
+import FriendCard from "../../components/MessagePage/FriendCard"; 
 
 export default function MessagesPage() {
   // Friends of user
@@ -48,9 +49,6 @@ export default function MessagesPage() {
       const userIdFromToken = parseInt(parseJwt(token).sub);
       setUserId(userIdFromToken);
 
-      console.log("[TOKEN]:", token);
-      console.log("[USER ID]:", userIdFromToken);
-
       try {
         const response = await fetch(`/api/friends?from=${userIdFromToken}`, {
           headers: {
@@ -73,12 +71,10 @@ export default function MessagesPage() {
           }));
 
           setFriends(friendData);
-          console.log("[FRIENDS]:", friendData);
         } else {
           setError("Error loading friends");
         }
       } catch (err) {
-        console.error("Error loading friends:", err);
         setError("Error loading friends");
       } finally {
         setLoading(false);
@@ -115,12 +111,10 @@ export default function MessagesPage() {
       if (response.ok && result.status === "success") {
         // Set messages to state
         setMessages(result.data);
-        console.log("[MESSAGES]:", result.data);
       } else {
         setError("Error loading messages");
       }
     } catch (err) {
-      console.error("Error loading messages:", err);
       setError("Error loading messages");
     }
   };
@@ -157,12 +151,15 @@ export default function MessagesPage() {
               </InputGroup.Text>
             </InputGroup>
 
-            {/* Message Placeholder */}
+            {/* Display friends */}
             <ul className="list-unstyled">
-              <p>
-                No messages available. Message data will appear here once
-                fetched.
-              </p>
+              {friends.map((friend) => (
+                <FriendCard
+                  key={friend.id}
+                  friend={friend}
+                  onClick={() => setSelectedFriend(friend)}
+                />
+              ))}
             </ul>
           </div>
 
@@ -178,9 +175,6 @@ export default function MessagesPage() {
                   authToken={authToken}
                   onNewMessage={handleNewMessage}
                 />
-                <button onClick={loadMessages}>
-                  <i className="bi bi-arrow-left"></i> Back to Messages
-                </button>
               </>
             ) : (
               <p>Select a message to view its content.</p> //placeholder for selected DM
