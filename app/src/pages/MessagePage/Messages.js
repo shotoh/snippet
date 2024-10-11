@@ -18,8 +18,8 @@ export default function MessagesPage() {
 
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
 
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
   const authToken = localStorage.getItem("authToken");
 
   // Helper function to parse JWT token
@@ -90,7 +90,6 @@ export default function MessagesPage() {
   // Load/unload messages whenever a friend is selected
   useEffect(() => {
     let intervalId;
-    if (selectedFriend) {
       loadMessages(true); // User selected a friend, should scroll
       // Start polling every 3 seconds
       intervalId = setInterval(() => {
