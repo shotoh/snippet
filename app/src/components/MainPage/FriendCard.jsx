@@ -4,7 +4,7 @@ import {Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {Button } from 'react-bootstrap';
 
-function FriendCard({userImage, userDisplayName, userURL, onAccept, onReject}) {
+function FriendCard({userImage, username, userDisplayName, userURL, onAccept, onReject}) {
     
     const navigate = useNavigate();
  
@@ -12,6 +12,8 @@ function FriendCard({userImage, userDisplayName, userURL, onAccept, onReject}) {
         navigate(userURL);
         
     }
+
+    
     
     return (
         <div className="flex flex-row w-full">
@@ -19,7 +21,7 @@ function FriendCard({userImage, userDisplayName, userURL, onAccept, onReject}) {
         <Button variant="light" className="w-full">
             <div className="flex justify-around">
                 <Image 
-                src={userImage}
+                src={userImage ? userImage : 'gray.png'}
                 alt="User image"
                 roundedCircle
                 className="my-auto"
@@ -30,7 +32,7 @@ function FriendCard({userImage, userDisplayName, userURL, onAccept, onReject}) {
                     border: '0px solid white',
                 }}
                 />
-                <Card.Body className="my-auto ml-2 text-left">{userDisplayName}</Card.Body>
+                <Card.Body className="my-auto ml-2 text-left">{userDisplayName ? userDisplayName : username}</Card.Body>
                 
                 
             </div>

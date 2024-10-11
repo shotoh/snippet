@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "react-bootstrap";
 import Dropdown from "react-bootstrap/Dropdown";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -10,6 +10,11 @@ export default function NavBar({ onPostCreated, username = "User" }) {
   const [showModal, setShowModal] = useState(false);
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+
+
+
+
+  
 
   const handlePostCreate = (newPost) => {
     onPostCreated(newPost);

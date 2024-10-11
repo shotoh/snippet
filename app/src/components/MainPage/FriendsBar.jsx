@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useEffect } from "react";
 import FriendCard from "./FriendCard";
 import {Image} from "react-bootstrap";
 import { useState } from "react";
@@ -17,6 +17,7 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
   ]);
 
 
+
   function onAccept(friend) {
       console.log(friend);
   }
@@ -29,10 +30,20 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
     setShowModal(true);
   }
 
+
+  useEffect(() => {
+      if(friendRequests) {
+        setNotifications(friendRequests.length);
+
+      } else {
+        setNotifications(0);
+      }
+  }, []);
+
   return (
     <div className="px-2 h-full flex flex-col justify-between h-full">
 
-      <FriendRequests friends={dummyFriendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)} sendFriendRequest={sendFriendRequest}/>
+      <FriendRequests friends={friendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)} sendFriendRequest={sendFriendRequest}/>
 
       <div id="FriendsTop" className="flex ml-5 my-2 w-full">
         <h1 className="tracking-wide"><b>Friends</b></h1>
@@ -85,17 +96,7 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
         style={{"height": "100%"}}
       
       >
-        <FriendCard 
-        userImage="https://preview.redd.it/which-surprised-pikachu-is-best-v0-9ljw32a35w4b1.png?width=778&format=png&auto=webp&s=dbed072b5593e3851315f7e6d5bda406ade8ad90"
-        userDisplayName="Perpetually Surprised Pikachu"
-        userURL="/profile/psp"
-        />
-        <FriendCard 
-        userImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnOCVtC_rE-XcVK0qi-f_F_zJh3-pAT3EQZQ&s"
-        userDisplayName="Reginald"
-        userURL="/profile/Reginald"
-        />
-
+        
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {friends.length === 0 ? (
@@ -104,6 +105,7 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
           friends.map((friend) => (
             <FriendCard
               userImage={friend.userImage}
+              username={friend.username}
               friendID
               />
           ))

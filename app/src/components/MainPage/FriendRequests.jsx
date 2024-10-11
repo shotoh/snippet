@@ -15,7 +15,7 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
 
         try {
             const result = await sendFriendRequest(username); // Assuming sendFriendRequest is passed as a prop
-            setResultMessage(`Request sent: ${result}`);
+            setResultMessage(`Request: ${result}`);
         } catch (error) {
             setResultMessage('Error sending friend request.');
         } finally {
