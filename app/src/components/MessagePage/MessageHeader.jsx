@@ -1,10 +1,10 @@
 import React from "react";
 
-export default function MessageHeader({ selectedMessage }) {
+export default function MessageHeader({ selectedFriend }) {
   const friend = {
-    name: selectedMessage.displayName,
-    handle: selectedMessage.username,
-    picture: selectedMessage.profilePicture,
+    name: selectedFriend.displayName,
+    handle: selectedFriend.username,
+    picture: selectedFriend.profilePicture,
   };
 
   return (

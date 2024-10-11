@@ -12,11 +12,16 @@ export default function MessagesPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [selectedMessage, setSelectedMessage] = useState({
+  const [userId, setUserId] = useState(null);
+
+  const [selectedFriend, setSelectedFriend] = useState({
+    id: 12,
     username: "someguy",
     displayName: "Some Guy",
     profilePicture: require("../../images/jackblack.jpg"),
   });
+  const [messages, setMessages] = useState([]);
+  const authToken = localStorage.getItem("authToken");
 
   // Helper function to parse JWT token
   const parseJwt = (token) => {
@@ -29,24 +34,25 @@ export default function MessagesPage() {
     }
   };
 
-  // Fetch friends list on component mount
   useEffect(() => {
     // Retrieve list of friends associated with user
     async function fetchFriends() {
-      const token = localStorage.getItem("authToken");
+      const token = authToken;
       if (!token) {
         setError("User is not authenticated");
         setLoading(false);
         return;
       }
 
-      // Get user ID from token
-      const userId = parseJwt(token).sub;
+      // Get user ID from token and set it in state
+      const userIdFromToken = parseJwt(token).sub;
+      setUserId(userIdFromToken);
+
       console.log("[TOKEN]:", token);
-      console.log("[USER ID]:", userId);
+      console.log("[USER ID]:", userIdFromToken);
 
       try {
-        const response = await fetch(`/api/friends?from=${userId}`, {
+        const response = await fetch(`/api/friends?from=${userIdFromToken}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -80,8 +86,49 @@ export default function MessagesPage() {
     }
 
     fetchFriends();
-    console.log(friends);
   }, []);
+
+  // Load messages for selected friend
+  const loadMessages = async () => {
+    if (!userId) {
+      console.error("User ID is not available.");
+      return;
+    }
+
+    const token = authToken;
+    if (!token) {
+      setError("Token has expired. Please log in again.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/messages?from=${userId}&to=${selectedFriend.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await response.json();
+
+      if (response.ok && result.status === "success") {
+        // Set messages to state
+        setMessages(result.data);
+        console.log("[MESSAGES]:", result.data);
+      } else {
+        setError("Error loading messages");
+      }
+    } catch (err) {
+      console.error("Error loading messages:", err);
+      setError("Error loading messages");
+    }
+  };
+
+  // Handler for new messages sent by the user
+  const handleNewMessage = (newMessage) => {
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  };
 
   return (
     <div>
@@ -121,11 +168,19 @@ export default function MessagesPage() {
 
           {/* Right Sidebar */}
           <div className="col-9 d-flex flex-column h-100 ">
-            {selectedMessage ? (
+            {selectedFriend ? (
               <>
-                <MessageHeader selectedMessage={selectedMessage} />
-                <MessageBody selectedMessage={selectedMessage} />
-                <MessageBar selectedMessage={selectedMessage} />
+                <MessageHeader selectedFriend={selectedFriend} />
+                <MessageBody messages={messages} userId={userId} />
+                <MessageBar
+                  selectedFriend={selectedFriend}
+                  userId={userId}
+                  authToken={authToken}
+                  onNewMessage={handleNewMessage}
+                />
+                <button onClick={loadMessages}>
+                  <i className="bi bi-arrow-left"></i> Back to Messages
+                </button>
               </>
             ) : (
               <p>Select a message to view its content.</p> //placeholder for selected DM
