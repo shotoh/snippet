@@ -149,17 +149,19 @@ export default function MessagesPage() {
             className="col-3 border-r-2 border-secondaryLight pt-4 px-3"
             style={{ overflowY: "scroll" }}
           >
-            <h2 className="font-montserrat font-bold">Messages</h2>
-            {/* Search Input */}
-            <InputGroup className="mb-3">
-              <Form.Control
-                placeholder="Search Messages"
-                aria-label="Search Messages"
-              />
-              <InputGroup.Text>
-                <i className="bi bi-search"></i>
-              </InputGroup.Text>
-            </InputGroup>
+            <div className="border-b-2 border-secondaryLight">
+              <h2 className="font-montserrat font-bold">Messages</h2>
+              {/* Search Input */}
+              <InputGroup className="mb-3">
+                <Form.Control
+                  placeholder="Search Messages"
+                  aria-label="Search Messages"
+                />
+                <InputGroup.Text>
+                  <i className="bi bi-search"></i>
+                </InputGroup.Text>
+              </InputGroup>
+            </div>
 
             {/* Display friends */}
             <ul className="list-unstyled">
