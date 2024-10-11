@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import { InputGroup, Form } from "react-bootstrap";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 import MessageHeader from "../../components/MessagePage/MessageHeader";
 import MessageBody from "../../components/MessagePage/MessageBody";
 import MessageBar from "../../components/MessagePage/MessageBar";
-import FriendCard from "../../components/MessagePage/FriendCard"; 
+import FriendCard from "../../components/MessagePage/FriendCard";
 
 export default function MessagesPage() {
   // Friends of user
@@ -15,12 +16,7 @@ export default function MessagesPage() {
 
   const [userId, setUserId] = useState(null);
 
-  const [selectedFriend, setSelectedFriend] = useState({
-    id: 11,
-    username: "someguy",
-    displayName: "Some Guy",
-    profilePicture: require("../../images/jackblack.jpg"),
-  });
+  const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
   const authToken = localStorage.getItem("authToken");
 
@@ -45,6 +41,9 @@ export default function MessagesPage() {
         return;
       }
 
+      console.log(token);
+      console.log("[USER ID]:", userId);
+
       // Get user ID from token and set it in state
       const userIdFromToken = parseInt(parseJwt(token).sub);
       setUserId(userIdFromToken);
@@ -66,11 +65,13 @@ export default function MessagesPage() {
           // Extract just the friend's id, name, and picture
           const friendData = friendsList.map((friend) => ({
             id: friend.to.id,
-            displayName: friend.to.displayName,
-            profilePicture: friend.to.profilePicture,
+            username: friend.to.username,
+            displayName: friend.to.username, // *** TEMPORARY: Change to displayName once implemented ***
+            profilePicture: require("../../images/defaultprofile.png"), // *** TEMPORARY: Change to friend.to.profilePicture once implemented ***
           }));
 
           setFriends(friendData);
+          console.log("[FRIENDS]", friendData);
         } else {
           setError("Error loading friends");
         }
@@ -83,6 +84,15 @@ export default function MessagesPage() {
 
     fetchFriends();
   }, []);
+
+  // Load/unload messages whenever a friend is selected
+  useEffect(() => {
+    if (selectedFriend) {
+      loadMessages();
+    } else {
+      setMessages([]);
+    }
+  }, [selectedFriend]);
 
   // Load messages for selected friend
   const loadMessages = async () => {
@@ -157,14 +167,16 @@ export default function MessagesPage() {
                 <FriendCard
                   key={friend.id}
                   friend={friend}
-                  onClick={() => setSelectedFriend(friend)}
+                  onClick={() => {
+                    setSelectedFriend(friend);
+                  }}
                 />
               ))}
             </ul>
           </div>
 
           {/* Right Sidebar */}
-          <div className="col-9 d-flex flex-column h-100 ">
+          <div className="col-9 d-flex flex-column h-100">
             {selectedFriend ? (
               <>
                 <MessageHeader selectedFriend={selectedFriend} />
@@ -177,7 +189,10 @@ export default function MessagesPage() {
                 />
               </>
             ) : (
-              <p>Select a message to view its content.</p> //placeholder for selected DM
+              <div className="d-flex flex-col justify-center items-center h-100 font-montserrat text-2xl font-semibold">
+                <UserCircleIcon className="w-20 h-20" />
+                <p>Select a message to view its content.</p>
+              </div> // placeholder for selected DM
             )}
           </div>
         </div>
