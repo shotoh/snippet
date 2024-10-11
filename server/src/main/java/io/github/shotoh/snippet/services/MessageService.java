@@ -8,6 +8,8 @@ import io.github.shotoh.snippet.models.messages.Message;
 import io.github.shotoh.snippet.models.messages.MessageCreateDTO;
 import io.github.shotoh.snippet.models.messages.MessageDTO;
 import io.github.shotoh.snippet.repositories.MessageRepository;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,13 @@ public class MessageService {
 
 	public List<MessageDTO> retrieveMessagesByFromAndTo(long fromId, long toId) {
 		authService.check(fromId);
-		return repository.findAllByFromIdAndToId(fromId, toId).stream().map(mapper::toDTO).toList();
+		List<Message> messages = new ArrayList<>();
+		messages.addAll(repository.findAllByFromIdAndToId(fromId, toId));
+		messages.addAll(repository.findAllByFromIdAndToId(toId, fromId));
+		return messages.stream()
+				.sorted(Comparator.comparingLong(Message::getTimestamp))
+				.map(mapper::toDTO)
+				.toList();
 	}
 
 	public MessageDTO createMessage(MessageCreateDTO messageCreateDTO) {
