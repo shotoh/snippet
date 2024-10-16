@@ -92,10 +92,10 @@ export default function MessagesPage() {
     let intervalId;
     if (selectedFriend) {
       loadMessages(true); // User selected a friend, should scroll
-      // Start polling every 3 seconds
+      // Start polling every 5 seconds
       intervalId = setInterval(() => {
         loadMessages(false); // Interval call, should not scroll
-      }, 3000);
+      }, 5000);
     } else {
       setMessages([]);
     }
