@@ -8,6 +8,8 @@ import MessageBody from "../../components/MessagePage/MessageBody";
 import MessageBar from "../../components/MessagePage/MessageBar";
 import FriendCard from "../../components/MessagePage/FriendCard";
 
+import defaultProfile from "../../images/defaultprofile.png";
+
 export default function MessagesPage() {
   // Friends of user
   const [friends, setFriends] = useState([]);
@@ -69,7 +71,7 @@ export default function MessagesPage() {
             id: friend.to.id,
             username: friend.to.username,
             displayName: friend.to.username, // *** TEMPORARY: Change to displayName once implemented ***
-            profilePicture: require("../../images/defaultprofile.png"), // *** TEMPORARY: Change to friend.to.profilePicture once implemented ***
+            profilePicture: friend.to.profilePicture || defaultProfile,
           }));
 
           setFriends(friendData);
