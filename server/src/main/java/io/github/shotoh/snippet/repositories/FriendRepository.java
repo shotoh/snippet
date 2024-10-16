@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 	List<Friend> findAllByFromId(long fromId);
 
+	List<Friend> findAllByToId(long toId);
+
 	Friend findFriendByFromIdAndToId(long fromId, long toId);
 
 	boolean existsByFromIdAndToId(long fromId, long toId);
