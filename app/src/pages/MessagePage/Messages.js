@@ -203,6 +203,7 @@ export default function MessagesPage() {
               <>
                 <MessageHeader selectedFriend={selectedFriend} />
                 <MessageBody
+                  selectedFriend={selectedFriend}
                   messages={messages}
                   userId={userId}
                   shouldScrollToBottom={shouldScrollToBottom}
