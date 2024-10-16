@@ -25,10 +25,26 @@ public class FriendController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<FriendDTO>> retrieveFriends(@RequestParam(name = "from") long fromId, @RequestParam(name = "to") Optional<Long> toId) {
-		return toId
-				.map(to -> new Success<>(List.of(service.retrieveFriendByFromAndTo(fromId, to))))
-				.orElseGet(() -> new Success<>(service.retrieveFriendsByFrom(fromId)));
+	public Success<List<FriendDTO>> retrieveFriends(@RequestParam(name = "from") Optional<Long> fromId, @RequestParam(name = "to") Optional<Long> toId) {
+		if (fromId.isPresent() && toId.isPresent())
+		{
+			return new Success<>(List.of(service.retrieveFriendByFromAndTo(fromId.get(), toId.get()))); 
+		}
+		else if(fromId.isPresent())
+		{
+			return new Success<>(service.retrieveFriendByFrom(fromId.get())); 
+		}
+		else if(toId.isPresent())
+		{
+			return new Success<>(service.retrieveFriendByTo(toId.get())); 
+		}
+		//exception if both inputs are not present
+		else 
+		{
+			throw new Exception("not enough inputs!"); 
+		}
+
+		//return toId
 	}
 
 	@PostMapping

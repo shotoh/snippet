@@ -37,6 +37,10 @@ public class FriendService {
 	public List<FriendDTO> retrieveFriendsByFrom(long fromId) {
 		return repository.findAllByFromId(fromId).stream().map(mapper::toDTO).toList();
 	}
+	
+	public List<FriendDTO> retrieveFriendsByTo(long toId) {
+		return repository.findAllByToId(toId).stream().map(mapper::toDTO).toList();
+	}
 
 	public FriendDTO retrieveFriendByFromAndTo(long fromId, long toId) {
 		Friend friend = getFriendByFromAndTo(fromId, toId);
