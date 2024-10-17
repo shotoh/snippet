@@ -70,13 +70,20 @@ public class FriendService {
 
 	public void deleteFriend(long id) {
 		Friend friend = getFriend(id);
-		authService.check(friend);
-		repository.deleteById(friend.getId());
+		long callerId = authService.userId();
 		long fromId = friend.getFrom().getId();
 		long toId = friend.getTo().getId();
+		if (toId == callerId) {
+			authService.check(toId);
+		} else {
+			authService.check(friend);
+		}
+		repository.deleteById(friend.getId());
 		if (repository.existsByFromIdAndToId(toId, fromId)) {
 			Friend otherFriend = repository.findFriendByFromIdAndToId(toId, fromId);
-			repository.deleteById(otherFriend.getId());
+			if (otherFriend != null) {
+				repository.deleteById(otherFriend.getId());
+			}
 		}
 	}
 }
