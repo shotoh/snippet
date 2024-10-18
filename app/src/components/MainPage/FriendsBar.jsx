@@ -1,13 +1,14 @@
 import React, { useLayoutEffect, useEffect } from "react";
 import FriendCard from "./FriendCard";
-import {Image} from "react-bootstrap";
+import {Image, Button} from "react-bootstrap";
 import { useState } from "react";
 import FriendRequests from "./FriendRequests";
 
-export default function FriendsBar({ friends, friendRequests, error, sendFriendRequest }) {
+export default function FriendsBar({ friends, friendRequests, error, sendFriendRequest, denyFriendRequest }) {
   
   const [notifications, setNotifications] = useState(2);
   const [showModal, setShowModal] = useState(false);
+  const [createNew, setCreateNew] = useState(false);
   
   const [dummyFriendRequests, setDummyFriendRequests] = useState([
     { userImage: 'https://www.models-resource.com/resources/big_icons/15/14997.png?updated=1460924471', userDisplayName: 'Kowalski', userURL: '/profile/kowalksi', },
@@ -20,13 +21,22 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
 
   function onAccept(friend) {
       console.log(friend);
+      sendFriendRequest(friend.username);
   }
   
   function onReject(friend) {
     console.log(friend);
+    denyFriendRequest(friend.username);
   }
 
   function openModal() {
+    setCreateNew(false);
+    setShowModal(true);
+  }
+
+  
+  function openModalCreate() {
+    setCreateNew(true);
     setShowModal(true);
   }
 
@@ -38,12 +48,12 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
       } else {
         setNotifications(0);
       }
-  }, []);
+  }, [friendRequests]);
 
   return (
     <div className="px-2 h-full flex flex-col justify-between h-full">
 
-      <FriendRequests friends={friendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)} sendFriendRequest={sendFriendRequest}/>
+      <FriendRequests friends={friendRequests} onAccept={onAccept} onReject={onReject} show={showModal} handleClose={() => setShowModal(false)} sendFriendRequest={sendFriendRequest} createNew={createNew}/>
 
       <div id="FriendsTop" className="flex ml-5 my-2 w-full">
         <h1 className="tracking-wide"><b>Friends</b></h1>
@@ -89,7 +99,7 @@ export default function FriendsBar({ friends, friendRequests, error, sendFriendR
           }
           
         </div>
-
+        <Button variant="primary" className="my-1 ml-10" onClick={openModalCreate}>Add Friend</Button>
       </div>
       
       <div id="FriendList" className="overflow-y-auto overscroll-y-contain"

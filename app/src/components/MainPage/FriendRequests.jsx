@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import FriendCard from "./FriendCard";
 
-function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFriendRequest}) {
-    const [createNew, setCreateNew] = useState(false); // Track if creating a new friend request
+function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFriendRequest, createNew}) {
+    const [createNewH, setCreateNewH] = useState(createNew); // Track if creating a new friend request
     const [username, setUsername] = useState(''); // Track entered username
     const [loading, setLoading] = useState(false); // Track loading state
     const [resultMessage, setResultMessage] = useState(''); // Track request result
+    //const [removeTab, setRemoveTab] = useState(false);
     
+    useEffect(() => {
+        setCreateNewH(createNew);
+    }, [createNew]);
+
     const handleRequest = async () => {
         setLoading(true);
         setResultMessage(''); // Clear any previous result messages
@@ -30,7 +35,7 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
         <Button 
                 variant="primary" 
                 className="ml-auto" 
-                onClick={() => setCreateNew(!createNew)} // Toggle between friend list and form
+                onClick={() => setCreateNewH(!createNewH)} // Toggle between friend list and form
             >
                 <h3>+</h3>
             </Button>
@@ -40,7 +45,7 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
             
         </Modal.Header>
         <Modal.Body style={{ height: '50vh', overflowY: 'auto' }}>
-            {createNew ? (
+            {createNewH ? (
                 <Form>
                     <Form.Group controlId="username">
                         <Form.Label>Enter Username</Form.Label>
@@ -63,15 +68,18 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
                             key={index}
                             userImage={friend.userImage}
                             userDisplayName={friend.userDisplayName}
+                            username={friend.username}
                             userURL={friend.userURL}
                             onAccept={() => onAccept(friend)}
                             onReject={() => onReject(friend)}
                         />
                     ))
                 ) : (
+                    
                     <p>No friend requests at the moment</p>
                 )
             )}
+            
         </Modal.Body>
     </Modal>
     );

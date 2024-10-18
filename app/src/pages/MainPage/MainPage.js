@@ -16,6 +16,8 @@ const MainPage = () => {
   const [friendsError, setFriendsError] = useState("");
 
   const [friendRequests, setFriendRequests] = useState([]);
+  const [requested, setRequested] = useState([]);
+  
 
   const [error, setError] = useState("");
   const [posts, setPosts] = useState([]);
@@ -142,7 +144,7 @@ const MainPage = () => {
 
           let friendRequestList = result.data.filter(
             (friend) => 
-              friend.status === "PENDING" && // Status should be "FRIEND", not "PENDING"
+              friend.status === "PENDING" && // Status should be "PENDING", not "FRIEND"
               friend.from.id !== userIdFromToken
           );
 
@@ -150,16 +152,20 @@ const MainPage = () => {
 
 
           const friendRequestData = friendRequestList.map((friend) => ({
-            id: friend.to.id,
-            username: friend.to.username,
-            displayName: friend.to.displayName,
-            profilePicture: friend.to.profilePicture,
+            id: friend.id,
+            friendId: friend.from.id,
+            username: friend.from.username,
+            displayName: friend.from.displayName,
+            profilePicture: friend.from.profilePicture,
+            status: friend.status,
           }));
+
 
 
           setFriendRequests(friendRequestData);
           
           console.log("[FRIEND REQUESTS]:", friendRequestData);
+          console.log(result);
         } else {
           setError("Error loading friends");
         }
@@ -173,9 +179,18 @@ const MainPage = () => {
 
   const createFriendRequest = async (targetUsername) => {
     console.log("Trying to find " + targetUsername);
-    //WIP
+    
+    if(requested.includes(targetUsername)) {
+      
+      return "Already Requested";
+    }
+
+
     const token = localStorage.getItem('authToken');
     try {
+
+      
+
 
       //Find Friend
       let url = `/api/users`
@@ -220,21 +235,125 @@ const MainPage = () => {
         }),
       });
       console.log("response ok: " + response.ok);
+
+      if(response.status === 409) {
+        
+        requested.push(targetUsername);
+        return "Already Requested";
+      }
+
       const result = await response.json();
 
       if(response.ok && result.status === 'success') {
         console.log("worked!");
         console.log(result.data);
         fetchFriends();
+        fetchFriendRequests();
+        requested.push(targetUsername);
         return "Sent";
       }
-
 
     } catch(err) {
       console.error("error loading friends:", err);
       return "Failed";
     }
   }
+
+  const rejectFriendRequest = async (targetUsername) => {
+    console.log("Trying to remove request from " + targetUsername);
+    try {
+
+      //Find Friend
+      let url = `/api/users`
+      const token = localStorage.getItem('authToken');
+      let response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if(!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+      const users = await response.json();
+      const userData = users.data;
+
+      // Find the user by the specific username
+      const foundUser = userData.find(user => user.username === targetUsername);
+
+      let userId = -1;
+      if (foundUser) {
+        userId = foundUser.id;
+        console.log(`Found user ID: ${userId}`);
+      } else {
+        console.log("User not found");
+        return "User Not Found";
+      }
+
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+      //Find ID of friending
+      url = `/api/friends?from=${userId}`;
+      response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      let result = await response.json();
+      console.log(result.data);
+      let friendID = -1;
+      let friendRequestList = result.data;
+      if(response.ok && result.status === 'success') {
+        
+        friendID = findIdByFromId(result.data, userId);
+        if(friendID != -1) {
+          console.log("got friend entry ID: " + friendID);
+        } else {
+          return "Fail";
+        }
+        
+      } else {
+        console.log("couldn't get ID of friend entry");
+        return "Fail";
+      }
+
+      //Delete friends
+      url = `/api/friends/${friendID}`;
+
+      response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("response ok: " + response.ok);
+
+      if(response.ok && result.status === 'success') {
+        console.log("worked!");
+        console.log(result.data);
+        fetchFriendRequests();
+      }
+
+
+    } catch(err) {
+      console.error("error removing friend request:", err);
+      return "Failed";
+    }
+  }
+
+  const findIdByFromId = (data, fromId) => {
+    const foundElement = data.find(element => element.from.id === fromId);
+    
+    return foundElement ? foundElement.id : null;
+  };
+
+  
+
 
   const getUsername = async() => {
     //WIP
@@ -282,7 +401,7 @@ const MainPage = () => {
   useEffect(() => {
     fetchPosts(); 
     fetchFriends();
-    //fetchFriendRequests();
+    fetchFriendRequests();
     getUsername();
   }, []);
 
@@ -304,7 +423,7 @@ const MainPage = () => {
         <div className="col-span-3 bg-white rounded-lg  !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight mb-4"
           style={{"height":"85vh"}}
         >
-          <FriendsBar  friends={friends} friendRequests={friendRequests} error={friendsError} sendFriendRequest={createFriendRequest}/>
+          <FriendsBar  friends={friends} friendRequests={friendRequests} error={friendsError} sendFriendRequest={createFriendRequest} denyFriendRequest={rejectFriendRequest} />
         </div>
       </div>
 
