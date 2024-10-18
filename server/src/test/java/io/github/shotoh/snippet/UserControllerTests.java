@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -149,6 +150,32 @@ public class UserControllerTests {
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+	}
+
+	@Test
+	void deleteUserNoAuth() throws Exception {
+		mockMvc.perform(delete("/api/users/{id}", mockUser.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void deleteUser() throws Exception {
+		mockMvc.perform(delete("/api/users/{id}", mockUser.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").doesNotExist());
+	}
+
+	@Test
+	void deleteUserNotFound() throws Exception {
+		mockMvc.perform(delete("/api/users/{id}", -1)
+						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
