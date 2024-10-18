@@ -87,6 +87,16 @@ public class UserControllerTests {
 	}
 
 	@Test
+	void retrieveUserNotFound() throws Exception {
+		mockMvc.perform(get("/api/users/{id}", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+	}
+
+	@Test
 	void retrieveUser() throws Exception {
 		mockMvc.perform(get("/api/users/{id}", 1)
 						.header("Authorization", mockToken))
@@ -100,16 +110,6 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void retrieveUserNotFound() throws Exception {
-		mockMvc.perform(get("/api/users/{id}", -1)
-						.header("Authorization", mockToken))
-				.andExpect(status().isNotFound())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
-	}
-
-	@Test
 	void updateUserNoAuth() throws Exception {
 		mockUser.setBiography("new bio");
 		UserDTO updateDTO = new UserDTO();
@@ -118,6 +118,21 @@ public class UserControllerTests {
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void updateUserNotFound() throws Exception {
+		mockUser.setBiography("new bio");
+		UserDTO updateDTO = new UserDTO();
+		updateDTO.setBiography(mockUser.getBiography());
+		mockMvc.perform(patch("/api/users/{id}", -1)
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(updateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
 	}
 
 	@Test
@@ -142,34 +157,24 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void updateUserNotFound() throws Exception {
-		mockUser.setBiography("new bio");
+	void updateUserInvalidDisplayName() throws Exception {
+		mockUser.setDisplayName("");
 		UserDTO updateDTO = new UserDTO();
-		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/users/{id}", -1)
+		updateDTO.setDisplayName(mockUser.getDisplayName());
+		mockMvc.perform(patch("/api/users/{id}", mockUser.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
+				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+				.andExpect(jsonPath("$.data.displayName").value("size must be between 1 and 31"));
 	}
 
 	@Test
 	void deleteUserNoAuth() throws Exception {
 		mockMvc.perform(delete("/api/users/{id}", mockUser.getId()))
 				.andExpect(status().isUnauthorized());
-	}
-
-	@Test
-	void deleteUser() throws Exception {
-		mockMvc.perform(delete("/api/users/{id}", mockUser.getId())
-						.header("Authorization", mockToken))
-				.andExpect(status().isNoContent())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status").value("success"))
-				.andExpect(jsonPath("$.data").doesNotExist());
 	}
 
 	@Test
@@ -180,5 +185,15 @@ public class UserControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
 				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+	}
+
+	@Test
+	void deleteUser() throws Exception {
+		mockMvc.perform(delete("/api/users/{id}", mockUser.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").doesNotExist());
 	}
 }
