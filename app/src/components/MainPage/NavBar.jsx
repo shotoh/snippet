@@ -23,8 +23,18 @@ export default function NavBar({ onPostCreated, username = "User" }) {
           title={
             <div className="flex items-center py-1.5 px-4 rounded-lg cursor-pointer hover:backdrop-brightness-90 transition ease-in-out">
               <Navbar.Text className="text-white font-montserrat text-center mr-4 leading-tight">
-                <span>Welcome back,</span> <br />
-                <span>{username}!</span>
+                {username ? (
+                  <div>
+                  <span>Welcome back,</span> <br />
+                  <span>{username}!</span>
+                  </div>
+                ) : (
+                  <div>
+                  <span>Hello Guest!</span>
+                  </div>
+
+                )}
+                
               </Navbar.Text>
               <img
                 src={require("../../images/macrosoftLogo.png")}
@@ -44,7 +54,7 @@ export default function NavBar({ onPostCreated, username = "User" }) {
           <NavDropdown.Item href="/profilepage">Profile</NavDropdown.Item>
           <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item href="/login">Logout</NavDropdown.Item>
+          <NavDropdown.Item href="/login">{username ? ("Logout") : ("Sign In")}</NavDropdown.Item>
         </NavDropdown>
       </Navbar.Collapse>
     );
