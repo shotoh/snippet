@@ -66,6 +66,7 @@ public class AuthService {
 		if (!roles.contains("ROLE_USER")) throw new UnauthorizedException();
 		long userId = Long.parseLong(((Jwt) authentication.getPrincipal()).getSubject());
 		if (userId != objectId) throw new UnauthorizedException();
+		if (objectId == 0) throw new UnauthorizedException();
 	}
 
 	public void check(SnippetModel object) {

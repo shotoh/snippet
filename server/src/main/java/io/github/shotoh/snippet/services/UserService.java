@@ -29,6 +29,7 @@ public class UserService {
 	}
 
 	public User getUser(long id) {
+		if (id == 0) return null;
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
 	}
 
