@@ -1,4 +1,4 @@
-package to.us.snippet.security;
+package to.us.snippet.auth;
 
 import to.us.snippet.users.User;
 import to.us.snippet.users.UserRepository;

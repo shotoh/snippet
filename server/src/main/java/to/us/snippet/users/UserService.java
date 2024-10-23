@@ -2,7 +2,7 @@ package to.us.snippet.users;
 
 import to.us.snippet.exceptions.ResourceAlreadyExistsException;
 import to.us.snippet.exceptions.ResourceNotFoundException;
-import to.us.snippet.security.AuthService;
+import to.us.snippet.auth.AuthService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

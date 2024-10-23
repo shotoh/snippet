@@ -1,4 +1,4 @@
-package to.us.snippet.security;
+package to.us.snippet.auth;
 
 import to.us.snippet.exceptions.ResourceNotFoundException;
 import to.us.snippet.exceptions.UnauthorizedException;

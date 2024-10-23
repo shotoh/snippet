@@ -1,4 +1,4 @@
-package to.us.snippet.security;
+package to.us.snippet.auth;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import javax.crypto.spec.SecretKeySpec;

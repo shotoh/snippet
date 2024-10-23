@@ -4,7 +4,7 @@ import to.us.snippet.exceptions.ResourceNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import to.us.snippet.security.AuthService;
+import to.us.snippet.auth.AuthService;
 
 @Service
 public class CommentService {

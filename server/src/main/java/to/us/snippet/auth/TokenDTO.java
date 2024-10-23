@@ -1,4 +1,4 @@
-package to.us.snippet.security;
+package to.us.snippet.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

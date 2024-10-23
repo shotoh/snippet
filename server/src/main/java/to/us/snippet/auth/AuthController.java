@@ -1,10 +1,7 @@
-package to.us.snippet.security;
+package to.us.snippet.auth;
 
-import to.us.snippet.security.AuthDTO;
-import to.us.snippet.security.TokenDTO;
 import to.us.snippet.users.UserCreateDTO;
 import to.us.snippet.responses.Success;
-import to.us.snippet.security.AuthService;
 import to.us.snippet.users.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
