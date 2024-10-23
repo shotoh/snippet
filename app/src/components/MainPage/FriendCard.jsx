@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect } from "react";
 import { Card, Image } from 'react-bootstrap';
 import {Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,9 @@ function FriendCard({userImage, username, userDisplayName, userURL, onAccept, on
         
     }
 
-    
+    useEffect(() => {
+        console.log("Friend Cards: " + username + " " + userDisplayName);
+    }, []);
     
     return (
         <div className="flex flex-row w-full">
