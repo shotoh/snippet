@@ -21,7 +21,5 @@ public class UserDTO {
 	@Size(min = 1, max = 31)
 	private String displayName;
 
-	private String profilePicture;
-
 	private String biography;
 }

@@ -11,7 +11,6 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
 	@Mapping(source = "password", target = "encryptedPassword")
 	@Mapping(target = "displayName", ignore = true)
-	@Mapping(target = "profilePicture", ignore = true)
 	@Mapping(target = "biography", ignore = true)
 	@Mapping(target = "role", ignore = true)
 	@Mapping(target = "timestamp", ignore = true)

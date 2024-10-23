@@ -28,8 +28,6 @@ public class User implements SnippetModel {
 
 	private String displayName;
 
-	private String profilePicture;
-
 	private String biography;
 
 	@Column(nullable = false)
