@@ -12,6 +12,7 @@ import SimpleBody from "./components/SimpleBody.js";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.js";
 import MainPage from "./pages/MainPage/MainPage.js";
 import MessagePage from "./pages/MessagePage/Messages.js";
+import DiscoverPage from "./pages/DiscoverPage/DiscoverPage.js";
 
 function App() {
   //let component;
@@ -36,6 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/messages" element={<MessagePage />} />
+        <Route path="/discover" element={<DiscoverPage />} />
       </Routes>
     </div>
   );
