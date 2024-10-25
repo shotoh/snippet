@@ -3,20 +3,18 @@ import { Modal, Button, Carousel, Form } from 'react-bootstrap';
 
 const PostCreator = ({ show, handleClose, onPostCreate }) => {
   const [postContent, setPostContent] = useState('');
-  const [postTitle, setPostTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [mediaFiles, setMediaFiles] = useState([]);
 
   const handleMediaChange = (event) => {
     const files = Array.from(event.target.files);
     setMediaFiles(files);
-  }
+  };
 
   const handleCreatePost = async () => {
-    if (!postContent || !postTitle) {
-      setError('Title and text are required');
+    if (!postContent) {
+      setError('Text content is required');
       return;
     }
 
@@ -33,6 +31,12 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
     const userId = parseJwt(token).sub;
 
     try {
+      // Log the outgoing request details
+      console.log('Attempting to create a post with the following data:', {
+        content: postContent,
+        userId: userId,
+      });
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -40,22 +44,30 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title: postTitle,
           content: postContent,
           userId: userId,
         }),
       });
 
+      // Log the response status and body
+      console.log('Response Status:', response.status);
       const result = await response.json();
+      console.log('Response Body:', result);
+
       if (response.ok && result.status === 'success') {
-        onPostCreate(); // Call the function passed as a prop to refresh posts
-        handleClose(); // Close modal
+        onPostCreate();  // Call to refresh posts in the parent component
+        handleClose();   // Close the modal after successful post creation
       } else {
-        setError('Error creating post');
+        // Log error message and display it to the user
+        setError(result.message || `Error creating post: ${response.status}`);
+        console.error('Error creating post:', result);
       }
     } catch (err) {
-      setError('Error creating post');
+      // Log and show detailed error message
+      setError(`Error creating post: ${err.message}`);
+      console.error('Error in post creation request:', err);
     }
+
     setLoading(false);
   };
 
@@ -126,4 +138,4 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
   );
 };
 
-export default PostCreator;
+export default PostCreator
