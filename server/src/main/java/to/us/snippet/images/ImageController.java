@@ -1,14 +1,24 @@
 package to.us.snippet.images;
 
-import to.us.snippet.exceptions.UnauthorizedException;
-import to.us.snippet.responses.Success;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import to.us.snippet.exceptions.UnauthorizedException;
+import to.us.snippet.responses.Response;
+import to.us.snippet.responses.ResponseBuilder;
+import to.us.snippet.responses.Status;
 
 @RestController
 @RequestMapping(path = "/api/images")
@@ -23,12 +33,13 @@ public class ImageController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<ImageDTO>> retrieveImages(@RequestParam(name = "user") Optional<Long> userId,
-	                                              @RequestParam(name = "post") Optional<Long> postId) {
+	public Response retrieveImages(@RequestParam(name = "user") Optional<Long> userId,
+	                               @RequestParam(name = "post") Optional<Long> postId) {
+		ResponseBuilder builder =  new ResponseBuilder(Status.SUCCESS);
 		if (userId.isPresent()) {
-			return new Success<>(List.of(service.retrieveImageByUser(userId.get())));
+			return builder.setData(List.of(service.retrieveImageByUser(userId.get()))).build();
 		} else if (postId.isPresent()) {
-			return new Success<>(service.retrieveImagesByPost(postId.get()));
+			return builder.setData(service.retrieveImagesByPost(postId.get())).build();
 		} else {
 			throw new UnauthorizedException();
 		}
@@ -36,20 +47,24 @@ public class ImageController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<ImageDTO> createImage(@RequestBody @Valid ImageCreateDTO imageCreateDTO) {
-		return new Success<>(service.createImage(imageCreateDTO));
+	public Response createImage(@RequestBody @Valid ImageCreateDTO imageCreateDTO) {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.createImage(imageCreateDTO))
+				.build();
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Success<ImageDTO> retrieveImage(@PathVariable("id") long id) {
-		return new Success<>(service.retrieveImage(id));
+	public Response retrieveImage(@PathVariable("id") long id) {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.retrieveImage(id))
+				.build();
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteImage(@PathVariable("id") long id) {
+	public Response deleteImage(@PathVariable("id") long id) {
 		service.deleteImage(id);
-		return new Success<>();
+		return new ResponseBuilder(Status.SUCCESS).build();
 	}
 }
