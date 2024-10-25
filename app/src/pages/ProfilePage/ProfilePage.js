@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import NavBar from "../../components/MainPage/NavBar";
 import ProfileBanner from "../../components/ProfilePage/ProfileBanner";
 import ProfileInfo from "../../components/ProfilePage/ProfileInfo";
@@ -9,7 +10,10 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
-  const [userId, setUserId] = useState(null);
+  const [urlUserId, setUrlUserId] = useState();
+  const { userId } = useParams();
+  const [bio, setBio] = useState("");
+  
   const authToken = localStorage.getItem("authToken");
 
   // Helper function to parse JWT token
@@ -23,7 +27,7 @@ const ProfilePage = () => {
     }
   };
 
-  const fetchUserPostsAndUpdate = async () => {
+  const fetchUserPostsAndUpdate = async (currentUserId) => {
     const token = authToken;
     if (!token) {
       setError("User is not authenticated");
@@ -31,11 +35,13 @@ const ProfilePage = () => {
     }
 
     try {
+      
       const userIdFromToken = parseInt(parseJwt(token).sub);
-      setUserId(userIdFromToken);
-      console.log("[DEBUG] User ID from token:", userIdFromToken);
+      const actualUserId = currentUserId || userIdFromToken;
+      setUrlUserId(actualUserId);
+      console.log("[DEBUG] User ID from token:", actualUserId);
 
-      const response = await fetch(`/api/users/${userIdFromToken}`, {
+      const response = await fetch(`/api/users/${actualUserId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,8 +51,8 @@ const ProfilePage = () => {
       if (response.ok && result.status === "success") {
         setUsername(result.data.username);
         console.log("[DEBUG] Username:", result.data.username); 
-
-        const userPosts = await fetchUserPosts(userIdFromToken);
+        setBio(result.data.biography);
+        const userPosts = await fetchUserPosts(actualUserId);
         console.log("[DEBUG] Fetched posts for user:", userPosts); 
         setPosts(userPosts);
       } else {
@@ -59,8 +65,23 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    fetchUserPostsAndUpdate();
-  }, []);
+    const fetchData = async () => {
+      
+      
+      // Set the userId from params or use a fallback
+      const finalUserId = userId || parseInt(parseJwt(authToken).sub);
+
+
+      // Only call fetchUserPostsAndUpdate if the userId has changed
+      if (urlUserId !== finalUserId) {
+        setUrlUserId(finalUserId);
+        await fetchUserPostsAndUpdate(finalUserId);
+      }
+    };
+    
+    fetchData();
+    
+  }, [userId]);
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
@@ -72,7 +93,7 @@ const ProfilePage = () => {
             <div className="col-span-12 md:col-span-4">
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <ProfileBanner />
-                <ProfileInfo />
+                <ProfileInfo username={username} bio={bio} id={urlUserId}/>
               </div>
             </div>
             {/* Right Column: User's Posts */}

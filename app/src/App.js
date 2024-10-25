@@ -38,6 +38,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/discover" element={<DiscoverPage />} />
+        <Route path="/snippet/user/:userId" element={<ProfilePage />} />
       </Routes>
     </div>
   );

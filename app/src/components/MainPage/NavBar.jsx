@@ -6,15 +6,71 @@ import NavLink from "react-bootstrap/NavLink";
 import "./xtra.css";
 import PostCreator from "./PostCreator";
 
-export default function NavBar({ onPostCreated, username = "User" }) {
+export default function NavBar({ onPostCreated }) {
   const [showModal, setShowModal] = useState(false);
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState();
 
   const handlePostCreate = (newPost) => {
     onPostCreated(newPost);
     setShowModal(false);
   };
+
+  // Helper function to parse JWT token
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(window.atob(base64));
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const getUsername = async () => {
+    //WIP
+    const token = localStorage.getItem("authToken");
+    try {
+      //Find Friend
+      let url = `/api/users`;
+
+      let response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+      const users = await response.json();
+      const userData = users.data;
+
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+      // Find the user by the specific username
+      const foundUser = userData.find((user) => user.id === userIdFromToken);
+
+
+      if (foundUser) {
+        setUsername(foundUser.username);
+        setUserId(foundUser.id);
+      } else {
+        console.log("User not found");
+        return "User Not Found";
+      }
+    } catch (err) {
+      console.error("error getting username:", err);
+    }
+  };
+
+
+  useEffect(() => {
+    getUsername();
+  }, []);
 
   function UserProfile() {
     return (
@@ -51,7 +107,7 @@ export default function NavBar({ onPostCreated, username = "User" }) {
           <NavDropdown.Item as="button" onClick={handleOpen}>
             Create Post
           </NavDropdown.Item>
-          <NavDropdown.Item href="/profilepage">Profile</NavDropdown.Item>
+          <NavDropdown.Item href={`/snippet/user/${userId}`}>Profile</NavDropdown.Item>
           <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
           <NavDropdown.Divider />
           <NavDropdown.Item href="/login">{username ? ("Logout") : ("Sign In")}</NavDropdown.Item>

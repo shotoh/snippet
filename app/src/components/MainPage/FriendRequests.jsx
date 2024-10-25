@@ -5,6 +5,7 @@ import FriendCard from "./FriendCard";
 
 function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFriendRequest, createNew}) {
     const [createNewH, setCreateNewH] = useState(createNew); // Track if creating a new friend request
+    const [removeFriend, setRemoveFriend] = useState(false);
     const [username, setUsername] = useState(''); // Track entered username
     const [loading, setLoading] = useState(false); // Track loading state
     const [resultMessage, setResultMessage] = useState(''); // Track request result
@@ -38,6 +39,13 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
                 onClick={() => setCreateNewH(!createNewH)} // Toggle between friend list and form
             >
                 <h3>+</h3>
+            </Button>
+            <Button 
+                variant="danger" 
+                className="ml-auto" 
+                onClick={() => setRemoveFriend(!removeFriend)} // Toggle between friend list and form
+            >
+                <h3>-</h3>
             </Button>
             <Modal.Title className="text-center w-full">
                 Friend Requests
@@ -79,6 +87,7 @@ function FriendRequests({ show, handleClose, friends, onAccept, onReject, sendFr
                     <p>No friend requests at the moment</p>
                 )
             )}
+
             
         </Modal.Body>
     </Modal>

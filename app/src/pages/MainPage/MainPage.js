@@ -21,6 +21,7 @@ const MainPage = () => {
   const [posts, setPosts] = useState([]);
 
   const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState();
 
   const authToken = localStorage.getItem("authToken");
 
@@ -91,6 +92,7 @@ const MainPage = () => {
           username: friend.to.username,
           displayName: friend.to.displayName,
           profilePicture: friend.to.profilePicture,
+          url: "/snippet/user/" + friend.to.id,
         }));
 
         setFriends(friendData);
@@ -342,8 +344,10 @@ const MainPage = () => {
       // Find the user by the specific username
       const foundUser = userData.find((user) => user.id === userIdFromToken);
 
+
       if (foundUser) {
         setUsername(foundUser.username);
+        setUserId(foundUser.id);
       } else {
         console.log("User not found");
         return "User Not Found";
@@ -366,7 +370,7 @@ const MainPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <NavBar username={username} onPostCreated={fetchPosts} />
+      <NavBar onPostCreated={fetchPosts} />
       <div className="flex-grow">
         <div className="max-w-screen-xl mx-auto grid grid-cols-12 gap-x-6 mt-4">
           {/* Trending Bar */}

@@ -148,7 +148,8 @@ export default function FriendsBar({
               userImage={friend.userImage}
               username={friend.username}
               friendID
-            />
+              userURL={friend.url}
+              />
           ))
         )}
       </div>
