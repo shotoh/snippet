@@ -366,7 +366,7 @@ const MainPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <NavBar username={username} />
+      <NavBar username={username} onPostCreated={fetchPosts} />
       <div className="flex-grow">
         <div className="max-w-screen-xl mx-auto grid grid-cols-12 gap-x-6 mt-4">
           {/* Trending Bar */}
