@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface ImageMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "userId", target = "user")
-	@Mapping(source = "postId", target = "post")
+	@Mapping(source = "postId", target = "post", conditionExpression = "java(imageCreateDTO.getPostId() != 0)")
 	@Mapping(target = "timestamp", ignore = true)
 	Image toEntity(ImageCreateDTO imageCreateDTO);
 

@@ -29,7 +29,7 @@ public class Image implements SnippetModel {
 	private long id;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", updatable = false)
+	@JoinColumn(name = "user_id", nullable = false, updatable = false)
 	private User user;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -44,8 +44,7 @@ public class Image implements SnippetModel {
 
 	@Override
 	public long userId() {
-		if (user != null) return user.userId();
 		if (post != null) return post.userId();
-		return 0;
+		return user.userId();
 	}
 }
