@@ -1,26 +1,23 @@
 package to.us.snippet.users;
 
-import to.us.snippet.exceptions.ResourceAlreadyExistsException;
-import to.us.snippet.exceptions.ResourceNotFoundException;
-import to.us.snippet.auth.AuthService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import to.us.snippet.auth.AuthService;
+import to.us.snippet.exceptions.ResourceAlreadyExistsException;
+import to.us.snippet.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
 	private final UserRepository repository;
 	private final UserMapper mapper;
-	private final PasswordEncoder encoder;
 
 	private final AuthService authService;
 
 	@Autowired
-	public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder, AuthService authService) {
+	public UserService(UserRepository repository, UserMapper mapper, AuthService authService) {
 		this.repository = repository;
 		this.mapper = mapper;
-		this.encoder = encoder;
 		this.authService = authService;
 	}
 
@@ -42,7 +39,7 @@ public class UserService {
 		if (repository.existsByEmail(userCreateDTO.getEmail())) {
 			throw new ResourceAlreadyExistsException("email", "User already exists with this email");
 		}
-		String encryptedPassword = encryptPassword(userCreateDTO.getPassword());
+		String encryptedPassword = authService.encryptPassword(userCreateDTO.getPassword());
 		userCreateDTO.setPassword(encryptedPassword);
 		User user = repository.save(mapper.toEntity(userCreateDTO));
 		return mapper.toDTO(user);
@@ -65,9 +62,5 @@ public class UserService {
 		User user = getUser(id);
 		authService.check(user);
 		repository.deleteById(user.getId());
-	}
-
-	private String encryptPassword(String password) {
-		return encoder.encode(password);
 	}
 }
