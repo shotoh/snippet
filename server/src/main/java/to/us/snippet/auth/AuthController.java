@@ -39,4 +39,10 @@ public class AuthController {
 				.setData(service.login(authDTO))
 				.build();
 	}
+
+	@PostMapping("/change-password")
+	public Response changePassword(@RequestBody @Valid PasswordDTO passwordDTO) {
+		service.changePassword(passwordDTO);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
 }

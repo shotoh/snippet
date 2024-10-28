@@ -1,5 +1,6 @@
 package to.us.snippet.auth;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import to.us.snippet.exceptions.ResourceNotFoundException;
 import to.us.snippet.exceptions.UnauthorizedException;
 import to.us.snippet.SnippetModel;
@@ -24,12 +25,14 @@ public class AuthService {
 	private final AuthenticationManager authenticationManager;
 	private final UserRepository repository;
 	private final JwtEncoder jwtEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public AuthService(AuthenticationManager authenticationManager, UserRepository repository, JwtEncoder jwtEncoder) {
+	public AuthService(AuthenticationManager authenticationManager, UserRepository repository, JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder) {
 		this.authenticationManager = authenticationManager;
 		this.repository = repository;
 		this.jwtEncoder = jwtEncoder;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public TokenDTO login(AuthDTO authDTO) {
@@ -38,6 +41,13 @@ public class AuthService {
 		if (user == null) throw new ResourceNotFoundException("username", "User not found with this username"); // todo extend UserDetails to include id?
 		long id = user.getId();
 		return new TokenDTO(id, generateToken(id, authentication));
+	}
+
+	public void changePassword(PasswordDTO passwordDTO) {
+		User user = repository.findById(userId()).orElseThrow(() -> new ResourceNotFoundException("username", "User not found with this id"));
+		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), user.getEncryptedPassword())) throw new UnauthorizedException();
+		user.setEncryptedPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+		repository.save(user);
 	}
 
 	public String generateToken(long id, Authentication authentication) {
@@ -77,5 +87,9 @@ public class AuthService {
 		List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		if (!roles.contains("ROLE_USER")) throw new UnauthorizedException();
 		return Long.parseLong(((Jwt) authentication.getPrincipal()).getSubject());
+	}
+
+	public String encryptPassword(String password) {
+		return passwordEncoder.encode(password);
 	}
 }
