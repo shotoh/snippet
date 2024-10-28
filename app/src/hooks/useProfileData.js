@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { parseJwt, fetchUserAndPosts } from "../api/ProfileAPI";
+import { parseJwt, fetchUserAndPosts, getFriendData } from "../api/ProfileAPI";
 import DefaultProfilePicture from "../images/defaultprofile2.jpg";
 import DefaultBanner from "../images/somepicture.jpg";
 
@@ -13,6 +13,7 @@ const useProfileData = () => {
     biography: "",
     profilePicture: DefaultProfilePicture,
     profileBanner: DefaultBanner,
+    friendCount: 0,
   });
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
@@ -34,6 +35,8 @@ const useProfileData = () => {
         token
       );
 
+      const friendData = await getFriendData(userIdToDisplay, token);
+
       setUserData({
         username: userResponse.data.username || "",
         handle: userResponse.data.username || "",
@@ -41,6 +44,7 @@ const useProfileData = () => {
         profilePicture:
           userResponse.data.profilePicture || DefaultProfilePicture,
         profileBanner: userResponse.data.profileBanner || DefaultBanner,
+        friendCount: Object.keys(friendData).length,
       });
 
       setPosts(userPosts);
