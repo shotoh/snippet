@@ -87,6 +87,8 @@ export const getFriendData = async (userID, token) => {
         profilePicture: friend.to.profilePicture,
       }));
 
+      console.log(friendData);
+
       return friendData;
     } else {
       throw new Error("Error loading friends");
