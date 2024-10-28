@@ -2,12 +2,16 @@ import React, { useEffect, useRef } from "react";
 
 // Main MessageBody Component
 export default function MessageBody({
+  selectedFriend,
   messages,
   userId,
   shouldScrollToBottom,
   setShouldScrollToBottom,
 }) {
   const messagesContainerRef = useRef(null);
+  const friend = {
+    picture: selectedFriend.profilePicture,
+  };
 
   // Scroll to the bottom when shouldScrollToBottom is true
   useEffect(() => {
@@ -39,6 +43,7 @@ export default function MessageBody({
               key={message.id}
               message={message.content}
               isSameSender={isSameSenderAsPrevious}
+              friend={friend}
             />
           );
         })}
@@ -61,14 +66,17 @@ function MessageBubbleSelf({ message, isSameSender }) {
 }
 
 // MessageBubble for the Friend's Messages
-function MessageBubbleFriend({ message, isSameSender }) {
+function MessageBubbleFriend({ message, isSameSender, friend }) {
   return (
-    <div
-      className={`border-2 border-secondaryLight font-montserrat px-4 py-2 rounded-lg max-w-xs ${
-        isSameSender ? "mt-1" : "mt-3"
-      } self-start`}
-    >
-      {message}
+    <div className={`flex items-end ${isSameSender ? "mt-1" : "mt-3"}`}>
+      <img
+        src={friend.picture}
+        alt="ProfilePic"
+        className="w-10 h-10 rounded-full"
+      />
+      <div className="ml-2 border-2 border-secondaryLight font-montserrat px-4 py-2 rounded-lg max-w-xs">
+        {message}
+      </div>
     </div>
   );
 }

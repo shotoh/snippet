@@ -81,15 +81,3 @@ VALUES (1, 2, 'hello', 483297432),
        (8, 10, 'hi rick', 74326424),
        (5, 4, 'where is the secret formula', 74362874),
        (4, 5, 'who are you', 874873242);
-
-INSERT INTO `medias` (post_id, source, timestamp)
-VALUES (2, 'top_frag.jpg', 74983297842),
-       (2, 'victory_royale.png', 4763287423),
-       (3, 'kazoo.png', 76821638721),
-       (3, 'sheet_music', 6287432987),
-       (5, 'problem1.png', 748327489),
-       (5, 'problem2.png', 768463284),
-       (7, 'help.jpg', 4763287468),
-       (6, 'computer.png', 7498768462),
-       (6, 'broken_computer.png', 8746328742),
-       (8, 'mountain_view.png', 479873246);

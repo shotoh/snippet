@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import { InputGroup, Form } from "react-bootstrap";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
-
 import MessageHeader from "../../components/MessagePage/MessageHeader";
 import MessageBody from "../../components/MessagePage/MessageBody";
 import MessageBar from "../../components/MessagePage/MessageBar";
 import FriendCard from "../../components/MessagePage/FriendCard";
+import defaultProfile from "../../images/defaultprofile.png";
 
 export default function MessagesPage() {
   // Friends of user
@@ -15,6 +15,7 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
 
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(""); // State to store username
 
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -32,6 +33,41 @@ export default function MessagesPage() {
       return null;
     }
   };
+
+  useEffect(() => {
+    // Retrieve the username of the authenticated user
+    async function fetchUserDetails() {
+      const token = authToken;
+      if (!token) {
+        setError("User is not authenticated");
+        setLoading(false);
+        return;
+      }
+
+      // Get user ID from token and set it in state
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+      setUserId(userIdFromToken);
+
+      try {
+        const response = await fetch(`/api/users/${userIdFromToken}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+          setUsername(result.data.username); // Set the username
+        } else {
+          setError("Error loading user details");
+        }
+      } catch (err) {
+        setError("Error loading user details");
+      }
+    }
+
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     // Retrieve list of friends associated with user
@@ -69,7 +105,7 @@ export default function MessagesPage() {
             id: friend.to.id,
             username: friend.to.username,
             displayName: friend.to.username, // *** TEMPORARY: Change to displayName once implemented ***
-            profilePicture: require("../../images/defaultprofile.png"), // *** TEMPORARY: Change to friend.to.profilePicture once implemented ***
+            profilePicture: friend.to.profilePicture || defaultProfile,
           }));
 
           setFriends(friendData);
@@ -92,10 +128,10 @@ export default function MessagesPage() {
     let intervalId;
     if (selectedFriend) {
       loadMessages(true); // User selected a friend, should scroll
-      // Start polling every 3 seconds
+      // Start polling every 5 seconds
       intervalId = setInterval(() => {
         loadMessages(false); // Interval call, should not scroll
-      }, 3000);
+      }, 5000);
     } else {
       setMessages([]);
     }
@@ -157,7 +193,7 @@ export default function MessagesPage() {
   return (
     <div>
       {/* Navbar */}
-      <NavBar />
+      <NavBar username={username} /> 
       <div
         className="container mx-auto mt-4 mb-4 border-2 p-0 border-secondaryLight"
         style={{ height: "calc(100vh - 100px)" }}
@@ -203,6 +239,7 @@ export default function MessagesPage() {
               <>
                 <MessageHeader selectedFriend={selectedFriend} />
                 <MessageBody
+                  selectedFriend={selectedFriend}
                   messages={messages}
                   userId={userId}
                   shouldScrollToBottom={shouldScrollToBottom}
@@ -220,7 +257,7 @@ export default function MessagesPage() {
               <div className="d-flex flex-col justify-center items-center h-100 font-montserrat text-2xl font-semibold">
                 <UserCircleIcon className="w-20 h-20" />
                 <p>Select a message to view its content.</p>
-              </div> // placeholder for selected DM
+              </div>
             )}
           </div>
         </div>
