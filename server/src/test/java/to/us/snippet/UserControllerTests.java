@@ -1,6 +1,7 @@
 package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import to.us.snippet.auth.AuthService;
 import to.us.snippet.users.UserController;
 import to.us.snippet.users.UserCreateDTO;
 import to.us.snippet.users.UserDTO;
+import to.us.snippet.users.UserRepository;
 import to.us.snippet.users.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,34 +31,35 @@ public class UserControllerTests {
 	private final MockMvc mockMvc;
 	private final UserController controller;
 	private final UserService service;
+	private final UserRepository repository;
 	private final ObjectMapper mapper;
 	private final UserDTO mockUser;
 	private final String mockToken;
 
 	@Autowired
-	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service,
+	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service, UserRepository repository,
 	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
+		this.repository = repository;
 		this.mapper = new ObjectMapper();
 
-		UserDTO mockDTO = service.getUserByUsername("mock1");
-		if (mockDTO == null) {
-			UserCreateDTO createDTO = new UserCreateDTO();
-			createDTO.setUsername("mock1");
-			createDTO.setEmail("mock1@gmail.com");
-			createDTO.setPassword(mockPassword);
-			mockDTO = service.createUser(createDTO);
-		}
-		this.mockUser = mockDTO;
-
-		System.out.println("USERID: " + mockDTO.getId());
+		UserCreateDTO createDTO = new UserCreateDTO();
+		createDTO.setUsername("mock1");
+		createDTO.setEmail("mock1@gmail.com");
+		createDTO.setPassword(mockPassword);
+		this.mockUser = service.createUser(createDTO);
 
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
 		authDTO.setPassword(mockPassword);
 		this.mockToken = "Bearer " + auth.login(authDTO).getToken();
+	}
+
+	@AfterEach
+	void clean() {
+		repository.deleteById(mockUser.getId());
 	}
 
 	@Test
