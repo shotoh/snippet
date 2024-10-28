@@ -1,7 +1,5 @@
 package to.us.snippet.friends;
 
-import to.us.snippet.exceptions.UnauthorizedException;
-import to.us.snippet.responses.Success;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import to.us.snippet.exceptions.UnauthorizedException;
+import to.us.snippet.responses.Response;
+import to.us.snippet.responses.ResponseBuilder;
+import to.us.snippet.responses.Status;
 
 @RestController
 @RequestMapping(path = "/api/friends")
@@ -31,13 +33,14 @@ public class FriendController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Success<List<FriendDTO>> retrieveFriends(@RequestParam(name = "from") Optional<Long> fromId, @RequestParam(name = "to") Optional<Long> toId) {
+	public Response retrieveFriends(@RequestParam(name = "from") Optional<Long> fromId, @RequestParam(name = "to") Optional<Long> toId) {
+		ResponseBuilder builder = new ResponseBuilder(Status.SUCCESS);
 		if (fromId.isPresent() && toId.isPresent()) {
-			return new Success<>(List.of(service.retrieveFriendByFromAndTo(fromId.get(), toId.get())));
+			return builder.setData(List.of(service.retrieveFriendByFromAndTo(fromId.get(), toId.get()))).build();
 		} else if (fromId.isPresent()) {
-			return new Success<>(service.retrieveFriendsByFrom(fromId.get()));
+			return builder.setData(service.retrieveFriendsByFrom(fromId.get())).build();
 		} else if (toId.isPresent()) {
-			return new Success<>(service.retrieveFriendsByTo(toId.get()));
+			return builder.setData(service.retrieveFriendsByTo(toId.get())).build();
 		} else {
 			throw new UnauthorizedException();
 		}
@@ -45,14 +48,16 @@ public class FriendController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<FriendDTO> createFriend(@RequestBody @Valid FriendCreateDTO friendCreateDTO) {
-		return new Success<>(service.createFriend(friendCreateDTO));
+	public Response createFriend(@RequestBody @Valid FriendCreateDTO friendCreateDTO) {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.createFriend(friendCreateDTO))
+				.build();
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Success<Void> deleteFriend(@PathVariable("id") long id) {
+	public Response deleteFriend(@PathVariable("id") long id) {
 		service.deleteFriend(id);
-		return new Success<>();
+		return new ResponseBuilder(Status.SUCCESS).build();
 	}
 }

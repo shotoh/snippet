@@ -1,12 +1,18 @@
 package to.us.snippet.auth;
 
-import to.us.snippet.users.UserCreateDTO;
-import to.us.snippet.responses.Success;
-import to.us.snippet.users.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import to.us.snippet.responses.Response;
+import to.us.snippet.responses.ResponseBuilder;
+import to.us.snippet.responses.Status;
+import to.us.snippet.users.UserCreateDTO;
+import to.us.snippet.users.UserService;
 
 @RestController
 @RequestMapping(path = "/api/auth")
@@ -22,13 +28,15 @@ public class AuthController {
 
 	@PostMapping("/register")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Success<Void> register(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+	public Response register(@RequestBody @Valid UserCreateDTO userCreateDTO) {
 		userService.createUser(userCreateDTO);
-		return new Success<>();
+		return new ResponseBuilder(Status.SUCCESS).build();
 	}
 
 	@PostMapping("/login")
-	public Success<TokenDTO> login(@RequestBody @Valid AuthDTO authDTO) {
-		return new Success<>(service.login(authDTO));
+	public Response login(@RequestBody @Valid AuthDTO authDTO) {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.login(authDTO))
+				.build();
 	}
 }
