@@ -64,6 +64,8 @@ public class PostControllerTests {
 		authDTO.setPassword(mockPassword);
 		this.mockToken = "Bearer " + auth.login(authDTO).getToken();
 
+		auth.setTestAuth(mockToken);
+
 		PostCreateDTO postCreateDTO = new PostCreateDTO();
 		postCreateDTO.setUserId(mockUser.getId());
 		postCreateDTO.setContent("mock content1");
@@ -102,6 +104,33 @@ public class PostControllerTests {
 	}
 
 	@Test
+	void retrievePostsByUserNoAuth() throws Exception {
+		mockMvc.perform(get("/api/posts?user={userId}", mockUser.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void retrievePostsByUserNotFound() throws Exception {
+		mockMvc.perform(get("/api/posts?user={userId}", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").isArray())
+				.andExpect(jsonPath("$.data").isEmpty());
+	}
+
+	@Test
+	void retrievePostsByUser() throws Exception {
+		mockMvc.perform(get("/api/posts?user={userId}", mockUser.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").isArray());
+	}
+
+	@Test
 	void retrievePostNoAuth() throws Exception {
 		mockMvc.perform(get("/api/posts/{id}", 1))
 				.andExpect(status().isUnauthorized());
@@ -114,7 +143,7 @@ public class PostControllerTests {
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
 	}
 
 	@Test
@@ -126,16 +155,16 @@ public class PostControllerTests {
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpectAll(
 						jsonPath("$.data.id").value(1),
-						jsonPath("$.data.username").exists(),
-						jsonPath("$.data.email").exists());
+						jsonPath("$.data.user").exists(),
+						jsonPath("$.data.content").exists());
 	}
 
 	@Test
 	void updatePostNoAuth() throws Exception {
-		mockUser.setBiography("new bio");
-		UserDTO updateDTO = new UserDTO();
-		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
+		mockPost.setContent("new content");
+		PostDTO updateDTO = new PostDTO();
+		updateDTO.setContent(mockPost.getContent());
+		mockMvc.perform(patch("/api/posts/{id}", mockPost.getId())
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
@@ -143,9 +172,9 @@ public class PostControllerTests {
 
 	@Test
 	void updatePostNotFound() throws Exception {
-		mockUser.setBiography("new bio");
-		UserDTO updateDTO = new UserDTO();
-		updateDTO.setBiography(mockUser.getBiography());
+		mockPost.setContent("new content");
+		PostDTO updateDTO = new PostDTO();
+		updateDTO.setContent(mockPost.getContent());
 		mockMvc.perform(patch("/api/posts/{id}", -1)
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
@@ -153,15 +182,15 @@ public class PostControllerTests {
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
 	}
 
 	@Test
 	void updatePost() throws Exception {
-		mockUser.setBiography("new bio");
-		UserDTO updateDTO = new UserDTO();
-		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
+		mockPost.setContent("new content");
+		PostDTO updateDTO = new PostDTO();
+		updateDTO.setContent(mockPost.getContent());
+		mockMvc.perform(patch("/api/posts/{id}", mockPost.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -169,18 +198,16 @@ public class PostControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpectAll(
-						jsonPath("$.data.id").value(mockUser.getId()),
-						jsonPath("$.data.username").value(mockUser.getUsername()),
-						jsonPath("$.data.email").value(mockUser.getEmail()),
-						jsonPath("$.data.displayName").value(mockUser.getDisplayName()),
-						jsonPath("$.data.biography").value(mockUser.getBiography()));
+						jsonPath("$.data.id").value(mockPost.getId()),
+						jsonPath("$.data.user.id").value(mockUser.getId()),
+						jsonPath("$.data.content").value(mockPost.getContent()));
 	}
 
 	@Test
-	void updatePostInvalidDisplayName() throws Exception {
-		mockUser.setDisplayName("");
-		UserDTO updateDTO = new UserDTO();
-		updateDTO.setDisplayName(mockUser.getDisplayName());
+	void updatePostInvalidContent() throws Exception {
+		mockPost.setContent("");
+		PostDTO updateDTO = new PostDTO();
+		updateDTO.setContent(mockPost.getContent());
 		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
@@ -188,7 +215,7 @@ public class PostControllerTests {
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.displayName").value("size must be between 1 and 31"));
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
 	}
 
 	@Test
@@ -204,12 +231,12 @@ public class PostControllerTests {
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
 	}
 
 	@Test
 	void deletePost() throws Exception {
-		mockMvc.perform(delete("/api/posts/{id}", mockUser.getId())
+		mockMvc.perform(delete("/api/posts/{id}", mockPost.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))

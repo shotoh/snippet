@@ -36,9 +36,6 @@ public class UserService {
 	}
 
 	public UserDTO createUser(UserCreateDTO userCreateDTO) {
-		if (repository.existsById(userCreateDTO.getId())) {
-			throw new ResourceAlreadyExistsException("id", "User already exists with this id");
-		}
 		if (repository.existsByUsername(userCreateDTO.getUsername())) {
 			throw new ResourceAlreadyExistsException("username", "User already exists with this username");
 		}
