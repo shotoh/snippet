@@ -27,6 +27,8 @@ const ProfilePage = () => {
                   handle={userData.handle}
                   biography={userData.biography}
                   id={userIdToDisplay}
+                  friendCount={userData.friendCount}
+                  posts={posts}
                 />
               </div>
             </div>
