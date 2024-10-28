@@ -1,11 +1,14 @@
 package io.github.shotoh.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.shotoh.snippet.controllers.UserController;
+import io.github.shotoh.snippet.controllers.PostController;
 import io.github.shotoh.snippet.models.auth.AuthDTO;
+import io.github.shotoh.snippet.models.posts.PostCreateDTO;
+import io.github.shotoh.snippet.models.posts.PostDTO;
 import io.github.shotoh.snippet.models.users.UserCreateDTO;
 import io.github.shotoh.snippet.models.users.UserDTO;
 import io.github.shotoh.snippet.services.AuthService;
+import io.github.shotoh.snippet.services.PostService;
 import io.github.shotoh.snippet.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +28,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTests {
+public class PostControllerTests {
 	private final MockMvc mockMvc;
-	private final UserController controller;
-	private final UserService service;
+	private final PostController controller;
+	private final PostService service;
 	private final ObjectMapper mapper;
 	private final UserDTO mockUser;
 	private final String mockToken;
+	private final PostDTO mockPost;
 
 	@Autowired
-	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service,
+	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service, UserService userService,
 	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
@@ -45,12 +49,17 @@ public class UserControllerTests {
 		createDTO.setUsername("mock1");
 		createDTO.setEmail("mock1@gmail.com");
 		createDTO.setPassword(mockPassword);
-		this.mockUser = service.createUser(createDTO);
-
+		this.mockUser = userService.createUser(createDTO);
+		
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
 		authDTO.setPassword(mockPassword);
 		this.mockToken = "Bearer " + auth.login(authDTO).getToken();
+
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setUserId(mockUser.getId());
+		postCreateDTO.setContent("mock content1");
+		this.mockPost = service.createPost(postCreateDTO);
 	}
 
 	@Test
@@ -58,18 +67,19 @@ public class UserControllerTests {
 		assertThat(controller).isNotNull();
 		assertThat(service).isNotNull();
 		assertThat(mockUser).isNotNull();
+		assertThat(mockPost).isNotNull();
 		assertThat(mockToken).isNotNull();
 	}
 
 	@Test
-	void retrieveUsersNoAuth() throws Exception {
-		mockMvc.perform(get("/api/users"))
+	void retrievePostsNoAuth() throws Exception {
+		mockMvc.perform(get("/api/posts"))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrieveUsers() throws Exception {
-		mockMvc.perform(get("/api/users")
+	void retrievePosts() throws Exception {
+		mockMvc.perform(get("/api/posts")
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -78,14 +88,14 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void retrieveUserNoAuth() throws Exception {
-		mockMvc.perform(get("/api/users/{id}", 1))
+	void retrievePostNoAuth() throws Exception {
+		mockMvc.perform(get("/api/posts/{id}", 1))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrieveUserNotFound() throws Exception {
-		mockMvc.perform(get("/api/users/{id}", -1)
+	void retrievePostNotFound() throws Exception {
+		mockMvc.perform(get("/api/posts/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -94,8 +104,8 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void retrieveUser() throws Exception {
-		mockMvc.perform(get("/api/users/{id}", 1)
+	void retrievePost() throws Exception {
+		mockMvc.perform(get("/api/posts/{id}", 1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -107,22 +117,22 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void updateUserNoAuth() throws Exception {
+	void updatePostNoAuth() throws Exception {
 		mockUser.setBiography("new bio");
 		UserDTO updateDTO = new UserDTO();
 		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/users/{id}", mockUser.getId())
+		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void updateUserNotFound() throws Exception {
+	void updatePostNotFound() throws Exception {
 		mockUser.setBiography("new bio");
 		UserDTO updateDTO = new UserDTO();
 		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/users/{id}", -1)
+		mockMvc.perform(patch("/api/posts/{id}", -1)
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -133,11 +143,11 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void updateUser() throws Exception {
+	void updatePost() throws Exception {
 		mockUser.setBiography("new bio");
 		UserDTO updateDTO = new UserDTO();
 		updateDTO.setBiography(mockUser.getBiography());
-		mockMvc.perform(patch("/api/users/{id}", mockUser.getId())
+		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -154,11 +164,11 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void updateUserInvalidDisplayName() throws Exception {
+	void updatePostInvalidDisplayName() throws Exception {
 		mockUser.setDisplayName("");
 		UserDTO updateDTO = new UserDTO();
 		updateDTO.setDisplayName(mockUser.getDisplayName());
-		mockMvc.perform(patch("/api/users/{id}", mockUser.getId())
+		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -169,14 +179,14 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void deleteUserNoAuth() throws Exception {
-		mockMvc.perform(delete("/api/users/{id}", mockUser.getId()))
+	void deletePostNoAuth() throws Exception {
+		mockMvc.perform(delete("/api/posts/{id}", mockUser.getId()))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void deleteUserNotFound() throws Exception {
-		mockMvc.perform(delete("/api/users/{id}", -1)
+	void deletePostNotFound() throws Exception {
+		mockMvc.perform(delete("/api/posts/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -185,8 +195,8 @@ public class UserControllerTests {
 	}
 
 	@Test
-	void deleteUser() throws Exception {
-		mockMvc.perform(delete("/api/users/{id}", mockUser.getId())
+	void deletePost() throws Exception {
+		mockMvc.perform(delete("/api/posts/{id}", mockUser.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
