@@ -177,6 +177,21 @@ public class UserControllerTests {
 	}
 
 	@Test
+	void updateUserInvalidBiography() throws Exception {
+		mockUser.setBiography("");
+		UserDTO updateDTO = new UserDTO();
+		updateDTO.setBiography(mockUser.getBiography());
+		mockMvc.perform(patch("/api/users/{id}", mockUser.getId())
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(updateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.biography").value("size must be between 1 and 1023"));
+	}
+
+	@Test
 	void deleteUserNoAuth() throws Exception {
 		mockMvc.perform(delete("/api/users/{id}", mockUser.getId()))
 				.andExpect(status().isUnauthorized());

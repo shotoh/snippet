@@ -1,6 +1,7 @@
 package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +14,11 @@ import to.us.snippet.auth.AuthService;
 import to.us.snippet.posts.PostController;
 import to.us.snippet.posts.PostCreateDTO;
 import to.us.snippet.posts.PostDTO;
+import to.us.snippet.posts.PostRepository;
 import to.us.snippet.posts.PostService;
 import to.us.snippet.users.UserCreateDTO;
 import to.us.snippet.users.UserDTO;
+import to.us.snippet.users.UserRepository;
 import to.us.snippet.users.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,28 +35,29 @@ public class PostControllerTests {
 	private final MockMvc mockMvc;
 	private final PostController controller;
 	private final PostService service;
+	private final PostRepository repository;
+	private final UserRepository userRepository;
 	private final ObjectMapper mapper;
 	private final UserDTO mockUser;
 	private final String mockToken;
 	private final PostDTO mockPost;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service, UserService userService,
+	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service, PostRepository repository,
+	                           UserRepository userRepository, UserService userService,
 	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
+		this.repository = repository;
+		this.userRepository = userRepository;
 		this.mapper = new ObjectMapper();
 
-		UserDTO mockDTO = userService.getUserByUsername("mock1");
-		if (mockDTO == null) {
-			UserCreateDTO createDTO = new UserCreateDTO();
-			createDTO.setUsername("mock1");
-			createDTO.setEmail("mock1@gmail.com");
-			createDTO.setPassword(mockPassword);
-			mockDTO = userService.createUser(createDTO);
-		}
-		this.mockUser = mockDTO;
+		UserCreateDTO createDTO = new UserCreateDTO();
+		createDTO.setUsername("mock1");
+		createDTO.setEmail("mock1@gmail.com");
+		createDTO.setPassword(mockPassword);
+		this.mockUser = userService.createUser(createDTO);
 		
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
@@ -64,6 +68,12 @@ public class PostControllerTests {
 		postCreateDTO.setUserId(mockUser.getId());
 		postCreateDTO.setContent("mock content1");
 		this.mockPost = service.createPost(postCreateDTO);
+	}
+
+	@AfterEach
+	void clean() {
+		repository.deleteById(mockPost.getId());
+		userRepository.deleteById(mockUser.getId());
 	}
 
 	@Test
