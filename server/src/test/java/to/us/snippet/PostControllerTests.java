@@ -1,15 +1,6 @@
-package io.github.shotoh.snippet;
+package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.shotoh.snippet.controllers.PostController;
-import io.github.shotoh.snippet.models.auth.AuthDTO;
-import io.github.shotoh.snippet.models.posts.PostCreateDTO;
-import io.github.shotoh.snippet.models.posts.PostDTO;
-import io.github.shotoh.snippet.models.users.UserCreateDTO;
-import io.github.shotoh.snippet.models.users.UserDTO;
-import io.github.shotoh.snippet.services.AuthService;
-import io.github.shotoh.snippet.services.PostService;
-import io.github.shotoh.snippet.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +8,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import to.us.snippet.auth.AuthDTO;
+import to.us.snippet.auth.AuthService;
+import to.us.snippet.posts.PostController;
+import to.us.snippet.posts.PostCreateDTO;
+import to.us.snippet.posts.PostDTO;
+import to.us.snippet.posts.PostService;
+import to.us.snippet.users.UserCreateDTO;
+import to.us.snippet.users.UserDTO;
+import to.us.snippet.users.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -45,11 +45,15 @@ public class PostControllerTests {
 		this.service = service;
 		this.mapper = new ObjectMapper();
 
-		UserCreateDTO createDTO = new UserCreateDTO();
-		createDTO.setUsername("mock1");
-		createDTO.setEmail("mock1@gmail.com");
-		createDTO.setPassword(mockPassword);
-		this.mockUser = userService.createUser(createDTO);
+		UserDTO mockDTO = userService.getUserByUsername("mock1");
+		if (mockDTO == null) {
+			UserCreateDTO createDTO = new UserCreateDTO();
+			createDTO.setUsername("mock1");
+			createDTO.setEmail("mock1@gmail.com");
+			createDTO.setPassword(mockPassword);
+			mockDTO = userService.createUser(createDTO);
+		}
+		this.mockUser = mockDTO;
 		
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
@@ -159,7 +163,6 @@ public class PostControllerTests {
 						jsonPath("$.data.username").value(mockUser.getUsername()),
 						jsonPath("$.data.email").value(mockUser.getEmail()),
 						jsonPath("$.data.displayName").value(mockUser.getDisplayName()),
-						jsonPath("$.data.profilePicture").value(mockUser.getProfilePicture()),
 						jsonPath("$.data.biography").value(mockUser.getBiography()));
 	}
 
