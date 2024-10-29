@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PostControllerTests {
 	private final MockMvc mockMvc;
 	private final PostController controller;
-	private final PostService service;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -43,16 +42,15 @@ public class PostControllerTests {
 	private PostDTO mockPost;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service) {
+	public PostControllerTests(MockMvc mockMvc, PostController controller) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
-		this.service = service;
 		this.mapper = new ObjectMapper();
 	}
 
 	@BeforeEach
-	void setup(@Autowired UserService userService, @Autowired AuthService auth,
-	           @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	void setup(@Autowired PostService postService, @Autowired UserService userService,
+	           @Autowired AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
@@ -69,7 +67,7 @@ public class PostControllerTests {
 		PostCreateDTO postCreateDTO = new PostCreateDTO();
 		postCreateDTO.setUserId(mockUser.getId());
 		postCreateDTO.setContent("mock content1");
-		this.mockPost = service.createPost(postCreateDTO);
+		this.mockPost = postService.createPost(postCreateDTO);
 	}
 
 	@AfterEach
@@ -81,7 +79,6 @@ public class PostControllerTests {
 	@Test
 	void contextLoads() {
 		assertThat(controller).isNotNull();
-		assertThat(service).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();

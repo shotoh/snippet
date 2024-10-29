@@ -39,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CommentControllerTests {
 	private final MockMvc mockMvc;
 	private final CommentController controller;
-	private final CommentService service;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -48,16 +47,16 @@ public class CommentControllerTests {
 	private CommentDTO mockComment;
 
 	@Autowired
-	public CommentControllerTests(MockMvc mockMvc, CommentController controller, CommentService service) {
+	public CommentControllerTests(MockMvc mockMvc, CommentController controller) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
-		this.service = service;
 		this.mapper = new ObjectMapper();
 	}
 
 	@BeforeEach
-	void setup(@Autowired PostService postService, @Autowired UserService userService,
-	           @Autowired AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	void setup(@Autowired CommentService commentService, @Autowired PostService postService,
+	           @Autowired UserService userService, @Autowired AuthService auth,
+	           @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
@@ -80,7 +79,7 @@ public class CommentControllerTests {
 		commentCreateDTO.setUserId(mockUser.getId());
 		commentCreateDTO.setPostId(mockPost.getId());
 		commentCreateDTO.setContent("mock comment1");
-		this.mockComment = service.createComment(commentCreateDTO);
+		this.mockComment = commentService.createComment(commentCreateDTO);
 	}
 
 	@AfterEach
@@ -94,7 +93,6 @@ public class CommentControllerTests {
 	@Test
 	void contextLoads() {
 		assertThat(controller).isNotNull();
-		assertThat(service).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();

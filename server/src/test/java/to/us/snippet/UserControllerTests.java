@@ -31,27 +31,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTests {
 	private final MockMvc mockMvc;
 	private final UserController controller;
-	private final UserService service;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
 	private String mockToken;
 
 	@Autowired
-	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service) {
+	public UserControllerTests(MockMvc mockMvc, UserController controller) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
-		this.service = service;
 		this.mapper = new ObjectMapper();
 	}
 
 	@BeforeEach
-	void setup(@Autowired AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	void setup(@Autowired UserService userService, @Autowired AuthService auth,
+	           @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
 		userCreateDTO.setPassword(mockPassword);
-		this.mockUser = service.createUser(userCreateDTO);
+		this.mockUser = userService.createUser(userCreateDTO);
 
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
@@ -67,7 +66,6 @@ public class UserControllerTests {
 	@Test
 	void contextLoads() {
 		assertThat(controller).isNotNull();
-		assertThat(service).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 	}
