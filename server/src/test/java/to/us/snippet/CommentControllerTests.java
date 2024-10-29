@@ -11,7 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.posts.PostController;
+import to.us.snippet.comments.CommentController;
+import to.us.snippet.comments.CommentCreateDTO;
+import to.us.snippet.comments.CommentDTO;
+import to.us.snippet.comments.CommentRepository;
+import to.us.snippet.comments.CommentService;
 import to.us.snippet.posts.PostCreateDTO;
 import to.us.snippet.posts.PostDTO;
 import to.us.snippet.posts.PostRepository;
@@ -31,25 +35,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PostControllerTests {
+public class CommentControllerTests {
 	private final MockMvc mockMvc;
-	private final PostController controller;
-	private final PostService service;
-	private final PostRepository repository;
+	private final CommentController controller;
+	private final CommentService service;
+	private final CommentRepository repository;
+	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final ObjectMapper mapper;
 	private final UserDTO mockUser;
 	private final String mockToken;
 	private final PostDTO mockPost;
+	private final CommentDTO mockComment;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service, PostRepository repository,
-	                           UserRepository userRepository, UserService userService,
+	public CommentControllerTests(MockMvc mockMvc, CommentController controller, CommentService service, CommentRepository repository,
+	                           PostRepository postRepository, UserRepository userRepository, PostService postService, UserService userService,
 	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
 		this.repository = repository;
+		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.mapper = new ObjectMapper();
 
@@ -58,7 +65,7 @@ public class PostControllerTests {
 		userCreateDTO.setEmail("mock1@gmail.com");
 		userCreateDTO.setPassword(mockPassword);
 		this.mockUser = userService.createUser(userCreateDTO);
-		
+
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
 		authDTO.setPassword(mockPassword);
@@ -69,12 +76,19 @@ public class PostControllerTests {
 		PostCreateDTO postCreateDTO = new PostCreateDTO();
 		postCreateDTO.setUserId(mockUser.getId());
 		postCreateDTO.setContent("mock content1");
-		this.mockPost = service.createPost(postCreateDTO);
+		this.mockPost = postService.createPost(postCreateDTO);
+
+		CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+		commentCreateDTO.setUserId(mockUser.getId());
+		commentCreateDTO.setPostId(mockPost.getId());
+		commentCreateDTO.setContent("mock comment1");
+		this.mockComment = service.createComment(commentCreateDTO);
 	}
 
 	@AfterEach
 	void clean() {
-		repository.deleteById(mockPost.getId());
+		repository.deleteById(mockComment.getId());
+		postRepository.deleteById(mockPost.getId());
 		userRepository.deleteById(mockUser.getId());
 	}
 
@@ -86,6 +100,7 @@ public class PostControllerTests {
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();
+		assertThat(mockComment).isNotNull();
 	}
 
 	@Test

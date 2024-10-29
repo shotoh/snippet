@@ -45,11 +45,11 @@ public class UserControllerTests {
 		this.repository = repository;
 		this.mapper = new ObjectMapper();
 
-		UserCreateDTO createDTO = new UserCreateDTO();
-		createDTO.setUsername("mock1");
-		createDTO.setEmail("mock1@gmail.com");
-		createDTO.setPassword(mockPassword);
-		this.mockUser = service.createUser(createDTO);
+		UserCreateDTO userCreateDTO = new UserCreateDTO();
+		userCreateDTO.setUsername("mock1");
+		userCreateDTO.setEmail("mock1@gmail.com");
+		userCreateDTO.setPassword(mockPassword);
+		this.mockUser = service.createUser(userCreateDTO);
 
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
@@ -66,6 +66,7 @@ public class UserControllerTests {
 	void contextLoads() {
 		assertThat(controller).isNotNull();
 		assertThat(service).isNotNull();
+		assertThat(repository).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 	}
