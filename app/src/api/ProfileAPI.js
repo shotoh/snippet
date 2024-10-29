@@ -117,3 +117,5 @@ export const fetchUserAndPosts = async (userID, token) => {
     throw error;
   }
 };
+
+
