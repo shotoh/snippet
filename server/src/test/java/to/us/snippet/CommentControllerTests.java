@@ -40,9 +40,6 @@ public class CommentControllerTests {
 	private final MockMvc mockMvc;
 	private final CommentController controller;
 	private final CommentService service;
-	private final CommentRepository repository;
-	private final PostRepository postRepository;
-	private final UserRepository userRepository;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -51,14 +48,10 @@ public class CommentControllerTests {
 	private CommentDTO mockComment;
 
 	@Autowired
-	public CommentControllerTests(MockMvc mockMvc, CommentController controller, CommentService service, CommentRepository repository,
-	                           PostRepository postRepository, UserRepository userRepository) {
+	public CommentControllerTests(MockMvc mockMvc, CommentController controller, CommentService service) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
-		this.repository = repository;
-		this.postRepository = postRepository;
-		this.userRepository = userRepository;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -91,7 +84,8 @@ public class CommentControllerTests {
 	}
 
 	@AfterEach
-	void clean() {
+	void clean(@Autowired CommentRepository repository, @Autowired PostRepository postRepository,
+	           @Autowired UserRepository userRepository) {
 		repository.deleteById(mockComment.getId());
 		postRepository.deleteById(mockPost.getId());
 		userRepository.deleteById(mockUser.getId());
@@ -101,7 +95,6 @@ public class CommentControllerTests {
 	void contextLoads() {
 		assertThat(controller).isNotNull();
 		assertThat(service).isNotNull();
-		assertThat(repository).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();
@@ -223,7 +216,7 @@ public class CommentControllerTests {
 						jsonPath("$.data.id").value(mockComment.getId()),
 						jsonPath("$.data.user.id").value(mockUser.getId()),
 						jsonPath("$.data.post.id").value(mockPost.getId()),
-						jsonPath("$.data.content").value(mockPost.getContent()));
+						jsonPath("$.data.content").value(mockComment.getContent()));
 	}
 
 	@Test
