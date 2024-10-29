@@ -2,6 +2,7 @@ package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,15 +44,15 @@ public class CommentControllerTests {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final ObjectMapper mapper;
-	private final UserDTO mockUser;
-	private final String mockToken;
-	private final PostDTO mockPost;
-	private final CommentDTO mockComment;
+
+	private UserDTO mockUser;
+	private String mockToken;
+	private PostDTO mockPost;
+	private CommentDTO mockComment;
 
 	@Autowired
 	public CommentControllerTests(MockMvc mockMvc, CommentController controller, CommentService service, CommentRepository repository,
-	                           PostRepository postRepository, UserRepository userRepository, PostService postService, UserService userService,
-	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	                           PostRepository postRepository, UserRepository userRepository) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
@@ -59,7 +60,11 @@ public class CommentControllerTests {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.mapper = new ObjectMapper();
+	}
 
+	@BeforeEach
+	void setup(@Autowired PostService postService, @Autowired UserService userService,
+	           @Autowired AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
@@ -104,14 +109,14 @@ public class CommentControllerTests {
 	}
 
 	@Test
-	void retrievePostsNoAuth() throws Exception {
-		mockMvc.perform(get("/api/posts"))
+	void retrieveCommentsNoAuth() throws Exception {
+		mockMvc.perform(get("/api/comments"))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrievePosts() throws Exception {
-		mockMvc.perform(get("/api/posts")
+	void retrieveComments() throws Exception {
+		mockMvc.perform(get("/api/comments")
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -120,14 +125,14 @@ public class CommentControllerTests {
 	}
 
 	@Test
-	void retrievePostsByUserNoAuth() throws Exception {
-		mockMvc.perform(get("/api/posts?user={userId}", mockUser.getId()))
+	void retrieveCommentsByPostNoAuth() throws Exception {
+		mockMvc.perform(get("/api/comments?post={postId}", mockPost.getId()))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrievePostsByUserNotFound() throws Exception {
-		mockMvc.perform(get("/api/posts?user={userId}", -1)
+	void retrieveCommentsByPostNotFound() throws Exception {
+		mockMvc.perform(get("/api/comments?post={postId}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -137,8 +142,8 @@ public class CommentControllerTests {
 	}
 
 	@Test
-	void retrievePostsByUser() throws Exception {
-		mockMvc.perform(get("/api/posts?user={userId}", mockUser.getId())
+	void retrieveCommentsByPost() throws Exception {
+		mockMvc.perform(get("/api/comments?post={postId}", mockPost.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -147,66 +152,67 @@ public class CommentControllerTests {
 	}
 
 	@Test
-	void retrievePostNoAuth() throws Exception {
-		mockMvc.perform(get("/api/posts/{id}", 1))
+	void retrieveCommentNoAuth() throws Exception {
+		mockMvc.perform(get("/api/comments/{id}", 1))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrievePostNotFound() throws Exception {
-		mockMvc.perform(get("/api/posts/{id}", -1)
+	void retrieveCommentNotFound() throws Exception {
+		mockMvc.perform(get("/api/comments/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
 	}
 
 	@Test
-	void retrievePost() throws Exception {
-		mockMvc.perform(get("/api/posts/{id}", 1)
+	void retrieveComment() throws Exception {
+		mockMvc.perform(get("/api/comments/{id}", mockComment.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpectAll(
-						jsonPath("$.data.id").value(1),
+						jsonPath("$.data.id").value(mockComment.getId()),
 						jsonPath("$.data.user").exists(),
+						jsonPath("$.data.post").exists(),
 						jsonPath("$.data.content").exists());
 	}
 
 	@Test
-	void updatePostNoAuth() throws Exception {
-		mockPost.setContent("new content");
-		PostDTO updateDTO = new PostDTO();
-		updateDTO.setContent(mockPost.getContent());
-		mockMvc.perform(patch("/api/posts/{id}", mockPost.getId())
+	void updateCommentNoAuth() throws Exception {
+		mockComment.setContent("new comment");
+		CommentDTO updateDTO = new CommentDTO();
+		updateDTO.setContent(mockComment.getContent());
+		mockMvc.perform(patch("/api/comments/{id}", mockComment.getId())
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void updatePostNotFound() throws Exception {
-		mockPost.setContent("new content");
-		PostDTO updateDTO = new PostDTO();
-		updateDTO.setContent(mockPost.getContent());
-		mockMvc.perform(patch("/api/posts/{id}", -1)
+	void updateCommentNotFound() throws Exception {
+		mockComment.setContent("new comment");
+		CommentDTO updateDTO = new CommentDTO();
+		updateDTO.setContent(mockComment.getContent());
+		mockMvc.perform(patch("/api/comments/{id}", -1)
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
 	}
 
 	@Test
-	void updatePost() throws Exception {
-		mockPost.setContent("new content");
-		PostDTO updateDTO = new PostDTO();
-		updateDTO.setContent(mockPost.getContent());
-		mockMvc.perform(patch("/api/posts/{id}", mockPost.getId())
+	void updateComment() throws Exception {
+		mockComment.setContent("new comment");
+		CommentDTO updateDTO = new CommentDTO();
+		updateDTO.setContent(mockComment.getContent());
+		mockMvc.perform(patch("/api/comments/{id}", mockComment.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -214,17 +220,18 @@ public class CommentControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpectAll(
-						jsonPath("$.data.id").value(mockPost.getId()),
+						jsonPath("$.data.id").value(mockComment.getId()),
 						jsonPath("$.data.user.id").value(mockUser.getId()),
+						jsonPath("$.data.post.id").value(mockPost.getId()),
 						jsonPath("$.data.content").value(mockPost.getContent()));
 	}
 
 	@Test
-	void updatePostInvalidContent() throws Exception {
-		mockPost.setContent("");
-		PostDTO updateDTO = new PostDTO();
-		updateDTO.setContent(mockPost.getContent());
-		mockMvc.perform(patch("/api/posts/{id}", mockUser.getId())
+	void updateCommentInvalidContent() throws Exception {
+		mockComment.setContent("");
+		CommentDTO updateDTO = new CommentDTO();
+		updateDTO.setContent(mockComment.getContent());
+		mockMvc.perform(patch("/api/comments/{id}", mockUser.getId())
 						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(updateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
@@ -235,24 +242,24 @@ public class CommentControllerTests {
 	}
 
 	@Test
-	void deletePostNoAuth() throws Exception {
-		mockMvc.perform(delete("/api/posts/{id}", mockUser.getId()))
+	void deleteCommentNoAuth() throws Exception {
+		mockMvc.perform(delete("/api/comments/{id}", mockComment.getId()))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void deletePostNotFound() throws Exception {
-		mockMvc.perform(delete("/api/posts/{id}", -1)
+	void deleteCommentNotFound() throws Exception {
+		mockMvc.perform(delete("/api/comments/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
 	}
 
 	@Test
-	void deletePost() throws Exception {
-		mockMvc.perform(delete("/api/posts/{id}", mockPost.getId())
+	void deleteComment() throws Exception {
+		mockMvc.perform(delete("/api/comments/{id}", mockComment.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))

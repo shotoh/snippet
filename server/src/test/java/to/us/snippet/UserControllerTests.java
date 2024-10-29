@@ -2,6 +2,7 @@ package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,20 +32,21 @@ public class UserControllerTests {
 	private final MockMvc mockMvc;
 	private final UserController controller;
 	private final UserService service;
-	private final UserRepository repository;
 	private final ObjectMapper mapper;
-	private final UserDTO mockUser;
-	private final String mockToken;
+
+	private UserDTO mockUser;
+	private String mockToken;
 
 	@Autowired
-	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service, UserRepository repository,
-	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	public UserControllerTests(MockMvc mockMvc, UserController controller, UserService service) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
-		this.repository = repository;
 		this.mapper = new ObjectMapper();
+	}
 
+	@BeforeEach
+	void setup(@Autowired AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
@@ -58,7 +60,7 @@ public class UserControllerTests {
 	}
 
 	@AfterEach
-	void clean() {
+	void clean(@Autowired UserRepository repository) {
 		repository.deleteById(mockUser.getId());
 	}
 
@@ -66,7 +68,6 @@ public class UserControllerTests {
 	void contextLoads() {
 		assertThat(controller).isNotNull();
 		assertThat(service).isNotNull();
-		assertThat(repository).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 	}

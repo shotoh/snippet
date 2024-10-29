@@ -2,6 +2,7 @@ package to.us.snippet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,30 +36,29 @@ public class PostControllerTests {
 	private final MockMvc mockMvc;
 	private final PostController controller;
 	private final PostService service;
-	private final PostRepository repository;
-	private final UserRepository userRepository;
 	private final ObjectMapper mapper;
-	private final UserDTO mockUser;
-	private final String mockToken;
-	private final PostDTO mockPost;
+
+	private UserDTO mockUser;
+	private String mockToken;
+	private PostDTO mockPost;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service, PostRepository repository,
-	                           UserRepository userRepository, UserService userService,
-	                           AuthService auth, @Value("${MOCK_PASSWORD:}") String mockPassword) {
+	public PostControllerTests(MockMvc mockMvc, PostController controller, PostService service) {
 		this.mockMvc = mockMvc;
 		this.controller = controller;
 		this.service = service;
-		this.repository = repository;
-		this.userRepository = userRepository;
 		this.mapper = new ObjectMapper();
+	}
 
+	@BeforeEach
+	void setup(@Autowired UserService userService, @Autowired AuthService auth,
+	           @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
 		userCreateDTO.setEmail("mock1@gmail.com");
 		userCreateDTO.setPassword(mockPassword);
 		this.mockUser = userService.createUser(userCreateDTO);
-		
+
 		AuthDTO authDTO = new AuthDTO();
 		authDTO.setUsername(mockUser.getUsername());
 		authDTO.setPassword(mockPassword);
@@ -73,7 +73,7 @@ public class PostControllerTests {
 	}
 
 	@AfterEach
-	void clean() {
+	void clean(@Autowired PostRepository repository, @Autowired UserRepository userRepository) {
 		repository.deleteById(mockPost.getId());
 		userRepository.deleteById(mockUser.getId());
 	}
@@ -82,7 +82,6 @@ public class PostControllerTests {
 	void contextLoads() {
 		assertThat(controller).isNotNull();
 		assertThat(service).isNotNull();
-		assertThat(repository).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();
@@ -149,13 +148,13 @@ public class PostControllerTests {
 
 	@Test
 	void retrievePost() throws Exception {
-		mockMvc.perform(get("/api/posts/{id}", 1)
+		mockMvc.perform(get("/api/posts/{id}", mockPost.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpectAll(
-						jsonPath("$.data.id").value(1),
+						jsonPath("$.data.id").value(mockPost.getId()),
 						jsonPath("$.data.user").exists(),
 						jsonPath("$.data.content").exists());
 	}
@@ -221,7 +220,7 @@ public class PostControllerTests {
 
 	@Test
 	void deletePostNoAuth() throws Exception {
-		mockMvc.perform(delete("/api/posts/{id}", mockUser.getId()))
+		mockMvc.perform(delete("/api/posts/{id}", mockPost.getId()))
 				.andExpect(status().isUnauthorized());
 	}
 
