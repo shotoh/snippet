@@ -25,14 +25,17 @@ public class UserService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
 	}
 
+	public UserDTO getUserByUsername(String username) {
+		User user = repository.findByUsername(username);
+		if (user == null) return null;
+		return mapper.toDTO(user);
+	}
+
 	public List<UserDTO> retrieveUsers() {
 		return repository.findAll().stream().map(mapper::toDTO).toList();
 	}
 
 	public UserDTO createUser(UserCreateDTO userCreateDTO) {
-		if (repository.existsById(userCreateDTO.getId())) {
-			throw new ResourceAlreadyExistsException("id", "User already exists with this id");
-		}
 		if (repository.existsByUsername(userCreateDTO.getUsername())) {
 			throw new ResourceAlreadyExistsException("username", "User already exists with this username");
 		}

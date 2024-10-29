@@ -1,11 +1,5 @@
 package to.us.snippet.auth;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import to.us.snippet.exceptions.ResourceNotFoundException;
-import to.us.snippet.exceptions.UnauthorizedException;
-import to.us.snippet.SnippetModel;
-import to.us.snippet.users.User;
-import to.us.snippet.users.UserRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -15,23 +9,38 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import to.us.snippet.SnippetModel;
+import to.us.snippet.exceptions.ResourceNotFoundException;
+import to.us.snippet.exceptions.UnauthorizedException;
+import to.us.snippet.users.User;
+import to.us.snippet.users.UserRepository;
 
 @Service
 public class AuthService {
 	private final AuthenticationManager authenticationManager;
 	private final UserRepository repository;
 	private final JwtEncoder jwtEncoder;
+	private final JwtDecoder jwtDecoder;
 	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public AuthService(AuthenticationManager authenticationManager, UserRepository repository, JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder) {
+	public AuthService(AuthenticationManager authenticationManager, UserRepository repository, JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, PasswordEncoder passwordEncoder) {
 		this.authenticationManager = authenticationManager;
 		this.repository = repository;
 		this.jwtEncoder = jwtEncoder;
+		this.jwtDecoder = jwtDecoder;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -64,6 +73,11 @@ public class AuthService {
 				.build();
 		JwtEncoderParameters encoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
 		return jwtEncoder.encode(encoderParameters).getTokenValue();
+	}
+
+	public void setTestAuth(String token) {
+		Authentication authentication = new JwtAuthenticationToken(jwtDecoder.decode(token.substring(7)), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	public void check(long objectId) {

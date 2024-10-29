@@ -1,5 +1,7 @@
 package to.us.snippet.responses;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Status {
 	SUCCESS("success"),
 	FAIL("fail"),
@@ -11,8 +13,8 @@ public enum Status {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
+	@JsonValue
+	public String getStatus() {
 		return status;
 	}
 }
