@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
-//TO-DO: Add save change functionality once backend password change is finished
-//TO-DO: Abstract code wherever possible (changing password, )
-
+import { changeUserPassword } from "../../api/ProfileAPI";
 
 export default function SettingsModal({ show, handleClose }) {
     const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
+    const [newPass, setNewPass] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleLogout = () => {
@@ -16,14 +14,22 @@ export default function SettingsModal({ show, handleClose }) {
         window.location.href = "/login";
       }
 
-    const handlePasswordChange = () => {
-        if (newPassword !== confirmPassword) {
+    const handlePasswordChange = async () => {
+        if (newPass !== confirmPassword) {
             alert("New passwords do not match");
             return;
         }
-        console.log("Saving new password");
-        handleClose();
-    }
+        
+        const token = localStorage.getItem("authToken");
+        try {
+          await changeUserPassword(currentPassword, newPass, token);
+          alert("Password changed successfully");
+          handleClose();
+        } catch (error) {
+          console.error("Error changing password: ", error);
+          alert(error.message || "Error occurred while changing password");
+        }
+    };
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -59,8 +65,8 @@ export default function SettingsModal({ show, handleClose }) {
                 <Form.Control
                 type="password"
                 placeholder="New Password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                value={newPass}
+                onChange={(e) => setNewPass(e.target.value)}
                 className="mb-3"
                 />
                 <Form.Label> Confirm New Password</Form.Label>
@@ -75,7 +81,7 @@ export default function SettingsModal({ show, handleClose }) {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handlePasswordChange}> {/* Handle save changes */}
+        <Button variant="secondary" onClick={handlePasswordChange}> 
           Save and Close
         </Button>
         <Button variant="primary" onClick={handleLogout}>

@@ -1,5 +1,3 @@
-// src/hooks/useProfileData.js
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { parseJwt, fetchUserAndPosts, getFriendData } from "../api/ProfileAPI";
