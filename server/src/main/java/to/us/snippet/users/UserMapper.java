@@ -6,6 +6,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "password", target = "encryptedPassword")
 	@Mapping(target = "displayName", ignore = true)
 	@Mapping(target = "biography", ignore = true)

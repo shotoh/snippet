@@ -27,9 +27,9 @@ public class SnippetApplication {
 	}
 
 	// todo list
-	// friend request and remove service/controller
 	// patch likes, add num likes to post
-	// add one-to-many or many-to-many relations for comments, likes, and media in posts
-	// fix media, validate file path and store when creating?
-	// friend status change from enum?
+	// add one-to-many or many-to-many relations?
+	// fix images, validate file path and store when creating?
+	// posts retrieve by user rn returns empty array instead of fail
+	// posts retrieve post doesnt exist?
 }

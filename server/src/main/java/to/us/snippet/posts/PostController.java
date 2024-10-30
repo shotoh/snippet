@@ -47,6 +47,14 @@ public class PostController {
 				.build();
 	}
 
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Response retrievePost(@PathVariable("id") long id) {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.retrievePost(id))
+				.build();
+	}
+
 	@PatchMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Response updatePost(@PathVariable("id") long id, @RequestBody @Valid PostDTO postDTO) {

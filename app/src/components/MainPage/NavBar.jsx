@@ -5,6 +5,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import NavLink from "react-bootstrap/NavLink";
 import "./xtra.css";
 import PostCreator from "./PostCreator";
+import SettingsPopup from "./SettingsPopup";
 
 export default function NavBar({ onPostCreated }) {
   const [showModal, setShowModal] = useState(false);
@@ -13,10 +14,19 @@ export default function NavBar({ onPostCreated }) {
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState();
 
+  const [showSettings, setShowSettings] = useState(false);
+  const handleShowSettings = () => setShowSettings(true);
+  const handleCloseSettings = () => setShowSettings(false);
+
   const handlePostCreate = (newPost) => {
     onPostCreated(newPost);
     setShowModal(false);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "/login";
+  }
 
   // Helper function to parse JWT token
   const parseJwt = (token) => {
@@ -88,9 +98,7 @@ export default function NavBar({ onPostCreated }) {
                   <div>
                   <span>Hello Guest!</span>
                   </div>
-
                 )}
-                
               </Navbar.Text>
               <img
                 src={require("../../images/macrosoftLogo.png")}
@@ -107,10 +115,16 @@ export default function NavBar({ onPostCreated }) {
           <NavDropdown.Item as="button" onClick={handleOpen}>
             Create Post
           </NavDropdown.Item>
-          <NavDropdown.Item href={`/snippet/user/${userId}`}>Profile</NavDropdown.Item>
-          <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+          <NavDropdown.Item href={`/snippet/user/${userId}`}>
+          Profile
+          </NavDropdown.Item>
+          <NavDropdown.Item as="button" onClick={handleShowSettings}> 
+            Settings 
+          </NavDropdown.Item>   
           <NavDropdown.Divider />
-          <NavDropdown.Item href="/login">{username ? ("Logout") : ("Sign In")}</NavDropdown.Item>
+          <NavDropdown.Item href="/login" onClick={handleLogout}>
+          {username ? ("Logout") : ("Sign In")}
+          </NavDropdown.Item>
         </NavDropdown>
       </Navbar.Collapse>
     );
@@ -127,6 +141,10 @@ export default function NavBar({ onPostCreated }) {
         show={showModal}
         handleClose={handleClose}
         onPostCreate={handlePostCreate}
+      />
+      <SettingsPopup
+      show={showSettings}
+      handleClose={handleCloseSettings}
       />
     </div>
   );
@@ -156,7 +174,7 @@ function NavButtons() {
         </a>
       </Navbar.Text>
       <Navbar.Text>
-        <a href="#discover" className={buttonStyle}>
+        <a href="/discover" className={buttonStyle}>
           Discover
         </a>
       </Navbar.Text>
