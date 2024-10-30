@@ -1,4 +1,5 @@
 import React from "react";
+import PostCard from "../MainPage/PostCard";
 
 export default function ProfileFeed({ posts, error }) {
   if (error) {
@@ -14,8 +15,16 @@ export default function ProfileFeed({ posts, error }) {
       <h1>Feed</h1>
       {posts.map((post) => (
         <div key={post.id} className="border-b-2 border-gray-300 py-4">
-          <h3 className="font-bold">{post.title}</h3>
-          <p>{post.content}</p>
+          <PostCard
+            post={{
+              user: post.user, // ** TODO: profilePicture needs to be figured out in the backend, update this accordingly
+              media: post.media, // ** TODO: Attribute needs to be included in post object
+              text: post.content, // ** Potentially change if post object changes
+              likes: post.likes,
+              dislikes: post.dislikes,
+              comments: post.comments,
+            }}
+          />
         </div>
       ))}
     </div>
