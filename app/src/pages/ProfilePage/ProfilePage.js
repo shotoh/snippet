@@ -1,16 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import ProfileBanner from "../../components/ProfilePage/ProfileBanner";
 import ProfileInfo from "../../components/ProfilePage/ProfileInfo";
 import ProfileFeed from "../../components/ProfilePage/ProfileFeed";
 import useProfileData from "../../hooks/useProfileData";
+import EditableProfileModal from "../../components/ProfilePage/EditableProfileModal";
 
 const ProfilePage = () => {
-  const { userData, posts, error, fetchData, userIdToDisplay } =
+  const { userData, posts, error, fetchData, userIdToDisplay, submitNewUserData, showModal, closeModal, buttonType, openModal } =
     useProfileData();
+
+
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
+      <EditableProfileModal onSubmit={submitNewUserData}  onClose={closeModal} displayName={userData.username} biography={userData.biography} show={showModal} image={userData.profilePicture}/>
       <NavBar username={userData.username} onPostCreated={fetchData} />
       <div className="flex-grow">
         <div className="max-w-screen-xl mx-auto px-4">
@@ -29,6 +33,8 @@ const ProfilePage = () => {
                   id={userIdToDisplay}
                   friendCount={userData.friendCount}
                   posts={posts}
+                  buttonShown={buttonType}
+                  openModal={openModal}
                 />
               </div>
             </div>
