@@ -30,6 +30,8 @@ public class User implements SnippetModel {
 
 	private String biography;
 
+	private String profilePicture;
+
 	@Column(nullable = false)
 	private String role = "USER";
 

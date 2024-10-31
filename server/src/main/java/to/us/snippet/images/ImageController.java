@@ -1,8 +1,6 @@
 package to.us.snippet.images;
 
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import to.us.snippet.exceptions.UnauthorizedException;
 import to.us.snippet.responses.Response;
 import to.us.snippet.responses.ResponseBuilder;
 import to.us.snippet.responses.Status;
@@ -33,16 +30,9 @@ public class ImageController {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Response retrieveImages(@RequestParam(name = "user") Optional<Long> userId,
-	                               @RequestParam(name = "post") Optional<Long> postId) {
+	public Response retrieveImages(@RequestParam(name = "post") long postId) {
 		ResponseBuilder builder =  new ResponseBuilder(Status.SUCCESS);
-		if (userId.isPresent()) {
-			return builder.setData(List.of(service.retrieveImageByUser(userId.get()))).build();
-		} else if (postId.isPresent()) {
-			return builder.setData(service.retrieveImagesByPost(postId.get())).build();
-		} else {
-			throw new UnauthorizedException();
-		}
+		return builder.build();
 	}
 
 	@PostMapping

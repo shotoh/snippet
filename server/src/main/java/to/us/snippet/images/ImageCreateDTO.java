@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ImageCreateDTO {
-	private long userId;
-
 	private long postId;
 
 	@NotNull

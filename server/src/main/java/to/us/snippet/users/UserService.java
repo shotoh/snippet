@@ -3,9 +3,11 @@ package to.us.snippet.users;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import to.us.snippet.auth.AuthService;
 import to.us.snippet.exceptions.ResourceAlreadyExistsException;
 import to.us.snippet.exceptions.ResourceNotFoundException;
+import to.us.snippet.images.ImageService;
 
 @Service
 public class UserService {
@@ -13,12 +15,14 @@ public class UserService {
 	private final UserMapper mapper;
 
 	private final AuthService authService;
+	private final ImageService imageService;
 
 	@Autowired
-	public UserService(UserRepository repository, UserMapper mapper, AuthService authService) {
+	public UserService(UserRepository repository, UserMapper mapper, AuthService authService, ImageService imageService) {
 		this.repository = repository;
 		this.mapper = mapper;
 		this.authService = authService;
+		this.imageService = imageService;
 	}
 
 	public User getUser(long id) {
@@ -59,6 +63,14 @@ public class UserService {
 		mapper.updateEntity(userDTO, user);
 		repository.save(user);
 		return mapper.toDTO(user);
+	}
+
+	public void updateUserProfilePicture(long id, MultipartFile file) {
+		User user = getUser(id);
+		authService.check(user);
+		String url = imageService.saveImage(file);
+		user.setProfilePicture(url);
+		repository.save(user);
 	}
 
 	public void deleteUser(long id) {

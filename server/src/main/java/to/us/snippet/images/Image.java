@@ -1,8 +1,5 @@
 package to.us.snippet.images;
 
-import to.us.snippet.SnippetModel;
-import to.us.snippet.posts.Post;
-import to.us.snippet.users.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +14,8 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import to.us.snippet.SnippetModel;
+import to.us.snippet.posts.Post;
 
 @Entity
 @Getter
@@ -27,10 +26,6 @@ public class Image implements SnippetModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
-	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id", nullable = false, updatable = false)
-	private User user;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "post_id", updatable = false)
@@ -44,7 +39,6 @@ public class Image implements SnippetModel {
 
 	@Override
 	public long userId() {
-		if (post != null) return post.userId();
-		return user.userId();
+		return post.userId();
 	}
 }

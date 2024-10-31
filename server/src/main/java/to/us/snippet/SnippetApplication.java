@@ -11,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SnippetApplication {
 	@Value("${CORS_ALLOWED_ORIGIN:}")
 	private String corsAllowedOrigin;
+	@Value("${IMAGE_PATH:}")
+	private String imagePath;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SnippetApplication.class, args);
