@@ -39,15 +39,22 @@ const useProfileData = () => {
   const userIdToDisplay = userIdFromParams || userIdFromToken;
 
   const addFriend = async () => {
-    await createFriendRequest(userIdToDisplay);
+    await createFriendRequest(userIdToDisplay, token);
   }
+
+
+  const findIdByFromId = (data, fromId) => {
+    const foundElement = data.find((element) => element.from.id === fromId);
+  
+    return foundElement ? foundElement.id : null;
+  };
 
   const removeFriend = async () => {
     try {
       const userIdFromToken = parseInt(parseJwt(token).sub);
       //Find ID of friending
-      url = `/api/friends?from=${userId}`;
-      response = await fetch(url, {
+      let url = `/api/friends?from=${userIdFromToken}`;
+      let response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,7 +67,7 @@ const useProfileData = () => {
       let friendID = -1;
       let friendRequestList = result.data;
       if (response.ok && result.status === "success") {
-        friendID = findIdByFromId(result.data, userId);
+        friendID = findIdByFromId(result.data, userIdFromToken);
         if (friendID != -1) {
           console.log("got friend entry ID: " + friendID);
         } else {
@@ -86,7 +93,6 @@ const useProfileData = () => {
       if (response.ok && result.status === "success") {
         console.log("worked!");
         console.log(result.data);
-        fetchFriendRequests();
       }
     } catch (err) {
       console.error("error removing friend request:", err);

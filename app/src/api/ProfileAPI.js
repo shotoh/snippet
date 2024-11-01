@@ -13,6 +13,8 @@ export const parseJwt = (token) => {
   }
 };
 
+
+
 /**
  * Retrieve user data from the server based on ID
  */
@@ -155,11 +157,11 @@ export const updateUserData = async (userID, token, data) => {
 };
 
 
-export const createFriendRequest = async (targetUserID) => {
+export const createFriendRequest = async (targetUserID, token) => {
   try {
-    url = `/api/friends`;
+    let url = `/api/friends`;
 
-    response = await fetch(url, {
+    let response = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
