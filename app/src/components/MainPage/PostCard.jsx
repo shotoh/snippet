@@ -16,8 +16,8 @@ import DefaultProfilePicture from "../../images/defaultprofile2.jpg";
  */
 export default function PostCard({ post }) {
   const {
-    user: { name, profilePicture = DefaultProfilePicture },
-    media = MediaPlaceholder,
+    user: { name, profilePicture },
+    media,
     text,
     likes,
     dislikes,
@@ -29,11 +29,11 @@ export default function PostCard({ post }) {
   const handleComments = () => {};
 
   return (
-    <div className="grid grid-cols-4 grid-rows-4 h-96 border rounded-lg overflow-hidden shadow-lg font-montserrat">
+    <div className="grid grid-cols-4 grid-rows-4 h-96 border rounded-lg overflow-hidden shadow-md font-montserrat">
       {/* Media */}
       <div className="col-span-3 row-span-3">
         <img
-          src={media}
+          src={media || MediaPlaceholder}
           alt="Media Content"
           className="w-full h-full object-cover"
         />
@@ -67,7 +67,7 @@ export default function PostCard({ post }) {
       {/* Post Info */}
       <div className="col-span-4 row-span-1 flex items-center p-4 bg-white">
         <img
-          src={profilePicture}
+          src={profilePicture || DefaultProfilePicture}
           alt="Profile"
           className="w-14 h-14 rounded-full"
         />

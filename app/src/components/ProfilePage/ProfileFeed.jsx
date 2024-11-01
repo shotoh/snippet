@@ -14,12 +14,12 @@ export default function ProfileFeed({ posts, error }) {
     <div>
       <h1>Feed</h1>
       {posts.map((post) => (
-        <div key={post.id} className="border-b-2 border-gray-300 py-4">
+        <div key={post.id} className="py-3">
           <PostCard
             post={{
               user: post.user, // ** TODO: profilePicture needs to be figured out in the backend, update this accordingly
-              media: post.media, // ** TODO: Attribute needs to be included in post object
-              text: post.content, // ** Potentially change if post object changes
+              media: post.media, // ** TODO: Images need to be figured out
+              text: post.text,
               likes: post.likes,
               dislikes: post.dislikes,
               comments: post.comments,
