@@ -1,27 +1,45 @@
 package to.us.snippet.posts;
 
-import to.us.snippet.exceptions.ResourceNotFoundException;
 import java.util.List;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import to.us.snippet.auth.AuthService;
+import to.us.snippet.exceptions.ResourceNotFoundException;
+import to.us.snippet.images.ImageService;
+import to.us.snippet.images.PostImage;
+import to.us.snippet.images.PostImageMapper;
+import to.us.snippet.images.PostImageRepository;
 
 @Service
 public class PostService {
 	private final PostRepository repository;
+	private final PostImageRepository imageRepository;
 	private final PostMapper mapper;
+	private final PostImageMapper imageMapper;
 
 	private final AuthService authService;
+	private final ImageService imageService;
 
 	@Autowired
-	public PostService(PostRepository repository, PostMapper mapper, AuthService authService) {
+	public PostService(PostRepository repository, PostImageRepository imageRepository,
+	                   PostMapper mapper, PostImageMapper imageMapper,
+	                   AuthService authService, ImageService imageService) {
 		this.repository = repository;
+		this.imageRepository = imageRepository;
 		this.mapper = mapper;
+		this.imageMapper = imageMapper;
 		this.authService = authService;
+		this.imageService = imageService;
 	}
 
 	public Post getPost(long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Post not found with this id"));
+	}
+
+	@Named("getPostImage")
+	public PostImage getPostImage(long id) {
+		return imageRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Image not found with this id"));
 	}
 
 	public List<PostDTO> retrievePosts() {

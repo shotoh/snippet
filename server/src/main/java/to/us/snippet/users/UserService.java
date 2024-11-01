@@ -29,12 +29,6 @@ public class UserService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "User not found with this id"));
 	}
 
-	public UserDTO getUserByUsername(String username) {
-		User user = repository.findByUsername(username);
-		if (user == null) return null;
-		return mapper.toDTO(user);
-	}
-
 	public List<UserDTO> retrieveUsers() {
 		return repository.findAll().stream().map(mapper::toDTO).toList();
 	}
@@ -68,6 +62,8 @@ public class UserService {
 	public void updateUserProfilePicture(long id, MultipartFile file) {
 		User user = getUser(id);
 		authService.check(user);
+		String oldPicture = user.getProfilePicture();
+		imageService.deleteImage(oldPicture);
 		String url = imageService.saveImage(file);
 		user.setProfilePicture(url);
 		repository.save(user);
@@ -76,6 +72,7 @@ public class UserService {
 	public void deleteUser(long id) {
 		User user = getUser(id);
 		authService.check(user);
+		imageService.deleteImage(user.getProfilePicture());
 		repository.deleteById(user.getId());
 	}
 }

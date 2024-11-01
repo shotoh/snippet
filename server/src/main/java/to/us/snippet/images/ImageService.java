@@ -2,9 +2,9 @@ package to.us.snippet.images;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,57 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import to.us.snippet.exceptions.InvalidRequestException;
-import to.us.snippet.exceptions.ResourceNotFoundException;
 
 @Service
 public class ImageService {
-	private final PostImageRepository repository;
 	private final String imagePath;
-	//private final ImageMapper mapper;
-
-	//private final AuthService authService;
-	//private final PostService postService;
 
 	@Autowired
-	public ImageService(PostImageRepository repository, @Value("${IMAGE_PATH:}") String imagePath) {
-		this.repository = repository;
-		//this.mapper = mapper;
-		//this.authService = authService;
-		//this.postService = postService;
+	public ImageService(@Value("${IMAGE_PATH:}") String imagePath) {
 		this.imagePath = imagePath;
-	}
-
-	public PostImage getImage(long id) {
-		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Image not found with this id"));
-	}
-
-	public List<ImageDTO> retrieveImagesByPost(long postId) {
-		return List.of();
-		//return repository.findAllByPostId(postId).stream().map(mapper::toDTO).toList();
-	}
-
-	public ImageDTO createImage(ImageCreateDTO imageCreateDTO) {
-		long postId = imageCreateDTO.getPostId();
-		if (postId != 0) {
-			//Post post = postService.getPost(postId);
-			//authService.check(post);
-		}
-		//imageCreateDTO.setUserId(authService.userId());
-		return new ImageDTO();
-		//Image image = repository.save(mapper.toEntity(imageCreateDTO));
-		//return mapper.toDTO(image);
-	}
-
-	public ImageDTO retrieveImage(long id) {
-		PostImage image = getImage(id);
-		return new ImageDTO();
-		//return mapper.toDTO(image);
-	}
-
-	public void deleteImage(long id) {
-		PostImage image = getImage(id);
-		//authService.check(image);
-		repository.deleteById(image.getId());
 	}
 
 	public String saveImage(MultipartFile file) {
@@ -92,6 +49,17 @@ public class ImageService {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return fileName.substring(1);
+		return fileName;
+	}
+
+	public void deleteImage(String pathName) {
+		if (pathName == null) return;
+		Path path = Paths.get(pathName);
+		try {
+			Files.delete(path);
+		} catch (NoSuchFileException ignored) {
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
