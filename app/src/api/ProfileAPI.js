@@ -1,3 +1,5 @@
+import { getFullPost } from "./PostAPI";
+
 /**
  * Retrieve a user's ID based on their login token
  */
@@ -53,7 +55,10 @@ export const getUserPosts = async (userID, token) => {
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
-      return result.data;
+      const fullPosts = await Promise.all(
+        result.data.map((post) => getFullPost(post.id, token))
+      );
+      return fullPosts;
     } else {
       throw new Error("Error fetching posts");
     }
