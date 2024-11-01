@@ -1,3 +1,5 @@
+import { getPostImage } from "./ImageAPI";
+
 /**
  * Retrieve all posts from the server
  */
@@ -38,6 +40,7 @@ export async function fetchPosts(token) {
  */
 export async function getFullPost(postID, token) {
   const fullPost = {
+    id: null,
     user: { name: "", profilePicture: null },
     media: null,
     text: "",
@@ -63,9 +66,13 @@ export async function getFullPost(postID, token) {
 
   const result = await response.json();
 
+  fullPost.id = result.data.id;
   fullPost.user.name = result.data.user.username; // ** Replace with displayName when implemented
   // **   fullPost.user.profilePicture =
-  // **   fullPost.media =
+
+  const media = await getPostImage(postID, token);
+  fullPost.media = media;
+
   fullPost.text = result.data.content;
 
   // { likes, dislikes }
@@ -107,7 +114,6 @@ export async function getPostRatings(postID, token) {
       const result = await likesResponse.json();
       if (result.status === "success") {
         postRating.likes = result.data.length;
-        console.log("[LIKES]", postRating.likes);
       }
     } else {
       console.error("Failed to fetch likes");
