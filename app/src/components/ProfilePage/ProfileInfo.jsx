@@ -12,7 +12,9 @@ export default function ProfileInfo({
   friendCount,
   posts,
   buttonShown,
-  openModal
+  openModal,
+  addFriend,
+  removeFriend
 }) {
 
 
@@ -23,8 +25,8 @@ export default function ProfileInfo({
       <div className="flex flex-row justify-between">
         
         <h1 className="text-3xl font-bold font-montserrat">{username}</h1>
-        {buttonShown === 0 && <Button variant="success" size="sm" className="w-auto mx-auto">Add Friend</Button>}
-        {buttonShown === 1}
+        {buttonShown === 0 && <Button variant="success" onClick={addFriend} size="sm" className="w-auto mx-auto">Add Friend</Button>}
+        {buttonShown === 1 && <Button variant="danger" onClick={removeFriend} size="sm" className="w-auto mx-auto">Remove Friend</Button>}
         {buttonShown === 2 && <Button className=" mxl-auto" onClick={openModal}>Edit</Button>}
         
         

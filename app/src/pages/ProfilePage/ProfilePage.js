@@ -7,7 +7,7 @@ import useProfileData from "../../hooks/useProfileData";
 import EditableProfileModal from "../../components/ProfilePage/EditableProfileModal";
 
 const ProfilePage = () => {
-  const { userData, posts, error, fetchData, userIdToDisplay, submitNewUserData, showModal, closeModal, buttonType, openModal } =
+  const { userData, posts, error, fetchData, userIdToDisplay, submitNewUserData, showModal, closeModal, buttonType, openModal, addFriend, removeFriend } =
     useProfileData();
 
 
@@ -35,6 +35,8 @@ const ProfilePage = () => {
                   posts={posts}
                   buttonShown={buttonType}
                   openModal={openModal}
+                  addFriend={addFriend}
+                  removeFriend={removeFriend}
                 />
               </div>
             </div>

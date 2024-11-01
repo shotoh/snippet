@@ -34,6 +34,8 @@ export const getUserData = async (userID, token) => {
   }
 };
 
+
+
 /**
  * Retrieve user's posts based on ID
  */
@@ -86,7 +88,6 @@ export const getFriendData = async (userID, token) => {
         displayName: friend.to.displayName,
         profilePicture: friend.to.profilePicture,
       }));
-
 
       return friendData;
     } else {
@@ -175,7 +176,6 @@ export const createFriendRequest = async (targetUserID) => {
     console.error("error creating friend request:", err);
   }
 };
-
 
 
 
