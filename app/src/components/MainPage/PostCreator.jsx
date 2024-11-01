@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Modal, Button, Carousel, Form } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Modal, Button, Carousel, Form } from "react-bootstrap";
+
+import { uploadPostImage } from "../../api/ImageAPI";
 
 const PostCreator = ({ show, handleClose, onPostCreate }) => {
-  const [postContent, setPostContent] = useState('');
+  const [postContent, setPostContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
 
   const handleMediaChange = (event) => {
@@ -14,16 +16,16 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
 
   const handleCreatePost = async () => {
     if (!postContent) {
-      setError('Text content is required');
+      setError("Text content is required");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (!token) {
-      setError('User is not authenticated');
+      setError("User is not authenticated");
       setLoading(false);
       return;
     }
@@ -32,16 +34,16 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
 
     try {
       // Log the outgoing request details
-      console.log('Attempting to create a post with the following data:', {
+      console.log("Attempting to create a post with the following data:", {
         content: postContent,
         userId: userId,
       });
 
-      const response = await fetch('/api/posts', {
-        method: 'POST',
+      const response = await fetch("/api/posts", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           content: postContent,
@@ -50,22 +52,40 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
       });
 
       // Log the response status and body
-      console.log('Response Status:', response.status);
+      console.log("Response Status:", response.status);
       const result = await response.json();
-      console.log('Response Body:', result);
+      console.log("Response Body:", result);
 
-      if (response.ok && result.status === 'success') {
-        onPostCreate();  // Call to refresh posts in the parent component
-        handleClose();   // Close the modal after successful post creation
+      if (response.ok && result.status === "success") {
+        const postId = result.data.id; // Get the postId from the response
+        const userId = result.data.user.id;
+
+        // Now upload the image if there is one
+        console.log(mediaFiles.length, "media files to upload");
+        if (mediaFiles.length > 0) {
+          const imageFile = mediaFiles[0];
+          try {
+            await uploadPostImage(imageFile, postId, userId, token); // Pass the arguments in the correct order
+          } catch (error) {
+            // Handle error in image upload
+            setError(
+              `Post created but failed to upload image: ${error.message}`
+            );
+            console.error("Error uploading image:", error);
+          }
+        }
+
+        onPostCreate(); // Refresh posts in the parent component
+        handleClose(); // Close the modal after successful post creation
       } else {
         // Log error message and display it to the user
         setError(result.message || `Error creating post: ${response.status}`);
-        console.error('Error creating post:', result);
+        console.error("Error creating post:", result);
       }
     } catch (err) {
       // Log and show detailed error message
       setError(`Error creating post: ${err.message}`);
-      console.error('Error in post creation request:', err);
+      console.error("Error in post creation request:", err);
     }
 
     setLoading(false);
@@ -73,8 +93,8 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
 
   const parseJwt = (token) => {
     try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       return JSON.parse(window.atob(base64));
     } catch (error) {
       return null;
@@ -87,7 +107,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
         {mediaFiles.length === 0 ? (
           <Button
             variant="primary"
-            onClick={() => document.getElementById('mediaInput').click()}
+            onClick={() => document.getElementById("mediaInput").click()}
             className="mb-4"
           >
             Select Images/Videos
@@ -96,7 +116,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
           <Carousel className="w-100 mb-4">
             {mediaFiles.map((file, index) => (
               <Carousel.Item key={index}>
-                {file.type.startsWith('video') ? (
+                {file.type.startsWith("video") ? (
                   <video
                     className="d-block w-100"
                     controls
@@ -119,7 +139,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
           onChange={handleMediaChange}
           accept="image/*,video/*"
           multiple
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
         />
         <Form.Control
           as="textarea"
@@ -129,13 +149,18 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
         />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <Button variant="success" onClick={handleCreatePost} className="align-self-end" disabled={loading}>
-          {loading ? 'Creating...' : 'Create'}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <Button
+          variant="success"
+          onClick={handleCreatePost}
+          className="align-self-end"
+          disabled={loading}
+        >
+          {loading ? "Creating..." : "Create"}
         </Button>
       </Modal.Body>
     </Modal>
   );
 };
 
-export default PostCreator
+export default PostCreator;

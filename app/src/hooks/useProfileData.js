@@ -48,6 +48,7 @@ const useProfileData = () => {
       });
 
       setPosts(userPosts);
+      console.log(userPosts);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Error loading user data");
