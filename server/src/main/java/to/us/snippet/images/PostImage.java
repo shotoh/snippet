@@ -21,8 +21,8 @@ import to.us.snippet.posts.Post;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "images")
-public class Image implements SnippetModel {
+@Table(name = "post_images")
+public class PostImage implements SnippetModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

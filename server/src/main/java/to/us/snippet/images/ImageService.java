@@ -16,7 +16,7 @@ import to.us.snippet.exceptions.ResourceNotFoundException;
 
 @Service
 public class ImageService {
-	private final ImageRepository repository;
+	private final PostImageRepository repository;
 	private final String imagePath;
 	//private final ImageMapper mapper;
 
@@ -24,7 +24,7 @@ public class ImageService {
 	//private final PostService postService;
 
 	@Autowired
-	public ImageService(ImageRepository repository, @Value("${IMAGE_PATH:}") String imagePath) {
+	public ImageService(PostImageRepository repository, @Value("${IMAGE_PATH:}") String imagePath) {
 		this.repository = repository;
 		//this.mapper = mapper;
 		//this.authService = authService;
@@ -32,7 +32,7 @@ public class ImageService {
 		this.imagePath = imagePath;
 	}
 
-	public Image getImage(long id) {
+	public PostImage getImage(long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Image not found with this id"));
 	}
 
@@ -54,13 +54,13 @@ public class ImageService {
 	}
 
 	public ImageDTO retrieveImage(long id) {
-		Image image = getImage(id);
+		PostImage image = getImage(id);
 		return new ImageDTO();
 		//return mapper.toDTO(image);
 	}
 
 	public void deleteImage(long id) {
-		Image image = getImage(id);
+		PostImage image = getImage(id);
 		//authService.check(image);
 		repository.deleteById(image.getId());
 	}

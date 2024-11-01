@@ -5,11 +5,11 @@ import org.mapstruct.Mapping;
 import to.us.snippet.posts.PostService;
 
 @Mapper(componentModel = "spring", uses = {PostService.class})
-public interface ImageMapper {
+public interface PostImageMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(source = "postId", target = "post")
 	@Mapping(target = "timestamp", ignore = true)
-	Image toEntity(ImageCreateDTO imageCreateDTO);
+	PostImage toEntity(ImageCreateDTO imageCreateDTO);
 
-	ImageDTO toDTO(Image image);
+	ImageDTO toDTO(PostImage image);
 }
