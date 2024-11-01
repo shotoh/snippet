@@ -6,7 +6,7 @@ export default function ProfileFeed({ posts, error }) {
     return <p className="text-red-500">{error}</p>;
   }
 
-  if (posts.length == 0) {
+  if (posts.length === 0) {
     return <p>No posts available</p>;
   }
 
