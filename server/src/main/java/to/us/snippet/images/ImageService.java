@@ -42,8 +42,8 @@ public class ImageService {
 				throw new RuntimeException(e);
 			}
 		}
-		String fileName = imagePath + UUID.randomUUID() + "." + StringUtils.getFilenameExtension(StringUtils.cleanPath(originalName));
-		Path path = Paths.get(fileName);
+		String fileName = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(StringUtils.cleanPath(originalName));
+		Path path = Paths.get(imagePath + fileName);
 		try {
 			Files.write(path, file.getBytes());
 		} catch (IOException e) {
@@ -54,7 +54,7 @@ public class ImageService {
 
 	public void deleteImage(String pathName) {
 		if (pathName == null) return;
-		Path path = Paths.get(pathName);
+		Path path = Paths.get(imagePath + pathName);
 		try {
 			Files.delete(path);
 		} catch (NoSuchFileException ignored) {

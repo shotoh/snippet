@@ -37,7 +37,7 @@ public class Post implements SnippetModel {
 	@Column(nullable = false)
 	private String content;
 
-	@OneToMany(targetEntity = PostImage.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "images")
+	@OneToMany(targetEntity = PostImage.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "post")
 	private List<PostImage> images;
 
 	@Column(nullable = false, updatable = false)
