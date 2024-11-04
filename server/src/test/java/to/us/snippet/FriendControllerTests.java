@@ -78,6 +78,7 @@ public class FriendControllerTests {
 	@AfterEach
 	void clean(@Autowired UserRepository userRepository) {
 		userRepository.deleteById(mockUser.getId());
+		userRepository.deleteById(mockUser2.getId());
 	}
 
 	@Test
@@ -126,7 +127,11 @@ public class FriendControllerTests {
 	}
 
 	@Test
-	void retrieveSpecificFriend() throws Exception {
+	void retrieveSpecificFriend(@Autowired FriendService service) throws Exception {
+		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
+		friendCreateDTO.setFromId(mockUser.getId());
+		friendCreateDTO.setToId(mockUser2.getId());
+		service.createFriend(friendCreateDTO);
 		mockMvc.perform(get("/api/friends?from={id}&to={id}", mockUser.getId(), mockUser2.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
