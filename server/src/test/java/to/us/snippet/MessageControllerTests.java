@@ -13,7 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
 import to.us.snippet.friends.FriendCreateDTO;
+import to.us.snippet.friends.FriendDTO;
 import to.us.snippet.friends.FriendService;
+import to.us.snippet.messages.MessageCreateDTO;
+import to.us.snippet.messages.MessageDTO;
+import to.us.snippet.messages.MessageService;
 import to.us.snippet.users.UserCreateDTO;
 import to.us.snippet.users.UserDTO;
 import to.us.snippet.users.UserRepository;
@@ -37,6 +41,8 @@ public class MessageControllerTests {
 	private String mockToken;
 	private UserDTO mockUser2;
 	private String mockToken2;
+	private FriendDTO mockFriend;
+	private MessageDTO mockMessage;
 
 	@Autowired
 	public MessageControllerTests(MockMvc mockMvc) {
@@ -45,7 +51,8 @@ public class MessageControllerTests {
 	}
 
 	@BeforeEach
-	void setup(@Autowired UserService userService, @Autowired AuthService auth,
+	void setup(@Autowired MessageService service, @Autowired FriendService friendService,
+	           @Autowired UserService userService, @Autowired AuthService auth,
 	           @Value("${MOCK_PASSWORD:}") String mockPassword) {
 		UserCreateDTO userCreateDTO = new UserCreateDTO();
 		userCreateDTO.setUsername("mock1");
@@ -70,6 +77,22 @@ public class MessageControllerTests {
 		this.mockToken2 = "Bearer " + auth.login(authDTO).getToken();
 
 		auth.setTestAuth(mockToken);
+		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
+		friendCreateDTO.setFromId(mockUser.getId());
+		friendCreateDTO.setToId(mockUser2.getId());
+		this.mockFriend = friendService.createFriend(friendCreateDTO);
+		auth.setTestAuth(mockToken2);
+		friendCreateDTO.setFromId(mockUser2.getId());
+		friendCreateDTO.setToId(mockUser.getId());
+		friendService.createFriend(friendCreateDTO);
+
+		auth.setTestAuth(mockToken);
+
+		MessageCreateDTO messageCreateDTO = new MessageCreateDTO();
+		messageCreateDTO.setFromId(mockUser.getId());
+		messageCreateDTO.setToId(mockUser2.getId());
+		messageCreateDTO.setContent("mock message1");
+		this.mockMessage = service.createMessage(messageCreateDTO);
 	}
 
 	@AfterEach
@@ -84,27 +107,29 @@ public class MessageControllerTests {
 		assertThat(mockToken).isNotNull();
 		assertThat(mockUser2).isNotNull();
 		assertThat(mockToken2).isNotNull();
+		assertThat(mockFriend).isNotNull();
+		assertThat(mockMessage).isNotNull();
 	}
 
 	@Test
-	void retrieveFriendsNoAuth() throws Exception {
-		mockMvc.perform(get("/api/friends?from=11"))
+	void retrieveMessagesNoAuth() throws Exception {
+		mockMvc.perform(get("/api/messages?from={id}&to={id}", 1, 2))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void retrieveSpecificFriendNotFound() throws Exception {
-		mockMvc.perform(get("/api/friends?from={id}&to={id}", -1, -1)
+	void retrieveZeroMessages() throws Exception {
+		mockMvc.perform(get("/api/messages?from={id}&to={id}", mockUser.getId(), -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.from").value("Friend not found with these users"));
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 
 	@Test
-	void retrieveOutgoingFriends() throws Exception {
-		mockMvc.perform(get("/api/friends?from={id}", mockUser.getId())
+	void retrieveMessages() throws Exception {
+		mockMvc.perform(get("/api/messages?from={id}&to={id}", mockUser.getId(), mockUser2.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -113,35 +138,11 @@ public class MessageControllerTests {
 	}
 
 	@Test
-	void retrieveIncomingFriends() throws Exception {
-		mockMvc.perform(get("/api/friends?to={id}", mockUser.getId())
-						.header("Authorization", mockToken))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status").value("success"))
-				.andExpect(jsonPath("$.data").isArray());
-	}
-
-	@Test
-	void retrieveSpecificFriend(@Autowired FriendService service) throws Exception {
+	void createMessage() throws Exception {
 		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
 		friendCreateDTO.setFromId(mockUser.getId());
 		friendCreateDTO.setToId(mockUser2.getId());
-		service.createFriend(friendCreateDTO);
-		mockMvc.perform(get("/api/friends?from={id}&to={id}", mockUser.getId(), mockUser2.getId())
-						.header("Authorization", mockToken))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status").value("success"))
-				.andExpect(jsonPath("$.data").isArray());
-	}
-
-	@Test
-	void addFriendNoAuth() throws Exception {
-		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
-		friendCreateDTO.setFromId(mockUser.getId());
-		friendCreateDTO.setToId(mockUser2.getId());
-		mockMvc.perform(post("/api/friends")
+		mockMvc.perform(post("/api/messages")
 						.content(mapper.writeValueAsString(friendCreateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
@@ -153,7 +154,7 @@ public class MessageControllerTests {
 		friendCreateDTO.setFromId(mockUser.getId());
 		friendCreateDTO.setToId(mockUser2.getId());
 		service.createFriend(friendCreateDTO);
-		mockMvc.perform(post("/api/friends")
+		mockMvc.perform(post("/api/messages")
 						.content(mapper.writeValueAsString(friendCreateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
@@ -168,7 +169,7 @@ public class MessageControllerTests {
 		auth.setTestAuth(mockToken2);
 		friendCreateDTO.setFromId(mockUser2.getId());
 		friendCreateDTO.setToId(mockUser.getId());
-		mockMvc.perform(post("/api/friends")
+		mockMvc.perform(post("/api/messages")
 						.content(mapper.writeValueAsString(friendCreateDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
@@ -176,13 +177,13 @@ public class MessageControllerTests {
 
 	@Test
 	void deleteFriendNoAuth() throws Exception {
-		mockMvc.perform(delete("/api/friends/{id}", 1))
+		mockMvc.perform(delete("/api/messages/{id}", 1))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
 	void deleteFriendNotFound() throws Exception {
-		mockMvc.perform(delete("/api/friends/{id}", -1)
+		mockMvc.perform(delete("/api/messages/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -196,7 +197,7 @@ public class MessageControllerTests {
 		friendCreateDTO.setFromId(mockUser.getId());
 		friendCreateDTO.setToId(mockUser2.getId());
 		long id = service.createFriend(friendCreateDTO).getId();
-		mockMvc.perform(delete("/api/friends/{id}", id)
+		mockMvc.perform(delete("/api/messages/{id}", id)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
