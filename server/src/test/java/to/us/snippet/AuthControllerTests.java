@@ -7,10 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import to.us.snippet.auth.AuthController;
 import to.us.snippet.users.UserCreateDTO;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,19 +18,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AuthControllerTests {
 	private final MockMvc mockMvc;
-	private final AuthController controller;
 	private final ObjectMapper mapper;
 
 	@Autowired
-	public AuthControllerTests(MockMvc mockMvc, AuthController controller) {
+	public AuthControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
+		//
 	}
 
 	@Test

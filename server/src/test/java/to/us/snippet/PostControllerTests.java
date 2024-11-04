@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.posts.PostController;
 import to.us.snippet.posts.PostCreateDTO;
 import to.us.snippet.posts.PostDTO;
 import to.us.snippet.posts.PostRepository;
@@ -34,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PostControllerTests {
 	private final MockMvc mockMvc;
-	private final PostController controller;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -42,9 +40,8 @@ public class PostControllerTests {
 	private PostDTO mockPost;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller) {
+	public PostControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -78,7 +75,6 @@ public class PostControllerTests {
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();

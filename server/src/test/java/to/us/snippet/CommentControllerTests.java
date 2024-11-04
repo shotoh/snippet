@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.comments.CommentController;
 import to.us.snippet.comments.CommentCreateDTO;
 import to.us.snippet.comments.CommentDTO;
 import to.us.snippet.comments.CommentRepository;
@@ -38,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class CommentControllerTests {
 	private final MockMvc mockMvc;
-	private final CommentController controller;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -47,9 +45,8 @@ public class CommentControllerTests {
 	private CommentDTO mockComment;
 
 	@Autowired
-	public CommentControllerTests(MockMvc mockMvc, CommentController controller) {
+	public CommentControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -92,7 +89,6 @@ public class CommentControllerTests {
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FriendControllerTests {
+public class MessageControllerTests {
 	private final MockMvc mockMvc;
 	private final ObjectMapper mapper;
 
@@ -39,7 +39,7 @@ public class FriendControllerTests {
 	private String mockToken2;
 
 	@Autowired
-	public FriendControllerTests(MockMvc mockMvc) {
+	public MessageControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
 		this.mapper = new ObjectMapper();
 	}
