@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -150,6 +151,44 @@ public class PostControllerTests {
 						jsonPath("$.data.id").value(mockPost.getId()),
 						jsonPath("$.data.user").exists(),
 						jsonPath("$.data.content").exists());
+	}
+
+	@Test
+	void createPostNoAuth() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("new post1");
+		mockMvc.perform(post("/api/posts")
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void createPost() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("new post1");
+		mockMvc.perform(post("/api/posts")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data.content").value("new post1"));
+	}
+
+	@Test
+	void createPostInvalidContent() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("");
+		mockMvc.perform(post("/api/posts")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
 	}
 
 	@Test

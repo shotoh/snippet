@@ -1,5 +1,7 @@
 package to.us.snippet.posts;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import to.us.snippet.SnippetModel;
 import to.us.snippet.users.User;
 import jakarta.persistence.*;
@@ -20,6 +22,7 @@ public class Post implements SnippetModel {
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false, updatable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
 	@Column(nullable = false)
