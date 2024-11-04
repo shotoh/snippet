@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
 import to.us.snippet.friends.FriendCreateDTO;
-import to.us.snippet.friends.FriendDTO;
 import to.us.snippet.friends.FriendService;
 import to.us.snippet.messages.MessageCreateDTO;
 import to.us.snippet.messages.MessageDTO;
@@ -26,6 +25,7 @@ import to.us.snippet.users.UserService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,7 +41,6 @@ public class MessageControllerTests {
 	private String mockToken;
 	private UserDTO mockUser2;
 	private String mockToken2;
-	private FriendDTO mockFriend;
 	private MessageDTO mockMessage;
 
 	@Autowired
@@ -74,13 +73,13 @@ public class MessageControllerTests {
 		AuthDTO authDTO2 = new AuthDTO();
 		authDTO2.setUsername(mockUser2.getUsername());
 		authDTO2.setPassword(mockPassword);
-		this.mockToken2 = "Bearer " + auth.login(authDTO).getToken();
+		this.mockToken2 = "Bearer " + auth.login(authDTO2).getToken();
 
 		auth.setTestAuth(mockToken);
 		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
 		friendCreateDTO.setFromId(mockUser.getId());
 		friendCreateDTO.setToId(mockUser2.getId());
-		this.mockFriend = friendService.createFriend(friendCreateDTO);
+		friendService.createFriend(friendCreateDTO);
 		auth.setTestAuth(mockToken2);
 		friendCreateDTO.setFromId(mockUser2.getId());
 		friendCreateDTO.setToId(mockUser.getId());
@@ -107,7 +106,6 @@ public class MessageControllerTests {
 		assertThat(mockToken).isNotNull();
 		assertThat(mockUser2).isNotNull();
 		assertThat(mockToken2).isNotNull();
-		assertThat(mockFriend).isNotNull();
 		assertThat(mockMessage).isNotNull();
 	}
 
@@ -121,7 +119,7 @@ public class MessageControllerTests {
 	void retrieveZeroMessages() throws Exception {
 		mockMvc.perform(get("/api/messages?from={id}&to={id}", mockUser.getId(), -1)
 						.header("Authorization", mockToken))
-				.andExpect(status().isNotFound())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
 				.andExpect(jsonPath("$.data").isEmpty());
@@ -138,66 +136,119 @@ public class MessageControllerTests {
 	}
 
 	@Test
+	void createMessageNoAuth() throws Exception {
+		MessageCreateDTO messageCreateDTO = new MessageCreateDTO();
+		messageCreateDTO.setToId(mockUser2.getId());
+		messageCreateDTO.setContent("mock message2");
+		mockMvc.perform(post("/api/messages")
+						.content(mapper.writeValueAsString(messageCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
 	void createMessage() throws Exception {
-		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
-		friendCreateDTO.setFromId(mockUser.getId());
-		friendCreateDTO.setToId(mockUser2.getId());
+		MessageCreateDTO messageCreateDTO = new MessageCreateDTO();
+		messageCreateDTO.setToId(mockUser2.getId());
+		messageCreateDTO.setContent("mock message2");
 		mockMvc.perform(post("/api/messages")
-						.content(mapper.writeValueAsString(friendCreateDTO))
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(messageCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data.content").value("mock message2"));
+	}
+
+	@Test
+	void createMessageInvalidContent() throws Exception {
+		MessageCreateDTO messageCreateDTO = new MessageCreateDTO();
+		messageCreateDTO.setToId(mockUser2.getId());
+		messageCreateDTO.setContent("");
+		mockMvc.perform(post("/api/messages")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(messageCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
+	}
+
+	@Test
+	void updateMessageNoAuth() throws Exception {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setContent("new message");
+		mockMvc.perform(patch("/api/messages/{id}", mockMessage.getId())
+						.content(mapper.writeValueAsString(messageDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void addFriendAlreadyExists(@Autowired FriendService service) throws Exception {
-		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
-		friendCreateDTO.setFromId(mockUser.getId());
-		friendCreateDTO.setToId(mockUser2.getId());
-		service.createFriend(friendCreateDTO);
-		mockMvc.perform(post("/api/messages")
-						.content(mapper.writeValueAsString(friendCreateDTO))
+	void updateMessageNotFound() throws Exception {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setContent("new message");
+		mockMvc.perform(patch("/api/messages/{id}", -1)
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(messageDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Message not found with this id"));
 	}
 
 	@Test
-	void addFriendWithRequest(@Autowired FriendService service, @Autowired AuthService auth) throws Exception {
-		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
-		friendCreateDTO.setFromId(mockUser.getId());
-		friendCreateDTO.setToId(mockUser2.getId());
-		service.createFriend(friendCreateDTO);
-		auth.setTestAuth(mockToken2);
-		friendCreateDTO.setFromId(mockUser2.getId());
-		friendCreateDTO.setToId(mockUser.getId());
-		mockMvc.perform(post("/api/messages")
-						.content(mapper.writeValueAsString(friendCreateDTO))
+	void updateMessage() throws Exception {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setContent("new message");
+		mockMvc.perform(patch("/api/messages/{id}", mockMessage.getId())
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(messageDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized());
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpectAll(
+						jsonPath("$.data.id").value(mockMessage.getId()),
+						jsonPath("$.data.content").value(messageDTO.getContent()));
 	}
 
 	@Test
-	void deleteFriendNoAuth() throws Exception {
+	void updateMessageInvalidContent() throws Exception {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setContent("");
+		mockMvc.perform(patch("/api/messages/{id}", mockMessage.getId())
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(messageDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
+	}
+
+	@Test
+	void deleteMessageNoAuth() throws Exception {
 		mockMvc.perform(delete("/api/messages/{id}", 1))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	void deleteFriendNotFound() throws Exception {
+	void deleteMessageNotFound() throws Exception {
 		mockMvc.perform(delete("/api/messages/{id}", -1)
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
-				.andExpect(jsonPath("$.data.id").value("Friend not found with this id"));
+				.andExpect(jsonPath("$.data.id").value("Message not found with this id"));
 	}
 
 	@Test
-	void deleteFriend(@Autowired FriendService service) throws Exception {
-		FriendCreateDTO friendCreateDTO = new FriendCreateDTO();
-		friendCreateDTO.setFromId(mockUser.getId());
-		friendCreateDTO.setToId(mockUser2.getId());
-		long id = service.createFriend(friendCreateDTO).getId();
-		mockMvc.perform(delete("/api/messages/{id}", id)
+	void deleteMessage() throws Exception {
+		mockMvc.perform(delete("/api/messages/{id}", mockMessage.getId())
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))

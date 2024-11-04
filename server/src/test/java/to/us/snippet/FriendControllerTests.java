@@ -67,7 +67,7 @@ public class FriendControllerTests {
 		AuthDTO authDTO2 = new AuthDTO();
 		authDTO2.setUsername(mockUser2.getUsername());
 		authDTO2.setPassword(mockPassword);
-		this.mockToken2 = "Bearer " + auth.login(authDTO).getToken();
+		this.mockToken2 = "Bearer " + auth.login(authDTO2).getToken();
 
 		auth.setTestAuth(mockToken);
 	}
