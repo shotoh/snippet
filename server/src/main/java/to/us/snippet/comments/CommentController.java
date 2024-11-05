@@ -63,6 +63,27 @@ public class CommentController {
 				.build();
 	}
 
+	@PatchMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response likeComment(@PathVariable("id") long id) {
+		service.likeComment(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
+	@PatchMapping("/{id}/dislike")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response dislikeComment(@PathVariable("id") long id) {
+		service.dislikeComment(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
+	@DeleteMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response unlikeComment(@PathVariable("id") long id) {
+		service.unlikeComment(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Response deleteComment(@PathVariable("id") long id) {
