@@ -147,7 +147,7 @@ public class AuthControllerTests {
 		mockMvc.perform(post("/api/auth/register")
 						.content(mapper.writeValueAsString(registerDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
 				.andExpect(jsonPath("$.data.username").value("User already exists with this username"));
@@ -162,7 +162,7 @@ public class AuthControllerTests {
 		mockMvc.perform(post("/api/auth/register")
 						.content(mapper.writeValueAsString(registerDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
 				.andExpect(jsonPath("$.data.email").value("User already exists with this email"));
@@ -177,11 +177,10 @@ public class AuthControllerTests {
 		mockMvc.perform(post("/api/auth/register")
 						.content(mapper.writeValueAsString(registerDTO))
 						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("success"))
-				.andExpect(jsonPath("$.data.username").value(registerDTO.getUsername()))
-				.andExpect(jsonPath("$.data.email").value(registerDTO.getEmail()));
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 
 	@Test
@@ -225,8 +224,23 @@ public class AuthControllerTests {
 		passwordDTO.setOldPassword("abc");
 		passwordDTO.setNewPassword("def");
 		mockMvc.perform(post("/api/auth/change-password")
+						.header("Authorization", mockToken)
 						.content(mapper.writeValueAsString(passwordDTO))
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void changePassword(@Value("${MOCK_PASSWORD:}") String mockPassword) throws Exception {
+		PasswordDTO passwordDTO = new PasswordDTO();
+		passwordDTO.setOldPassword(mockPassword);
+		passwordDTO.setNewPassword(mockPassword + 1);
+		mockMvc.perform(post("/api/auth/change-password")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(passwordDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent())
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").isEmpty());
 	}
 }
