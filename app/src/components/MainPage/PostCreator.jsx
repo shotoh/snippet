@@ -63,16 +63,17 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
         // Now upload the image if there is one
         console.log(mediaFiles.length, "media files to upload");
         if (mediaFiles.length > 0) {
-          const imageFile = mediaFiles[0];
-          try {
-            await uploadPostImage(imageFile, postId, token); // Pass the arguments in the correct order
-          } catch (error) {
-            // Handle error in image upload
-            setError(
-              `Post created but failed to upload image: ${error.message}`
-            );
-            console.error("Error uploading image:", error);
-          }
+          mediaFiles.map(async (file) => {
+            try {
+              await uploadPostImage(file, postId, token); // Pass the arguments in the correct order
+            } catch (error) {
+              // Handle error in image upload
+              setError(
+                `Post created but failed to upload image: ${error.message}`
+              );
+              console.error("Error uploading image:", error);
+            }
+          });
         }
 
         onPostCreate(); // Refresh posts in the parent component
