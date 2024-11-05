@@ -1,5 +1,6 @@
 package to.us.snippet.posts;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,21 +10,26 @@ import to.us.snippet.exceptions.ResourceNotFoundException;
 import to.us.snippet.images.ImageService;
 import to.us.snippet.images.PostImage;
 import to.us.snippet.images.PostImageRepository;
+import to.us.snippet.postlikes.PostLike;
+import to.us.snippet.postlikes.PostLikeRepository;
+import to.us.snippet.users.User;
 
 @Service
 public class PostService {
 	private final PostRepository repository;
 	private final PostImageRepository imageRepository;
+	private final PostLikeRepository likeRepository;
 	private final PostMapper mapper;
 
 	private final AuthService authService;
 	private final ImageService imageService;
 
 	@Autowired
-	public PostService(PostRepository repository, PostImageRepository imageRepository,
+	public PostService(PostRepository repository, PostImageRepository imageRepository, PostLikeRepository likeRepository,
 	                   PostMapper mapper, AuthService authService, ImageService imageService) {
 		this.repository = repository;
 		this.imageRepository = imageRepository;
+		this.likeRepository = likeRepository;
 		this.mapper = mapper;
 		this.authService = authService;
 		this.imageService = imageService;
@@ -74,6 +80,37 @@ public class PostService {
 		postImage.setContent(url);
 		imageRepository.save(postImage);
 		repository.save(post);
+	}
+
+	@Transactional
+	public void likePost(long id) {
+		User user = authService.getUser();
+		Post post = getPost(id);
+		unlikePost(id);
+		PostLike postLike = new PostLike();
+		postLike.setUser(user);
+		postLike.setPost(post);
+		postLike.setValue(1);
+		likeRepository.save(postLike);
+	}
+
+	@Transactional
+	public void dislikePost(long id) {
+		User user = authService.getUser();
+		Post post = getPost(id);
+		unlikePost(id);
+		PostLike postLike = new PostLike();
+		postLike.setUser(user);
+		postLike.setPost(post);
+		postLike.setValue(-1);
+		likeRepository.save(postLike);
+	}
+
+	@Transactional
+	public void unlikePost(long id) {
+		User user = authService.getUser();
+		Post post = getPost(id);
+		likeRepository.deletePostLikeByUserIdAndPostId(user.getId(), post.getId());
 	}
 
 	public void deletePost(long id) {

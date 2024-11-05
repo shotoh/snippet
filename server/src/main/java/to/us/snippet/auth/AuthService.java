@@ -103,6 +103,10 @@ public class AuthService {
 		return Long.parseLong(((Jwt) authentication.getPrincipal()).getSubject());
 	}
 
+	public User getUser() {
+		return repository.findById(userId()).orElseThrow(UnauthorizedException::new);
+	}
+
 	public String encryptPassword(String password) {
 		return passwordEncoder.encode(password);
 	}

@@ -71,6 +71,27 @@ public class PostController {
 		return new ResponseBuilder(Status.SUCCESS).build();
 	}
 
+	@PatchMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response likePost(@PathVariable("id") long id) {
+		service.likePost(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
+	@PatchMapping("/{id}/dislike")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response dislikePost(@PathVariable("id") long id) {
+		service.dislikePost(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
+	@DeleteMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public Response unlikePost(@PathVariable("id") long id) {
+		service.unlikePost(id);
+		return new ResponseBuilder(Status.SUCCESS).build();
+	}
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Response deletePost(@PathVariable("id") long id) {

@@ -22,17 +22,17 @@ VALUES (1, 'step 1 use a stick', 3846834),
        (10, 'can I have a congrats', 8739463),
        (1, 'iudshfjdsd', 4873264);
 
-INSERT INTO `post_likes` (user_id, post_id, timestamp)
-VALUES (1, 1, 84093274),
-       (1, 2, 84932787),
-       (2, 1, 84937484),
-       (4, 2, 372749832),
-       (10, 10, 43274832),
-       (9, 3, 83473298),
-       (7, 2, 83497204),
-       (6, 6, 382732132),
-       (2, 10, 29832492),
-       (7, 8, 283874982);
+INSERT INTO `post_likes` (user_id, post_id, value, timestamp)
+VALUES (1, 1, 1, 84093274),
+       (1, 2, -1, 84932787),
+       (2, 1, 1, 84937484),
+       (4, 2, -1, 372749832),
+       (10, 10, 1, 43274832),
+       (9, 3, -1, 83473298),
+       (7, 2, -1, 83497204),
+       (6, 6, 1, 382732132),
+       (2, 10, 1, 29832492),
+       (7, 8, 1, 283874982);
 
 INSERT INTO `comments` (user_id, post_id, content, timestamp)
 VALUES (1, 1, 'my own comment', 487328748),
