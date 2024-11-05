@@ -13,6 +13,8 @@ export const parseJwt = (token) => {
   }
 };
 
+
+
 /**
  * Retrieve user data from the server based on ID
  */
@@ -35,6 +37,8 @@ export const getUserData = async (userID, token) => {
     console.error(err);
   }
 };
+
+
 
 /**
  * Retrieve user's posts based on ID
@@ -92,8 +96,6 @@ export const getFriendData = async (userID, token) => {
         profilePicture: friend.to.profilePicture,
       }));
 
-      console.log(friendData);
-
       return friendData;
     } else {
       throw new Error("Error loading friends");
@@ -122,3 +124,66 @@ export const fetchUserAndPosts = async (userID, token) => {
     throw error;
   }
 };
+
+/**
+ * Update user's profile data
+ * @param data - { displayName, biography, profilePicture }
+ */
+export const updateUserData = async (userID, token, data) => {
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
+
+  if (!data) {
+    throw new Error("No data to update");
+  }
+
+  try {
+    // Update profile info
+    await fetch(`/api/users/${userID}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: {
+        displayName: data.displayName,
+        biography: data.biography,
+        profilePicture: data.profilePicture,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+export const createFriendRequest = async (targetUserID, token) => {
+  try {
+    let url = `/api/friends`;
+
+    let response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        toId: targetUserID, // The body for the friend creation
+      }),
+    });
+    console.log("response ok: " + response.ok);
+
+
+    const result = await response.json();
+
+    if (response.ok && result.status === "success") {
+      console.log("worked!");
+    }
+  } catch (err) {
+    console.error("error creating friend request:", err);
+  }
+};
+
+
+
+

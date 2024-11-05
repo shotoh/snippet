@@ -1,11 +1,11 @@
 package to.us.snippet.comments;
 
-import to.us.snippet.posts.PostService;
-import to.us.snippet.users.UserService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import to.us.snippet.posts.PostService;
+import to.us.snippet.users.UserService;
 
 @Mapper(componentModel = "spring", uses = {UserService.class, PostService.class})
 public interface CommentMapper {

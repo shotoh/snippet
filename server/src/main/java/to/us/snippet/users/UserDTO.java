@@ -20,4 +20,6 @@ public class UserDTO {
 
 	@Size(min = 1, max = 1023)
 	private String biography;
+
+	private String profilePicture;
 }
