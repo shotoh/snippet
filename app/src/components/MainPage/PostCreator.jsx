@@ -65,7 +65,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
         if (mediaFiles.length > 0) {
           const imageFile = mediaFiles[0];
           try {
-            await uploadPostImage(imageFile, postId, userId, token); // Pass the arguments in the correct order
+            await uploadPostImage(imageFile, postId, token); // Pass the arguments in the correct order
           } catch (error) {
             // Handle error in image upload
             setError(

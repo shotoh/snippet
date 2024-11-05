@@ -13,8 +13,6 @@ export const parseJwt = (token) => {
   }
 };
 
-
-
 /**
  * Retrieve user data from the server based on ID
  */
@@ -38,8 +36,6 @@ export const getUserData = async (userID, token) => {
   }
 };
 
-
-
 /**
  * Retrieve user's posts based on ID
  */
@@ -55,6 +51,7 @@ export const getUserPosts = async (userID, token) => {
       },
     });
     const result = await response.json();
+    console.log("result", result);
 
     if (response.ok && result.status === "success") {
       const fullPosts = await Promise.all(
@@ -156,7 +153,6 @@ export const updateUserData = async (userID, token, data) => {
   }
 };
 
-
 export const createFriendRequest = async (targetUserID, token) => {
   try {
     let url = `/api/friends`;
@@ -173,7 +169,6 @@ export const createFriendRequest = async (targetUserID, token) => {
     });
     console.log("response ok: " + response.ok);
 
-
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
@@ -183,7 +178,3 @@ export const createFriendRequest = async (targetUserID, token) => {
     console.error("error creating friend request:", err);
   }
 };
-
-
-
-

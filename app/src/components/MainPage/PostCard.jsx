@@ -1,4 +1,5 @@
 import React from "react";
+import { Carousel } from "react-bootstrap";
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -32,11 +33,22 @@ export default function PostCard({ post }) {
     <div className="grid grid-cols-4 grid-rows-4 h-96 border rounded-lg overflow-hidden shadow-md font-montserrat">
       {/* Media */}
       <div className="col-span-3 row-span-3">
-        <img
+        {/* <img
           src={media || MediaPlaceholder}
           alt="Media Content"
           className="w-full h-full object-cover"
-        />
+        /> */}
+        <Carousel className="w-100 mb-4">
+          {media.map((file, index) => (
+            <Carousel.Item key={index}>
+              <img
+                className="w-full h-full object-cover"
+                src={`http://localhost:3000/public/${file}`}
+                alt={`media-${index}`}
+              />
+            </Carousel.Item>
+          ))}
+        </Carousel>
       </div>
 
       {/* Ratings */}

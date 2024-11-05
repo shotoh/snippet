@@ -1,5 +1,3 @@
-import { getPostImage } from "./ImageAPI";
-
 /**
  * Retrieve all posts from the server
  */
@@ -70,9 +68,7 @@ export async function getFullPost(postID, token) {
   fullPost.user.name = result.data.user.username; // ** Replace with displayName when implemented
   // **   fullPost.user.profilePicture =
 
-  const media = await getPostImage(postID, token);
-  fullPost.media = media;
-
+  fullPost.media = result.data.images;
   fullPost.text = result.data.content;
 
   // { likes, dislikes }
