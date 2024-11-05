@@ -186,4 +186,32 @@ export const createFriendRequest = async (targetUserID, token) => {
 
 
 
+/**
+ * Change user password - Used in SettingsPopup.jsx
+ * @param {string} currentPassword 
+ * @param {string} newPassword
+ * @param {string} token
+ */
+export const changeUserPassword = async (currentPassword, newPassword, token) => {
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
+  const response = await fetch("/api/auth/change-password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      oldPassword: currentPassword,
+      newPassword: newPassword
+    })
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Password change failed: ${errorData.message}`);
+  }
+  return response.json();
+};
