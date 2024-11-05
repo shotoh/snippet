@@ -1,16 +1,12 @@
 import React, {useEffect } from "react";
-import { Card, Image } from 'react-bootstrap';
-import {Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import {Button } from 'react-bootstrap';
-
-function FriendCard({userImage, username, userDisplayName, userURL, onAccept, onReject}) {
-    
+import { Card, Image, Button } from 'react-bootstrap';
+import {Link, useNavigate } from "react-router-dom";
+import defaultProfile from "../../images/defaultprofile.png";
+function FriendCard({ userImage, username, userDisplayName, userURL, onAccept, onReject }) {
     const navigate = useNavigate();
  
     const onCircleClick = () => {
         navigate(userURL);
-        
     }
 
     useEffect(() => {
@@ -23,7 +19,7 @@ function FriendCard({userImage, username, userDisplayName, userURL, onAccept, on
         <Button variant="light" className="w-full">
             <div className="flex justify-around">
                 <Image 
-                src={userImage ? userImage : 'gray.png'}
+                src={userImage || defaultProfile}
                 alt="User image"
                 roundedCircle
                 className="my-auto"
@@ -56,12 +52,7 @@ function FriendCard({userImage, username, userDisplayName, userURL, onAccept, on
                 }
         </div>
         
-        
-        
       );  
 } 
-
-
-
 
 export default FriendCard;

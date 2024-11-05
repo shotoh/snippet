@@ -1,3 +1,5 @@
+import defaultProfile from "../images/defaultprofile.png";
+
 /**
  * Retrieve the token from localStorage
  */
@@ -69,10 +71,14 @@ export const fetchTrendingPosts = async () => {
  */
 export const fetchFriendsData = async (status = "FRIEND") => {
   const token = getToken();
-  if (!token) throw new Error("User is not authenticated");
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
   const userId = parseJwt(token)?.sub;
-  if (!userId) throw new Error("Invalid token");
+  if (!userId) {
+    throw new Error("Invalid token");
+  }
 
   try {
     const response = await fetch(`/api/friends?from=${userId}`, {
@@ -81,7 +87,12 @@ export const fetchFriendsData = async (status = "FRIEND") => {
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
-      return result.data.filter((friend) => friend.status === status);
+      return result.data.filter((friend) => friend.status === status).map((friend) => ({
+        id: friend.to.id,
+        username: friend.to.username,
+        displayName: friend.to.username,
+        profilePicture: friend.to.profilePicture || defaultProfile,
+      }));
     } else {
       throw new Error("Error loading friends data");
     }
