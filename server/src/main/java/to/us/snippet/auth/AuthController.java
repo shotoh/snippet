@@ -34,6 +34,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
+	@ResponseStatus(HttpStatus.OK)
 	public Response login(@RequestBody @Valid AuthDTO authDTO) {
 		return new ResponseBuilder(Status.SUCCESS)
 				.setData(service.login(authDTO))
@@ -41,6 +42,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/change-password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public Response changePassword(@RequestBody @Valid PasswordDTO passwordDTO) {
 		service.changePassword(passwordDTO);
 		return new ResponseBuilder(Status.SUCCESS).build();

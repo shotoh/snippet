@@ -47,7 +47,7 @@ public class AuthService {
 	public TokenDTO login(AuthDTO authDTO) {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getPassword()));
 		User user = repository.findByUsername(authentication.getName());
-		if (user == null) throw new ResourceNotFoundException("username", "User not found with this username"); // todo extend UserDetails to include id?
+		if (user == null) throw new UnauthorizedException();
 		long id = user.getId();
 		return new TokenDTO(id, generateToken(id, authentication));
 	}
