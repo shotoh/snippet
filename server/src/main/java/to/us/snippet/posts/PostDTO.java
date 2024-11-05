@@ -1,10 +1,11 @@
 package to.us.snippet.posts;
 
-import to.us.snippet.users.UserDTO;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import to.us.snippet.users.UserDTO;
 
 @Getter
 @Setter
@@ -16,4 +17,6 @@ public class PostDTO {
 
 	@Size(min = 1, max = 1023)
 	private String content;
+
+	private List<String> images;
 }

@@ -3,9 +3,11 @@ package to.us.snippet.posts;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import to.us.snippet.SnippetModel;
+import to.us.snippet.images.PostImage;
 import to.us.snippet.users.User;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +29,9 @@ public class Post implements SnippetModel {
 
 	@Column(nullable = false)
 	private String content;
+
+	@OneToMany(targetEntity = PostImage.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "post")
+	private List<PostImage> images;
 
 	@Column(nullable = false, updatable = false)
 	private long timestamp = Instant.now().toEpochMilli();

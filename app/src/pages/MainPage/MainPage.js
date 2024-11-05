@@ -66,13 +66,16 @@ const MainPage = () => {
     //WIP
     const token = authToken;
 
-    // Get user ID from token and set it in state
-    const userIdFromToken = parseInt(parseJwt(token).sub);
-
-    console.log("[TOKEN]:", token);
-    console.log("[USER ID]:", userIdFromToken);
+    
 
     try {
+
+      // Get user ID from token and set it in state
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+
+      console.log("[TOKEN]:", token);
+      console.log("[USER ID]:", userIdFromToken);
+
       const response = await fetch(`/api/friends?from=${userIdFromToken}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -110,13 +113,16 @@ const MainPage = () => {
     //WIP
     const token = authToken;
 
-    // Get user ID from token and set it in state
-    const userIdFromToken = parseInt(parseJwt(token).sub);
-
-    console.log("[TOKEN]:", token);
-    console.log("[USER ID]:", userIdFromToken);
+    
 
     try {
+
+      // Get user ID from token and set it in state
+      const userIdFromToken = parseInt(parseJwt(token).sub);
+
+      console.log("[TOKEN]:", token);
+      console.log("[USER ID]:", userIdFromToken);
+
       const response = await fetch(`/api/friends?to=${userIdFromToken}`, {
         headers: {
           Authorization: `Bearer ${token}`,

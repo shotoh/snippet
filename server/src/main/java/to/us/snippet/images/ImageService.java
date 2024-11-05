@@ -1,60 +1,65 @@
 package to.us.snippet.images;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import to.us.snippet.auth.AuthService;
-import to.us.snippet.exceptions.ResourceNotFoundException;
-import to.us.snippet.posts.Post;
-import to.us.snippet.posts.PostService;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import to.us.snippet.exceptions.InvalidRequestException;
 
 @Service
 public class ImageService {
-	private final ImageRepository repository;
-	private final ImageMapper mapper;
-
-	private final AuthService authService;
-	private final PostService postService;
+	private final String imagePath;
 
 	@Autowired
-	public ImageService(ImageRepository repository, ImageMapper mapper, AuthService authService, PostService postService) {
-		this.repository = repository;
-		this.mapper = mapper;
-		this.authService = authService;
-		this.postService = postService;
+	public ImageService(@Value("${IMAGE_PATH:}") String imagePath) {
+		this.imagePath = imagePath;
 	}
 
-	public Image getImage(long id) {
-		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id", "Image not found with this id"));
-	}
-
-	public ImageDTO retrieveImageByUser(long userId) {
-		return mapper.toDTO(repository.findFirstByUserIdAndPostNull(userId));
-	}
-
-	public List<ImageDTO> retrieveImagesByPost(long postId) {
-		return repository.findAllByPostId(postId).stream().map(mapper::toDTO).toList();
-	}
-
-	public ImageDTO createImage(ImageCreateDTO imageCreateDTO) {
-		long postId = imageCreateDTO.getPostId();
-		if (postId != 0) {
-			Post post = postService.getPost(postId);
-			authService.check(post);
+	public String saveImage(MultipartFile file) {
+		if (file.isEmpty()) {
+			throw new InvalidRequestException("file", "File is empty");
 		}
-		imageCreateDTO.setUserId(authService.userId());
-		Image image = repository.save(mapper.toEntity(imageCreateDTO));
-		return mapper.toDTO(image);
+		String type = file.getContentType();
+		String originalName = file.getOriginalFilename();
+		if (type == null || !type.startsWith("image")) {
+			throw new InvalidRequestException("file", "File is not an image");
+		}
+		if (originalName == null) {
+			throw new InvalidRequestException("file", "Invalid file name");
+		}
+		Path uploadPath = Paths.get(imagePath);
+		if (!Files.exists(uploadPath)) {
+			try {
+				Files.createDirectories(uploadPath);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		String fileName = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(StringUtils.cleanPath(originalName));
+		Path path = Paths.get(imagePath + fileName);
+		try {
+			Files.write(path, file.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return fileName;
 	}
 
-	public ImageDTO retrieveImage(long id) {
-		Image image = getImage(id);
-		return mapper.toDTO(image);
-	}
-
-	public void deleteImage(long id) {
-		Image image = getImage(id);
-		authService.check(image);
-		repository.deleteById(image.getId());
+	public void deleteImage(String pathName) {
+		if (pathName == null) return;
+		Path path = Paths.get(imagePath + pathName);
+		try {
+			Files.delete(path);
+		} catch (NoSuchFileException ignored) {
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
