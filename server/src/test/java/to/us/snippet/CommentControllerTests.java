@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.comments.CommentController;
 import to.us.snippet.comments.CommentCreateDTO;
 import to.us.snippet.comments.CommentDTO;
 import to.us.snippet.comments.CommentRepository;
@@ -30,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class CommentControllerTests {
 	private final MockMvc mockMvc;
-	private final CommentController controller;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -47,9 +46,8 @@ public class CommentControllerTests {
 	private CommentDTO mockComment;
 
 	@Autowired
-	public CommentControllerTests(MockMvc mockMvc, CommentController controller) {
+	public CommentControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -92,7 +90,6 @@ public class CommentControllerTests {
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();
@@ -170,6 +167,62 @@ public class CommentControllerTests {
 						jsonPath("$.data.user").exists(),
 						jsonPath("$.data.post").exists(),
 						jsonPath("$.data.content").exists());
+	}
+
+	@Test
+	void createCommentNoAuth() throws Exception {
+		CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+		commentCreateDTO.setPostId(mockPost.getId());
+		commentCreateDTO.setContent("new comment1");
+		mockMvc.perform(post("/api/comments")
+						.content(mapper.writeValueAsString(commentCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void createComment() throws Exception {
+		CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+		commentCreateDTO.setPostId(mockPost.getId());
+		commentCreateDTO.setContent("new comment1");
+		mockMvc.perform(post("/api/comments")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(commentCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data.content").value("new comment1"));
+	}
+
+	@Test
+	void createCommentInvalidContent() throws Exception {
+		CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+		commentCreateDTO.setPostId(mockPost.getId());
+		commentCreateDTO.setContent("");
+		mockMvc.perform(post("/api/comments")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(commentCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
+	}
+
+	@Test
+	void createCommentPostNotFound() throws Exception {
+		CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+		commentCreateDTO.setPostId(9999);
+		commentCreateDTO.setContent("new comment1");
+		mockMvc.perform(post("/api/comments")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(commentCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
 	}
 
 	@Test

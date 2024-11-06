@@ -1,239 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NavBar from "../../components/MainPage/NavBar";
-import { InputGroup, Form } from "react-bootstrap";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 import MessageHeader from "../../components/MessagePage/MessageHeader";
 import MessageBody from "../../components/MessagePage/MessageBody";
 import MessageBar from "../../components/MessagePage/MessageBar";
-import FriendCard from "../../components/MessagePage/FriendCard";
-import defaultProfile from "../../images/defaultprofile.png";
+import FriendsList from "../../components/MessagePage/FriendsList";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import useUserData from "../../hooks/useUserData";
+import useMessagePolling from "../../hooks/useMessagePolling";
+import { sendMessage, getToken } from "../../api/MessageAPI";
 
 export default function MessagesPage() {
-  // Friends of user
-  const [friends, setFriends] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const [userId, setUserId] = useState(null);
-  const [username, setUsername] = useState(""); // State to store username
-
+  const { userId, username, friends, error } = useUserData();
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
 
-  const authToken = localStorage.getItem("authToken");
+  useMessagePolling(userId, selectedFriend, setMessages, setShouldScrollToBottom);
 
-  // Helper function to parse JWT token
-  const parseJwt = (token) => {
+  const handleNewMessage = async (messageContent) => {
     try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      return JSON.parse(window.atob(base64));
+      const newMessage = await sendMessage(userId, selectedFriend.id, messageContent);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setShouldScrollToBottom(true);
     } catch (error) {
-      return null;
+      console.error("Error sending message:", error);
     }
-  };
-
-  useEffect(() => {
-    // Retrieve the username of the authenticated user
-    async function fetchUserDetails() {
-      const token = authToken;
-      if (!token) {
-        setError("User is not authenticated");
-        setLoading(false);
-        return;
-      }
-
-      // Get user ID from token and set it in state
-      const userIdFromToken = parseInt(parseJwt(token).sub);
-      setUserId(userIdFromToken);
-
-      try {
-        const response = await fetch(`/api/users/${userIdFromToken}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = await response.json();
-        if (response.ok && result.status === "success") {
-          setUsername(result.data.username); // Set the username
-        } else {
-          setError("Error loading user details");
-        }
-      } catch (err) {
-        setError("Error loading user details");
-      }
-    }
-
-    fetchUserDetails();
-  }, []);
-
-  useEffect(() => {
-    // Retrieve list of friends associated with user
-    async function fetchFriends() {
-      const token = authToken;
-      if (!token) {
-        setError("User is not authenticated");
-        setLoading(false);
-        return;
-      }
-
-      console.log(token);
-      console.log("[USER ID]:", userId);
-
-      // Get user ID from token and set it in state
-      const userIdFromToken = parseInt(parseJwt(token).sub);
-      setUserId(userIdFromToken);
-
-      try {
-        const response = await fetch(`/api/friends?from=${userIdFromToken}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const result = await response.json();
-
-        if (response.ok && result.status === "success") {
-          // Parse specifically the friends from response
-          const friendsList = result.data.filter(
-            (friend) => friend.status === "FRIEND" // Status should be "FRIEND", not "PENDING"
-          );
-
-          // Extract just the friend's id, name, and picture
-          const friendData = friendsList.map((friend) => ({
-            id: friend.to.id,
-            username: friend.to.username,
-            displayName: friend.to.username, // *** TEMPORARY: Change to displayName once implemented ***
-            profilePicture: friend.to.profilePicture || defaultProfile,
-          }));
-
-          setFriends(friendData);
-          console.log("[FRIENDS]", friendData);
-        } else {
-          setError("Error loading friends");
-        }
-      } catch (err) {
-        setError("Error loading friends");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchFriends();
-  }, []);
-
-  // Load/unload messages whenever a friend is selected
-  useEffect(() => {
-    let intervalId;
-    if (selectedFriend) {
-      loadMessages(true); // User selected a friend, should scroll
-      // Start polling every 5 seconds
-      intervalId = setInterval(() => {
-        loadMessages(false); // Interval call, should not scroll
-      }, 5000);
-    } else {
-      setMessages([]);
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [selectedFriend]);
-
-  // Load messages for selected friend
-  const loadMessages = async (shouldScroll = false) => {
-    if (!userId) {
-      console.error("User ID is not available.");
-      return;
-    }
-
-    const token = authToken;
-    if (!token) {
-      setError("Token has expired. Please log in again.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/messages?from=${userId}&to=${selectedFriend.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const result = await response.json();
-
-      if (response.ok && result.status === "success") {
-        const newMessages = result.data;
-
-        // Check if messages have changed
-        const messagesChanged =
-          JSON.stringify(messages) !== JSON.stringify(newMessages);
-
-        if (messagesChanged) {
-          setMessages(newMessages);
-          setShouldScrollToBottom(shouldScroll);
-        }
-      } else {
-        setError("Error loading messages");
-      }
-    } catch (err) {
-      setError("Error loading messages");
-    }
-  };
-
-  // Handler for new messages sent by the user
-  const handleNewMessage = (newMessage) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setShouldScrollToBottom(true); // Scroll to bottom when user sends a message
   };
 
   return (
     <div>
-      {/* Navbar */}
       <NavBar username={username} /> 
-      <div
-        className="container mx-auto mt-4 mb-4 border-2 p-0 border-secondaryLight"
-        style={{ height: "calc(100vh - 100px)" }}
-      >
-        {/* Message section */}
+      <div className="container mx-auto mt-4 mb-4 border-2 p-0 border-secondaryLight" style={{ height: "calc(100vh - 100px)" }}>
         <div className="d-flex h-100">
-          {/* Left Sidebar */}
-          <div
-            className="col-3 border-r-2 border-secondaryLight pt-4 px-3"
-            style={{ overflowY: "scroll" }}
-          >
-            <div className="border-b-2 border-secondaryLight">
-              <h2 className="font-montserrat font-bold">Messages</h2>
-              {/* Search Input */}
-              <InputGroup className="mb-3">
-                <Form.Control
-                  placeholder="Search Messages"
-                  aria-label="Search Messages"
-                />
-                <InputGroup.Text>
-                  <i className="bi bi-search"></i>
-                </InputGroup.Text>
-              </InputGroup>
-            </div>
-
-            {/* Display friends */}
-            <ul className="list-unstyled">
-              {friends.map((friend) => (
-                <FriendCard
-                  key={friend.id}
-                  friend={friend}
-                  onClick={() => {
-                    setSelectedFriend(friend);
-                  }}
-                />
-              ))}
-            </ul>
+          <div className="col-3 border-r-2 border-secondaryLight pt-4 px-3" style={{ overflowY: "scroll" }}>
+            <FriendsList friends={friends} onSelectFriend={setSelectedFriend} />
           </div>
 
-          {/* Right Sidebar */}
           <div className="col-9 d-flex flex-column h-100">
             {selectedFriend ? (
               <>
@@ -245,11 +47,10 @@ export default function MessagesPage() {
                   shouldScrollToBottom={shouldScrollToBottom}
                   setShouldScrollToBottom={setShouldScrollToBottom}
                 />
-
                 <MessageBar
                   selectedFriend={selectedFriend}
                   userId={userId}
-                  authToken={authToken}
+                  authToken={getToken()}
                   onNewMessage={handleNewMessage}
                 />
               </>
