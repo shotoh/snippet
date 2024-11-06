@@ -14,6 +14,8 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import to.us.snippet.SnippetModel;
 import to.us.snippet.posts.Post;
 
@@ -29,6 +31,7 @@ public class PostImage implements SnippetModel {
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "post_id", updatable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Post post;
 
 	@Column(nullable = false, updatable = false)

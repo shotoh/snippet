@@ -18,5 +18,11 @@ public class PostDTO {
 	@Size(min = 1, max = 1023)
 	private String content;
 
+	private int liked;
+
+	private int totalLikes;
+
+	private int totalDislikes;
+
 	private List<String> images;
 }
