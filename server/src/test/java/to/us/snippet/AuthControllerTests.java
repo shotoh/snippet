@@ -169,7 +169,7 @@ public class AuthControllerTests {
 	}
 
 	@Test
-	void register(@Autowired UserService userService) throws Exception {
+	void register() throws Exception {
 		UserCreateDTO registerDTO = new UserCreateDTO();
 		registerDTO.setUsername("mockRegister");
 		registerDTO.setEmail("mockRegister@gmail.com");
