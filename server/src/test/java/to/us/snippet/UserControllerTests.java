@@ -188,6 +188,32 @@ public class UserControllerTests {
 	}
 
 	@Test
+	void updatePictureNoAuth() throws Exception {
+		mockMvc.perform(patch("/api/users/{id}/profile-picture", mockUser.getId())
+						.formField("file", "a"))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void updatePictureNotFound() throws Exception {
+		mockMvc.perform(patch("/api/users/{id}/profile-picture", -1)
+						.header("Authorization", mockToken)
+						.formField("file", "a"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+	}
+
+	@Test
+	void updatePicture() throws Exception {
+		mockMvc.perform(patch("/api/users/{id}/profile-picture", mockUser.getId())
+						.header("Authorization", mockToken)
+						.formField("file", "a"))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
 	void deleteUserNoAuth() throws Exception {
 		mockMvc.perform(delete("/api/users/{id}", mockUser.getId()))
 				.andExpect(status().isUnauthorized());

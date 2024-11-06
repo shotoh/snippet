@@ -286,6 +286,78 @@ public class CommentControllerTests {
 	}
 
 	@Test
+	void likeCommentNoAuth() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/like", mockComment.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void likeCommentNotFound() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/like", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
+	}
+
+	@Test
+	void likeComment() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/like", mockComment.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void dislikeCommentNoAuth() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/dislike", mockComment.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void dislikeCommentNotFound() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/dislike", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
+	}
+
+	@Test
+	void dislikeComment() throws Exception {
+		mockMvc.perform(patch("/api/comments/{id}/dislike", mockComment.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void unlikeCommentNoAuth(@Autowired CommentService service) throws Exception {
+		service.likeComment(mockComment.getId());
+		mockMvc.perform(delete("/api/comments/{id}/like", mockComment.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void unlikeCommentNotFound(@Autowired CommentService service) throws Exception {
+		service.likeComment(mockComment.getId());
+		mockMvc.perform(delete("/api/comments/{id}/like", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Comment not found with this id"));
+	}
+
+	@Test
+	void unlikeComment(@Autowired CommentService service) throws Exception {
+		service.likeComment(mockComment.getId());
+		mockMvc.perform(delete("/api/comments/{id}/like", mockComment.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
 	void deleteCommentNoAuth() throws Exception {
 		mockMvc.perform(delete("/api/comments/{id}", mockComment.getId()))
 				.andExpect(status().isUnauthorized());
