@@ -1,4 +1,5 @@
 import React from "react";
+import { Carousel } from "react-bootstrap";
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -29,14 +30,38 @@ export default function PostCard({ post }) {
   const handleComments = () => {};
 
   return (
-    <div className="grid grid-cols-4 grid-rows-4 h-96 border rounded-lg overflow-hidden shadow-md font-montserrat">
+    <div className="h-[28rem] grid grid-cols-4 grid-rows-4 border rounded-lg overflow-hidden shadow-md font-montserrat">
       {/* Media */}
-      <div className="col-span-3 row-span-3">
-        <img
-          src={media || MediaPlaceholder}
-          alt="Media Content"
-          className="w-full h-full object-cover"
-        />
+      <div className="col-span-3 row-span-3 h-full relative overflow-hidden bg-gray-100">
+        {media.length > 1 ? (
+          // Handles multiple pieces of media
+          <Carousel
+            interval={null}
+            slide={false}
+            className="flex justify-center items-center w-full h-full overflow-hidden"
+          >
+            {media.map((file, index) => (
+              <Carousel.Item key={index}>
+                <img
+                  className="max-h-[21rem] w-full h-full object-scale-down"
+                  src={`/public/${file}`}
+                  alt={`media-${index}`}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        ) : (
+          // Handles 0 or 1 pieces of media
+          <div className="w-full h-full relative">
+            <img
+              className="absolute inset-0 w-full h-full object-scale-down"
+              src={
+                media.length === 0 ? MediaPlaceholder : `/public/${media[0]}`
+              }
+              alt={`media-1`}
+            />
+          </div>
+        )}
       </div>
 
       {/* Ratings */}

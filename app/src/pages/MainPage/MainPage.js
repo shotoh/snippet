@@ -10,7 +10,7 @@ import {
   createFriendRequest,
   rejectFriendRequest,
   getToken,
-  parseJwt
+  parseJwt,
 } from "../../api/MainPageAPI";
 
 const MainPage = () => {
