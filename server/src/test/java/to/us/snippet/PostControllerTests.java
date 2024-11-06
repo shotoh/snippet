@@ -256,12 +256,16 @@ public class PostControllerTests {
 	void addPictureNoAuth() throws Exception {
 		MockMultipartFile file = new MockMultipartFile(
 				"file",
-				"test.txt",
-				MediaType.TEXT_PLAIN_VALUE,
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
 				"a".getBytes()
 		);
-		mockMvc.perform(multipart("/api/posts/{id}/picture", mockUser.getId())
-						.file(file))
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						}))
 				.andExpect(status().isUnauthorized());
 	}
 
@@ -269,12 +273,16 @@ public class PostControllerTests {
 	void addPictureNotFound() throws Exception {
 		MockMultipartFile file = new MockMultipartFile(
 				"file",
-				"test.txt",
-				MediaType.TEXT_PLAIN_VALUE,
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
 				"a".getBytes()
 		);
 		mockMvc.perform(multipart("/api/posts/{id}/picture", -1)
 						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
 						.header("Authorization", mockToken))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -283,15 +291,82 @@ public class PostControllerTests {
 	}
 
 	@Test
-	void addPicture() throws Exception {
+	void addPictureEmptyFile() throws Exception {
 		MockMultipartFile file = new MockMultipartFile(
 				"file",
-				"test.txt",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				new byte[0]
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is empty"));
+	}
+
+	@Test
+	void addPictureNotImage() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
 				MediaType.TEXT_PLAIN_VALUE,
 				"a".getBytes()
 		);
-		mockMvc.perform(multipart("/api/posts/{id}/picture", mockUser.getId())
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
 						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is not an image"));
+	}
+
+	@Test
+	void addPictureInvalidFilename() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("Invalid file name"));
+	}
+
+	@Test
+	void addPicture() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
 						.header("Authorization", mockToken))
 				.andExpect(status().isNoContent());
 	}
