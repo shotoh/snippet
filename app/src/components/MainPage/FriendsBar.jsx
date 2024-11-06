@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import FriendCard from "./FriendCard";
 import { Image, Button } from "react-bootstrap";
-import { useState } from "react";
 import FriendRequests from "./FriendRequests";
+import defaultProfile from "../../images/defaultprofile.png";
 
 export default function FriendsBar({
   friends,
@@ -149,7 +149,7 @@ export default function FriendsBar({
               username={friend.username}
               friendID
               userURL={friend.url}
-              />
+            />
           ))
         )}
       </div>

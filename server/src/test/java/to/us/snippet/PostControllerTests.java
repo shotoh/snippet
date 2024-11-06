@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.posts.PostController;
 import to.us.snippet.posts.PostCreateDTO;
 import to.us.snippet.posts.PostDTO;
 import to.us.snippet.posts.PostRepository;
@@ -26,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PostControllerTests {
 	private final MockMvc mockMvc;
-	private final PostController controller;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
@@ -42,9 +41,8 @@ public class PostControllerTests {
 	private PostDTO mockPost;
 
 	@Autowired
-	public PostControllerTests(MockMvc mockMvc, PostController controller) {
+	public PostControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -78,7 +76,6 @@ public class PostControllerTests {
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 		assertThat(mockPost).isNotNull();
@@ -154,6 +151,44 @@ public class PostControllerTests {
 						jsonPath("$.data.id").value(mockPost.getId()),
 						jsonPath("$.data.user").exists(),
 						jsonPath("$.data.content").exists());
+	}
+
+	@Test
+	void createPostNoAuth() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("new post1");
+		mockMvc.perform(post("/api/posts")
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void createPost() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("new post1");
+		mockMvc.perform(post("/api/posts")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data.content").value("new post1"));
+	}
+
+	@Test
+	void createPostInvalidContent() throws Exception {
+		PostCreateDTO postCreateDTO = new PostCreateDTO();
+		postCreateDTO.setContent("");
+		mockMvc.perform(post("/api/posts")
+						.header("Authorization", mockToken)
+						.content(mapper.writeValueAsString(postCreateDTO))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
 	}
 
 	@Test

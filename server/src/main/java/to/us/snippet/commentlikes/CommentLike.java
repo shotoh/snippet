@@ -1,5 +1,7 @@
 package to.us.snippet.commentlikes;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import to.us.snippet.SnippetModel;
 import to.us.snippet.comments.Comment;
 import to.us.snippet.users.User;
@@ -21,11 +23,15 @@ public class CommentLike implements SnippetModel {
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false, updatable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "comment_id", nullable = false, updatable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Comment comment;
+
+	private int value;
 
 	@Column(nullable = false, updatable = false)
 	private long timestamp = Instant.now().toEpochMilli();

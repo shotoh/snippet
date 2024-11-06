@@ -17,6 +17,12 @@ public class CommentDTO {
 
 	private PostDTO post;
 
+	private int liked;
+
+	private int totalLikes;
+
+	private int totalDislikes;
+
 	@Size(min = 1, max = 1023)
 	private String content;
 }

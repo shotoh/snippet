@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
-import to.us.snippet.users.UserController;
 import to.us.snippet.users.UserCreateDTO;
 import to.us.snippet.users.UserDTO;
 import to.us.snippet.users.UserRepository;
@@ -30,16 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserControllerTests {
 	private final MockMvc mockMvc;
-	private final UserController controller;
 	private final ObjectMapper mapper;
 
 	private UserDTO mockUser;
 	private String mockToken;
 
 	@Autowired
-	public UserControllerTests(MockMvc mockMvc, UserController controller) {
+	public UserControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
-		this.controller = controller;
 		this.mapper = new ObjectMapper();
 	}
 
@@ -65,7 +62,6 @@ public class UserControllerTests {
 
 	@Test
 	void contextLoads() {
-		assertThat(controller).isNotNull();
 		assertThat(mockUser).isNotNull();
 		assertThat(mockToken).isNotNull();
 	}

@@ -1,15 +1,13 @@
 package to.us.snippet.commentlikes;
 
-import to.us.snippet.commentlikes.CommentLike;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
-	List<CommentLike> findAllByCommentId(long commentId);
+	void deleteCommentLikeByUserIdAndCommentId(long userId, long commentId);
 
-	CommentLike findCommentLikeByUserIdAndCommentId(long userId, long commentId);
+	int countAllByCommentIdAndValue(long commentId, long value);
 
-	boolean existsByUserIdAndCommentId(long userId, long commentId);
+	CommentLike getCommentLikeByUserIdAndCommentId(long userId, long commentId);
 }

@@ -1,21 +1,28 @@
 package to.us.snippet.comments;
 
-import to.us.snippet.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import to.us.snippet.auth.AuthService;
+import to.us.snippet.commentlikes.CommentLike;
+import to.us.snippet.commentlikes.CommentLikeRepository;
+import to.us.snippet.exceptions.ResourceNotFoundException;
+import to.us.snippet.users.User;
 
 @Service
 public class CommentService {
 	private final CommentRepository repository;
+	private final CommentLikeRepository likeRepository;
 	private final CommentMapper mapper;
 
 	private final AuthService authService;
 
 	@Autowired
-	public CommentService(CommentRepository repository, CommentMapper mapper, AuthService authService) {
+	public CommentService(CommentRepository repository, CommentLikeRepository likeRepository,
+	                      CommentMapper mapper, AuthService authService) {
 		this.repository = repository;
+		this.likeRepository = likeRepository;
 		this.mapper = mapper;
 		this.authService = authService;
 	}
@@ -49,6 +56,37 @@ public class CommentService {
 		mapper.updateEntity(commentDTO, comment);
 		repository.save(comment);
 		return mapper.toDTO(comment);
+	}
+
+	@Transactional
+	public void likeComment(long id) {
+		User user = authService.getUser();
+		Comment comment = getComment(id);
+		unlikeComment(id);
+		CommentLike commentLike = new CommentLike();
+		commentLike.setUser(user);
+		commentLike.setComment(comment);
+		commentLike.setValue(1);
+		likeRepository.save(commentLike);
+	}
+
+	@Transactional
+	public void dislikeComment(long id) {
+		User user = authService.getUser();
+		Comment comment = getComment(id);
+		unlikeComment(id);
+		CommentLike commentLike = new CommentLike();
+		commentLike.setUser(user);
+		commentLike.setComment(comment);
+		commentLike.setValue(-1);
+		likeRepository.save(commentLike);
+	}
+
+	@Transactional
+	public void unlikeComment(long id) {
+		User user = authService.getUser();
+		Comment comment = getComment(id);
+		likeRepository.deleteCommentLikeByUserIdAndCommentId(user.getId(), comment.getId());
 	}
 
 	public void deleteComment(long id) {

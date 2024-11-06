@@ -1,8 +1,12 @@
-// src/hooks/useProfileData.js
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { parseJwt, fetchUserAndPosts, getFriendData, updateUserData, createFriendRequest } from "../api/ProfileAPI";
+import {
+  parseJwt,
+  fetchUserAndPosts,
+  getFriendData,
+  updateUserData,
+  createFriendRequest,
+} from "../api/ProfileAPI";
 import DefaultProfilePicture from "../images/defaultprofile2.jpg";
 import DefaultBanner from "../images/somepicture.jpg";
 
@@ -18,20 +22,16 @@ const useProfileData = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
 
-  
-  
-
   const [showModal, setShowModal] = useState(false);
 
   const closeModal = () => {
     setShowModal(false);
-  }
+  };
   const openModal = () => {
     setShowModal(true);
-  }
+  };
 
   const [buttonType, setButtonType] = useState(-1);
-
 
   const token = localStorage.getItem("authToken");
   const { userId: userIdFromParams } = useParams();
@@ -40,12 +40,11 @@ const useProfileData = () => {
 
   const addFriend = async () => {
     await createFriendRequest(userIdToDisplay, token);
-  }
-
+  };
 
   const findIdByFromId = (data, fromId) => {
     const foundElement = data.find((element) => element.from.id === fromId);
-  
+
     return foundElement ? foundElement.id : null;
   };
 
@@ -98,33 +97,25 @@ const useProfileData = () => {
       console.error("error removing friend request:", err);
       return "Failed";
     }
-  }
+  };
 
-
-  const submitNewUserData = async ({image, displayName, biography }) => {
-    
-
-
-
+  const submitNewUserData = async ({ image, displayName, biography }) => {
     try {
-
-      
       const data = {
         displayName: displayName,
         biography: biography,
-        profilePicture: image
+        profilePicture: image,
       };
-      console.log(data.displayName + "\n" + data.biography + "\n" + data.profilePicture);
+      console.log(
+        data.displayName + "\n" + data.biography + "\n" + data.profilePicture
+      );
       await updateUserData(userIdFromToken, token, data);
       await fetchData();
-    } catch(error) {
+    } catch (error) {
       console.error("Error updating user data:", error);
       setError("Error updating user data");
     }
-    
-    
-  }
-
+  };
 
   const fetchData = async () => {
     if (!token || !userIdToDisplay) {
@@ -139,7 +130,7 @@ const useProfileData = () => {
       );
 
       const friendData = await getFriendData(userIdToDisplay, token);
-      
+
       setUserData({
         username: userResponse.data.username || "user",
         handle: userResponse.data.username || "handle",
@@ -150,12 +141,14 @@ const useProfileData = () => {
         friendCount: Object.keys(friendData).length,
       });
 
-      const friendsWithThisUser = friendData.some(friend => friend.id === userIdFromToken);
+      const friendsWithThisUser = friendData.some(
+        (friend) => friend.id === userIdFromToken
+      );
 
       //Set shown button (0 = add friend, 1 = remove friend, 2 = edit profile)
-      if(userIdToDisplay == userIdFromToken) {
+      if (userIdToDisplay == userIdFromToken) {
         setButtonType(2);
-      } else if(friendsWithThisUser) {
+      } else if (friendsWithThisUser) {
         setButtonType(1);
       } else {
         setButtonType(0);
@@ -187,7 +180,7 @@ const useProfileData = () => {
     buttonType,
     openModal,
     addFriend,
-    removeFriend
+    removeFriend,
   };
 };
 
