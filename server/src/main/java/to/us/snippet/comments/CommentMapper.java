@@ -15,6 +15,9 @@ public interface CommentMapper {
 	@Mapping(target = "timestamp", ignore = true)
 	Comment toEntity(CommentCreateDTO commentCreateDTO);
 
+	@Mapping(target = "post.liked", ignore = true)
+	@Mapping(target = "post.totalLikes", ignore = true)
+	@Mapping(target = "post.totalDislikes", ignore = true)
 	CommentDTO toDTO(Comment comment);
 
 	@Mapping(target = "id", ignore = true)
