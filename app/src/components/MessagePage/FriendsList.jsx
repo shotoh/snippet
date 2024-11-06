@@ -7,7 +7,10 @@ export default function FriendsList({ friends, onSelectFriend }) {
     <div>
       <h2 className="font-montserrat font-bold">Messages</h2>
       <InputGroup className="mb-3">
-        <Form.Control placeholder="Search Messages" aria-label="Search Messages" />
+        <Form.Control
+          placeholder="Search Messages"
+          aria-label="Search Messages"
+        />
         <InputGroup.Text>
           <i className="bi bi-search"></i>
         </InputGroup.Text>

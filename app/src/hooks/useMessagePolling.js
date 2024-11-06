@@ -1,13 +1,18 @@
 import { useEffect } from "react";
 import { fetchMessages } from "../api/MessageAPI";
 
-export default function useMessagePolling(userId, selectedFriend, setMessages, setShouldScrollToBottom) {
+export default function useMessagePolling(
+  userId,
+  selectedFriend,
+  setMessages,
+  setShouldScrollToBottom
+) {
   useEffect(() => {
     let intervalId;
 
     const loadMessages = async (shouldScroll = false) => {
       if (!userId || !selectedFriend) return;
-      
+
       try {
         const newMessages = await fetchMessages(userId, selectedFriend.id);
         setMessages((prevMessages) => {

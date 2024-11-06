@@ -9,14 +9,14 @@ export const getToken = () => localStorage.getItem("authToken");
  * Helper function to parse JWT token
  */
 export const parseJwt = (token) => {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      return JSON.parse(window.atob(base64));
-    } catch (error) {
-      return null;
-    }
-  };
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(window.atob(base64));
+  } catch (error) {
+    return null;
+  }
+};
 
 /**
  * Fetch posts from the server
@@ -87,12 +87,14 @@ export const fetchFriendsData = async (status = "FRIEND") => {
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
-      return result.data.filter((friend) => friend.status === status).map((friend) => ({
-        id: friend.to.id,
-        username: friend.to.username,
-        displayName: friend.to.username,
-        profilePicture: friend.to.profilePicture || defaultProfile,
-      }));
+      return result.data
+        .filter((friend) => friend.status === status)
+        .map((friend) => ({
+          id: friend.to.id,
+          username: friend.to.username,
+          displayName: friend.to.username,
+          profilePicture: friend.to.profilePicture || defaultProfile,
+        }));
     } else {
       throw new Error("Error loading friends data");
     }
@@ -112,13 +114,18 @@ export const createFriendRequest = async (targetUsername) => {
   try {
     const userResponse = await fetch(`/api/users`, {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     if (!userResponse.ok) throw new Error("Failed to fetch users");
 
     const users = await userResponse.json();
-    const foundUser = users.data.find((user) => user.username === targetUsername);
+    const foundUser = users.data.find(
+      (user) => user.username === targetUsername
+    );
 
     if (!foundUser) return "User Not Found";
 
@@ -153,30 +160,46 @@ export const rejectFriendRequest = async (targetUsername) => {
   try {
     const userResponse = await fetch(`/api/users`, {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     if (!userResponse.ok) throw new Error("Failed to fetch users");
 
     const users = await userResponse.json();
-    const foundUser = users.data.find((user) => user.username === targetUsername);
+    const foundUser = users.data.find(
+      (user) => user.username === targetUsername
+    );
 
     if (!foundUser) return "User Not Found";
 
     const userId = parseJwt(token)?.sub;
-    const friendDataResponse = await fetch(`/api/friends?from=${foundUser.id}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    });
+    const friendDataResponse = await fetch(
+      `/api/friends?from=${foundUser.id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const result = await friendDataResponse.json();
-    const friendID = result.data.find((element) => element.from.id === userId)?.id;
+    const friendID = result.data.find(
+      (element) => element.from.id === userId
+    )?.id;
 
     if (!friendID) return "Failed";
 
     const deleteResponse = await fetch(`/api/friends/${friendID}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     if (deleteResponse.ok) {
