@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
@@ -20,6 +21,7 @@ import to.us.snippet.users.UserService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -185,6 +187,125 @@ public class UserControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
 				.andExpect(jsonPath("$.data.biography").value("size must be between 1 and 1023"));
+	}
+
+	@Test
+	void updatePictureNoAuth() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", mockUser.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						}))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void updatePictureNotFound() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", -1)
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("User not found with this id"));
+	}
+
+	@Test
+	void updatePictureEmptyFile() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				new byte[0]
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", mockUser.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is empty"));
+	}
+
+	@Test
+	void updatePictureNotImage() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.TEXT_PLAIN_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", mockUser.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is not an image"));
+	}
+
+	@Test
+	void updatePictureInvalidFilename() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", mockUser.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("Invalid file name"));
+	}
+
+	@Test
+	void updatePicture() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/users/{id}/profile-picture", mockUser.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("PATCH");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
 	}
 
 	@Test

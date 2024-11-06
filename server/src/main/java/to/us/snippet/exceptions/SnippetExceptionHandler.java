@@ -37,6 +37,17 @@ public class SnippetExceptionHandler {
 		}
 	}
 
+	@ExceptionHandler(value = InvalidRequestException.class)
+	public ResponseEntity<Response> exception(InvalidRequestException e) {
+		ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
+		Map<String, String> errorMap = e.getErrorMap();
+		if (errorMap.isEmpty()) {
+			return builder.body(new ResponseBuilder(Status.FAIL).build());
+		} else {
+			return builder.body(new ResponseBuilder(Status.FAIL).setData(errorMap).build());
+		}
+	}
+
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<Response> exception(MethodArgumentNotValidException e) {
 		Map<String, String> errors = new HashMap<>();

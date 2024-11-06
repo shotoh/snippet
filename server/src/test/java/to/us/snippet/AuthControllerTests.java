@@ -171,8 +171,8 @@ public class AuthControllerTests {
 	@Test
 	void register() throws Exception {
 		UserCreateDTO registerDTO = new UserCreateDTO();
-		registerDTO.setUsername("mock2");
-		registerDTO.setEmail("mock2@gmail.com");
+		registerDTO.setUsername("mockRegister");
+		registerDTO.setEmail("mockRegister@gmail.com");
 		registerDTO.setPassword("abc");
 		mockMvc.perform(post("/api/auth/register")
 						.content(mapper.writeValueAsString(registerDTO))
