@@ -31,7 +31,7 @@ public class ImageService {
 		if (type == null || !type.startsWith("image")) {
 			throw new InvalidRequestException("file", "File is not an image");
 		}
-		if (originalName == null) {
+		if (originalName == null || originalName.isEmpty()) {
 			throw new InvalidRequestException("file", "Invalid file name");
 		}
 		Path uploadPath = Paths.get(imagePath);

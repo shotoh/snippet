@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import to.us.snippet.auth.AuthDTO;
 import to.us.snippet.auth.AuthService;
@@ -24,6 +25,7 @@ import to.us.snippet.users.UserService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -248,6 +250,197 @@ public class PostControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.status").value("fail"))
 				.andExpect(jsonPath("$.data.content").value("size must be between 1 and 1023"));
+	}
+
+	@Test
+	void addPictureNoAuth() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						}))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void addPictureNotFound() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", -1)
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+	}
+
+	@Test
+	void addPictureEmptyFile() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				new byte[0]
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is empty"));
+	}
+
+	@Test
+	void addPictureNotImage() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.TEXT_PLAIN_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("File is not an image"));
+	}
+
+	@Test
+	void addPictureInvalidFilename() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.file").value("Invalid file name"));
+	}
+
+	@Test
+	void addPicture() throws Exception {
+		MockMultipartFile file = new MockMultipartFile(
+				"file",
+				"test.png",
+				MediaType.IMAGE_PNG_VALUE,
+				"a".getBytes()
+		);
+		mockMvc.perform(multipart("/api/posts/{id}/picture", mockPost.getId())
+						.file(file)
+						.with(request -> {
+							request.setMethod("POST");
+							return request;
+						})
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void likePostNoAuth() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/like", mockPost.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void likePostNotFound() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/like", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+	}
+
+	@Test
+	void likePost() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/like", mockPost.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void dislikePostNoAuth() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/dislike", mockPost.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void dislikePostNotFound() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/dislike", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+	}
+
+	@Test
+	void dislikePost() throws Exception {
+		mockMvc.perform(patch("/api/posts/{id}/dislike", mockPost.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void unlikePostNoAuth(@Autowired PostService service) throws Exception {
+		service.likePost(mockPost.getId());
+		mockMvc.perform(delete("/api/posts/{id}/like", mockPost.getId()))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void unlikePostNotFound(@Autowired PostService service) throws Exception {
+		service.likePost(mockPost.getId());
+		mockMvc.perform(delete("/api/posts/{id}/like", -1)
+						.header("Authorization", mockToken))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.id").value("Post not found with this id"));
+	}
+
+	@Test
+	void unlikePost(@Autowired PostService service) throws Exception {
+		service.likePost(mockPost.getId());
+		mockMvc.perform(delete("/api/posts/{id}/like", mockPost.getId())
+						.header("Authorization", mockToken))
+				.andExpect(status().isNoContent());
 	}
 
 	@Test
