@@ -1,4 +1,5 @@
 import { getFullPost } from "./PostAPI";
+import { uploadProfilePicture } from "./ImageAPI";
 
 /**
  * Retrieve a user's ID based on their login token
@@ -143,14 +144,16 @@ export const updateUserData = async (userID, token, data) => {
         Authorization: `Bearer ${token}`,
       },
       body: {
+        id: userID,
         displayName: data.displayName,
         biography: data.biography,
-        profilePicture: data.profilePicture,
       },
     });
   } catch (err) {
     console.error(err);
   }
+  await uploadProfilePicture(data.profilePicture, userID, token);
+
 };
 
 export const createFriendRequest = async (targetUserID, token) => {

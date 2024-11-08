@@ -12,6 +12,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
   const handleMediaChange = (event) => {
     const files = Array.from(event.target.files);
     setMediaFiles(files);
+    
   };
 
   const handleCreatePost = async () => {
@@ -65,6 +66,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
         if (mediaFiles.length > 0) {
           mediaFiles.map(async (file) => {
             try {
+              console.log(file);
               await uploadPostImage(file, postId, token); // Pass the arguments in the correct order
             } catch (error) {
               // Handle error in image upload
