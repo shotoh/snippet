@@ -39,7 +39,7 @@ export async function fetchPosts(token) {
 export async function getFullPost(postID, token) {
   const fullPost = {
     id: null,
-    user: { name: "", profilePicture: null },
+    user: { userID: 0, name: "", profilePicture: null },
     media: null,
     text: "",
     likes: 0,
@@ -65,6 +65,7 @@ export async function getFullPost(postID, token) {
   const result = await response.json();
 
   fullPost.id = result.data.id;
+  fullPost.user.userID = result.data.user.id;
   fullPost.user.name = result.data.user.username; // ** Replace with displayName when implemented
   // **   fullPost.user.profilePicture =
 
@@ -72,9 +73,9 @@ export async function getFullPost(postID, token) {
   fullPost.text = result.data.content;
 
   // { likes, dislikes }
-  const ratings = await getPostRatings(postID, token);
-  fullPost.likes = ratings.likes;
-  fullPost.dislikes = ratings.dislikes;
+  // const ratings = await getPostRatings(postID, token);
+  fullPost.likes = 0;
+  fullPost.dislikes = 0;
 
   // { comments }
   const comments = await getPostComments(postID, token);
