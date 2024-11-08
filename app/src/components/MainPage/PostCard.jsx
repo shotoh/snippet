@@ -122,7 +122,7 @@ export default function PostCard({ post }) {
         </a>
         <div className="ml-4 flex-1">
           <a href={profileURL} className="no-underline text-black">
-            <h2 className="font-bold text-lg cursor-pointer">{name}</h2>
+            <h2 className="font-bold text-lg cursor-pointer inline">{name}</h2>
           </a>
           <div>
             <div
