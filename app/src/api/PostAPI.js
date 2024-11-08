@@ -72,9 +72,9 @@ export async function getFullPost(postID, token) {
   fullPost.text = result.data.content;
 
   // { likes, dislikes }
-  const ratings = await getPostRatings(postID, token);
-  fullPost.likes = ratings.likes;
-  fullPost.dislikes = ratings.dislikes;
+  // const ratings = await getPostRatings(postID, token);
+  fullPost.likes = 0;
+  fullPost.dislikes = 0;
 
   // { comments }
   const comments = await getPostComments(postID, token);
