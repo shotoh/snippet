@@ -143,14 +143,19 @@ export default function FriendsBar({
         {friends && friends.length === 0 ? (
           <p>No friends</p>
         ) : (
-          friends.map((friend) => (
-            <FriendCard
-              userImage={friend.userImage}
-              username={friend.username}
-              friendID
-              userURL={friend.url}
-            />
-          ))
+          friends.map(
+            (friend) => (
+              console.log(friend),
+              (
+                <FriendCard
+                  userImage={friend.userImage}
+                  username={friend.username}
+                  friendID
+                  userURL={`/snippet/user/${friend.id}`}
+                />
+              )
+            )
+          )
         )}
       </div>
 
