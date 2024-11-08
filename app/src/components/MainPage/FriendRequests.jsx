@@ -81,19 +81,17 @@ function FriendRequests({
             {resultMessage && <p>{resultMessage}</p>}
           </Form>
         ) : friends.length > 0 ? (
-          friends.map((friend, index) =>
-            console.log(friend)(
-              <FriendCard
-                key={index}
-                userImage={friend.userImage}
-                userDisplayName={friend.userDisplayName}
-                username={friend.username}
-                userURL={`/snippet/user/${friend.id}`}
-                onAccept={() => onAccept(friend)}
-                onReject={() => onReject(friend)}
-              />
-            )
-          )
+          friends.map((friend, index) => (
+            <FriendCard
+              key={index}
+              userImage={friend.userImage}
+              userDisplayName={friend.userDisplayName}
+              username={friend.username}
+              userURL={`/snippet/user/${friend.id}`}
+              onAccept={() => onAccept(friend)}
+              onReject={() => onReject(friend)}
+            />
+          ))
         ) : (
           <p>No friend requests at the moment</p>
         )}
