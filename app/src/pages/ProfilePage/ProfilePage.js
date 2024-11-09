@@ -28,6 +28,7 @@ const ProfilePage = () => {
                 />
                 <ProfileInfo
                   username={userData.username}
+                  displayName={userData.displayName}
                   handle={userData.handle}
                   biography={userData.biography}
                   id={userIdToDisplay}

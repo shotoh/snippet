@@ -44,7 +44,7 @@ const EditableProfileModal = ({ show, onClose, image, displayName, biography, on
         <Form.Group>
           <div className="text-center mb-3">
             <img
-              src={currentImage}
+              src={currentImage.includes("defaultprofile2") ? currentImage : `/public/${currentImage}`}
               alt="Profile"
               className="mx-auto"
               onClick={handleImageClick}
