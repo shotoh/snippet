@@ -23,6 +23,37 @@ export const uploadPostImage = async (image, postId, token) => {
   }
 };
 
+
+/**
+ * Upload an image for profile picture
+ */
+
+export const uploadProfilePicture = async (image, userId, token) => {
+  console.log("uploading profile Picture...");
+  console.log(image);
+  const formData = new FormData();
+  formData.append("file", image);
+
+  try {
+    const response = await fetch(`/api/users/${userId}/profile-picture`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to upload image");
+    } else {
+      console.log("profile picture uploaded!");
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 /**
  * Retrieve an image
  */
