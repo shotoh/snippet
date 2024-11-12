@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Carousel } from "react-bootstrap";
+import { likePost } from "../../api/PostAPI";
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -15,8 +16,9 @@ import DefaultProfilePicture from "../../images/defaultprofile2.jpg";
  * Template for a post
  * @param post - { user, media, text, likes, dislikes, comments}
  */
-export default function PostCard({ post }) {
+export default function PostCard({ post, loadPosts }) {
   const {
+    id,
     user: { name, profilePicture },
     media,
     text,
@@ -24,8 +26,19 @@ export default function PostCard({ post }) {
     dislikes,
     comments,
   } = post;
-  // Handlers for button clicks
-  const handleLike = () => {};
+  
+  const [likeCount, setLikeCount] = useState(likes);
+
+  //Handlers for button clicks
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      await likePost(id, token);
+      loadPosts();
+    } catch (error) {
+      console.error("Error liking post: ", error);
+    }
+  };
   const handleDislike = () => {};
   const handleComments = () => {};
 
@@ -34,7 +47,7 @@ export default function PostCard({ post }) {
       {/* Media */}
       <div className="col-span-3 row-span-3 h-full relative overflow-hidden bg-gray-100">
         {media.length > 1 ? (
-          // Handles multiple pieces of media
+          //Handles multiple pieces of media
           <Carousel
             interval={null}
             slide={false}
@@ -51,7 +64,7 @@ export default function PostCard({ post }) {
             ))}
           </Carousel>
         ) : (
-          // Handles 0 or 1 pieces of media
+          //Handles 0 or 1 pieces of media
           <div className="w-full h-full relative">
             <img
               className="absolute inset-0 w-full h-full object-scale-down"
@@ -71,7 +84,7 @@ export default function PostCard({ post }) {
           className="flex items-center space-x-2 my-4 hover:text-blue-500"
         >
           <HandThumbUpIcon className="w-10 h-10" />
-          <span>{likes}</span>
+          <span>{likeCount}</span>
         </button>
         <button
           onClick={handleDislike}

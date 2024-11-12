@@ -138,3 +138,32 @@ export async function getPostComments(postID, token) {
   const result = await response.json();
   return result.data;
 }
+
+/**
+ * Handle liking a post
+ */
+export async function likePost(postID, token) {
+  if (!token) {
+    throw new Error("No token provided");
+  }
+
+  try {
+    const response = await fetch(`/api/posts/${postID}/like`, {
+      method: "PATCH", 
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    });
+
+    //Only parse JSON if there's content 
+    if (response.status === "success") {
+      return response.status;
+    } else {
+      const errorText = await response.text();
+      throw new Error(`Failed to like post: ${response.status} - ${errorText}`);
+    }
+  } catch (error) {
+    console.error("Error liking post: ", error);
+    throw error;
+  }
+}
