@@ -10,7 +10,6 @@ export default function Feed({ posts, error, loadPosts }) {
     return <p>No posts available</p>;
   }
 
-
   return (
     <div>
       <h1> Feed </h1>
