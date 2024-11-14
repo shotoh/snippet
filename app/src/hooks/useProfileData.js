@@ -67,7 +67,7 @@ const useProfileData = () => {
       let friendRequestList = result.data;
       if (response.ok && result.status === "success") {
         friendID = findIdByFromId(result.data, userIdFromToken);
-        if (friendID != -1) {
+        if (friendID !== -1) {
           console.log("got friend entry ID: " + friendID);
         } else {
           return "Fail";
@@ -147,7 +147,7 @@ const useProfileData = () => {
       );
 
       //Set shown button (0 = add friend, 1 = remove friend, 2 = edit profile)
-      if (userIdToDisplay == userIdFromToken) {
+      if (userIdToDisplay === userIdFromToken) {
         setButtonType(2);
       } else if (friendsWithThisUser) {
         setButtonType(1);
