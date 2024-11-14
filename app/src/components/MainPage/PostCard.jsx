@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Carousel } from "react-bootstrap";
-import { FaThumbsUp, FaThumbsDown, FaComments } from "react-icons/fa";
+//import { FaThumbsUp, FaThumbsDown, FaComments } from "react-icons/fa";
 
 import MediaPlaceholder from "../../images/nomedia.jpg";
 import DefaultProfilePicture from "../../images/defaultprofile2.jpg";
@@ -85,7 +85,7 @@ export default function PostCard({ post }) {
           )}
         </div>
 
-        {/* Ratings */}
+        {/* Ratings 
         <div className="ml-3 col-span-1 h-full flex flex-col justify-end">
           <button
             onClick={handleLike}
@@ -108,7 +108,7 @@ export default function PostCard({ post }) {
             <FaComments className="w-6 h-6" />
             <span>{comments.length}</span>
           </button>
-        </div>
+        </div>*/}
       </div>
 
       {/* Post Info */}

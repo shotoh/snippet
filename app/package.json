@@ -43,5 +43,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://host.docker.internal:8080"
+  "proxy": "http://host.docker.internal:8080",
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "react-test-renderer": "^18.3.1"
+  }
 }
