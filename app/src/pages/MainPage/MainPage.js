@@ -39,6 +39,7 @@ const MainPage = () => {
   const loadPosts = async () => {
     try {
       const postsData = await fetchPosts();
+      console.log("Fetched post data: ", postsData);
       setPosts(postsData);
     } catch (error) {
       setError("Error loading posts");

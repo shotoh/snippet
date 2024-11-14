@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Carousel } from "react-bootstrap";
-import { likePost } from "../../api/PostAPI";
+import { likePost, dislikePost, unlikePost } from "../../api/PostAPI"
 import {
   HandThumbUpIcon,
   HandThumbDownIcon,
@@ -27,20 +27,50 @@ export default function PostCard({ post, loadPosts }) {
     comments,
   } = post;
   
-  const [likeCount, setLikeCount] = useState(likes);
+  const [liked, setLiked] = useState(false); //Track if post is liked by user
+  const [disliked, setDisliked] = useState(false); //Track if post is disliked by user
 
-  //Handlers for button clicks
+  //Handles liking post and unliking post if like button is clicked while the user has already liked the post
   const handleLike = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      await likePost(id, token);
+      if (liked) {
+        await unlikePost(id, token); 
+      } else if (disliked) {
+        await unlikePost(id, token);
+        setDisliked((prevDisliked) => !prevDisliked);
+        await likePost(id, token);
+      } else {
+        await likePost(id, token);
+      }
       loadPosts();
+      setLiked((prevLiked) => !prevLiked); //toggles liked state 
     } catch (error) {
-      console.error("Error liking post: ", error);
+      console.error("Error liking/unliking post: ", error);
     }
   };
-  const handleDislike = () => {};
-  const handleComments = () => {};
+
+  const handleDislike = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (liked) {
+        await unlikePost(id, token)
+        setLiked((prevLiked) => !prevLiked); //toggle liked state 
+      } else if (disliked) {    //If already disliked, toggle disliked state to false and delete dislike from database 
+        await unlikePost(id, token);
+        setDisliked((prevDisliked) => !prevDisliked);
+        loadPosts();
+        return;
+      }
+      await dislikePost(id, token);
+      setDisliked((prevDisliked) => !prevDisliked);
+      loadPosts();
+    } catch (error) {
+      console.error("Error disliking post: ", error);
+    }
+  };
+
+  const handleComments = async () => {};
 
   return (
     <div className="h-[28rem] grid grid-cols-4 grid-rows-4 border rounded-lg overflow-hidden shadow-md font-montserrat">
@@ -84,7 +114,7 @@ export default function PostCard({ post, loadPosts }) {
           className="flex items-center space-x-2 my-4 hover:text-blue-500"
         >
           <HandThumbUpIcon className="w-10 h-10" />
-          <span>{likeCount}</span>
+          <span>{likes}</span>
         </button>
         <button
           onClick={handleDislike}

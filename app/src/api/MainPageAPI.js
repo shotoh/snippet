@@ -23,7 +23,9 @@ export const parseJwt = (token) => {
  */
 export const fetchPosts = async () => {
   const token = getToken();
-  if (!token) throw new Error("User is not authenticated");
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
   try {
     const response = await fetch("/api/posts", {
@@ -47,7 +49,9 @@ export const fetchPosts = async () => {
  */
 export const fetchTrendingPosts = async () => {
   const token = getToken();
-  if (!token) throw new Error("User is not authenticated");
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
   try {
     const response = await fetch("/api/trending", {
@@ -109,7 +113,9 @@ export const fetchFriendsData = async (status = "FRIEND") => {
  */
 export const createFriendRequest = async (targetUsername) => {
   const token = getToken();
-  if (!token) throw new Error("User is not authenticated");
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
   try {
     const userResponse = await fetch(`/api/users`, {
@@ -155,7 +161,9 @@ export const createFriendRequest = async (targetUsername) => {
  */
 export const rejectFriendRequest = async (targetUsername) => {
   const token = getToken();
-  if (!token) throw new Error("User is not authenticated");
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
 
   try {
     const userResponse = await fetch(`/api/users`, {
