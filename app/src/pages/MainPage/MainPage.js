@@ -13,6 +13,9 @@ import {
   parseJwt,
 } from "../../api/MainPageAPI";
 
+// TO DO: Abstract friend related code into FriendBar API/Hooks
+// Abstract trending posts related code into Trendingbar API/Hooks
+
 const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -36,6 +39,7 @@ const MainPage = () => {
   const loadPosts = async () => {
     try {
       const postsData = await fetchPosts();
+      console.log("Fetched post data: ", postsData);
       setPosts(postsData);
     } catch (error) {
       setError("Error loading posts");
@@ -81,7 +85,7 @@ const MainPage = () => {
 
           {/* Feed */}
           <div className="col-span-6 bg-sky-500">
-            <Feed posts={posts} />
+            <Feed posts={posts} loadPosts={loadPosts} />
           </div>
 
           {/* Friends Bar */}
