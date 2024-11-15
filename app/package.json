@@ -24,7 +24,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:simple": "jest --silent --verbose=false"
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +45,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://host.docker.internal:8080"
+  "proxy": "http://host.docker.internal:8080",
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "react-test-renderer": "^18.3.1"
+  }
 }
