@@ -67,7 +67,7 @@ const useProfileData = () => {
       let friendRequestList = result.data;
       if (response.ok && result.status === "success") {
         friendID = findIdByFromId(result.data, userIdFromToken);
-        if (friendID != -1) {
+        if (friendID !== -1) {
           console.log("got friend entry ID: " + friendID);
         } else {
           return "Fail";
@@ -107,7 +107,7 @@ const useProfileData = () => {
         profilePicture: image,
       };
       console.log(
-        data.displayName + "\n" + data.biography + "\n" + data.profilePicture
+        data.displayName + "\n" + data.biography
       );
       await updateUserData(userIdFromToken, token, data);
       await fetchData();
@@ -133,8 +133,9 @@ const useProfileData = () => {
 
       setUserData({
         username: userResponse.data.username || "user",
+        displayName: userResponse.data.displayName,
         handle: userResponse.data.username || "handle",
-        biography: userResponse.data.biography || "bio",
+        biography: userResponse.data.biography,
         profilePicture:
           userResponse.data.profilePicture || DefaultProfilePicture,
         profileBanner: userResponse.data.profileBanner || DefaultBanner,
@@ -146,7 +147,7 @@ const useProfileData = () => {
       );
 
       //Set shown button (0 = add friend, 1 = remove friend, 2 = edit profile)
-      if (userIdToDisplay == userIdFromToken) {
+      if (userIdToDisplay === userIdFromToken) {
         setButtonType(2);
       } else if (friendsWithThisUser) {
         setButtonType(1);

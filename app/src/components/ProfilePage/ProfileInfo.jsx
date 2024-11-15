@@ -6,6 +6,7 @@ const loremIpsum =
 
 export default function ProfileInfo({
   username,
+  displayName,
   handle,
   biography,
   id,
@@ -21,10 +22,10 @@ export default function ProfileInfo({
   return (
     <div className="mt-20 md:mt-28 px-8 leading-tight font-montserrat">
       
-      <span className="text-4xl font-bold">{username}</span> <br />
+      <span className="text-4xl font-bold">{}</span> <br />
       <div className="flex flex-row justify-between">
         
-        <h1 className="text-3xl font-bold font-montserrat">{username}</h1>
+        <h1 className="text-4xl font-bold font-montserrat">{displayName ? displayName : username}</h1>
         {buttonShown === 0 && <Button variant="success" onClick={addFriend} size="sm" className="w-auto mx-auto">Add Friend</Button>}
         {buttonShown === 1 && <Button variant="danger" onClick={removeFriend} size="sm" className="w-auto mx-auto">Remove Friend</Button>}
         {buttonShown === 2 && <Button className=" mxl-auto" onClick={openModal}>Edit</Button>}
@@ -43,7 +44,7 @@ export default function ProfileInfo({
         </>
       </div>
       <p className="mt-3 text-gray-700 font-montserrat max-w-lg mx-auto">
-        {biography ? biography : loremIpsum}
+        {biography}
       </p>
     </div>
   );

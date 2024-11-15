@@ -1,4 +1,5 @@
 import { getFullPost } from "./PostAPI";
+import { uploadProfilePicture } from "./ImageAPI";
 
 /**
  * Retrieve a user's ID based on their login token
@@ -136,21 +137,44 @@ export const updateUserData = async (userID, token, data) => {
   }
 
   try {
+    let jsonBody;
+    if(!data.biography && !data.displayName) {
+      return;
+    }
+    else if(!data.biography) {
+      jsonBody = JSON.stringify({
+        displayName : data.displayName
+      })
+    } else if(!data.displayName) {
+      jsonBody = JSON.stringify({
+        biography : data.biography,
+      })
+    } else {
+      jsonBody = JSON.stringify({
+        biography : data.biography,
+        displayName : data.displayName
+      })
+    }
+
+
     // Update profile info
+    console.log(data.displayName + ", " + data.biography);
     await fetch(`/api/users/${userID}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       },
-      body: {
-        displayName: data.displayName,
-        biography: data.biography,
-        profilePicture: data.profilePicture,
-      },
+      body: jsonBody,
     });
   } catch (err) {
     console.error(err);
   }
+  if(data.profilePicture) {
+    await uploadProfilePicture(data.profilePicture, userID, token);
+
+  }
+
 };
 
 export const createFriendRequest = async (targetUserID, token) => {

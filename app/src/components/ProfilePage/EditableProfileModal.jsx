@@ -2,45 +2,32 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EditableProfileModal = ({ show, onClose, image, displayName, biography, onSubmit }) => {
-  const [currentImage, setCurrentImage] = useState(
-    typeof image === "string" ? { src: image, alt: "Profile" } : image
-  );
-  const [imageData, setImageData] = useState("");
+  const [currentImage, setCurrentImage] = useState(image);
+  const [selectedFile, setSelectedFile] = useState(null); // Store the File object here
   const [name, setName] = useState(displayName);
   const [bio, setBio] = useState(biography);
 
   const handleImageClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*"; // Accept only image files
-  
-    fileInput.onchange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Image = reader.result;
-          if(typeof image === "string") {
-            setImageData(base64Image);
-            setCurrentImage(base64Image);
-            console.log("yipee");
-          } else {
-            setCurrentImage({src: base64Image, alt: "Updated Profile Image"}); // Set the base64 image directly
+    document.getElementById("mediaInput").click(); // Trigger file input click
+  };
 
-          }
-          console.log(currentImage);
-        };
-        reader.readAsDataURL(file); // Reads as base64 Data URL
-      }
-    };
-  
-    fileInput.click(); // Trigger the file input click
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file); // Store the file object in selectedFile
+      console.log(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCurrentImage(reader.result); // Update currentImage with base64 data
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Handler for form submission
   const handleSubmit = () => {
-    console.log(name + "\n" + bio + "\n" + imageData);
-    onSubmit({ image: imageData, displayName: name, biography: bio }); 
+    console.log(name + "\n" + bio + "\n" + selectedFile);
+    onSubmit({ image: selectedFile, displayName: name, biography: bio }); 
     onClose();
   };
 
@@ -50,24 +37,35 @@ const EditableProfileModal = ({ show, onClose, image, displayName, biography, on
         <Modal.Title>Edit Profile</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* Replaceable image */}
-        <div className="text-center mb-3">
-          <img
-            src={currentImage}
-            alt="Profile"
-            className="mx-auto"
-            onClick={handleImageClick}
-            style={{
-              width: "100px",
-              height: "100px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              cursor: "pointer",
-            }}
-          />
-        </div>
+        
         {/* Form */}
         <Form>
+          {/* Replaceable image */}
+        <Form.Group>
+          <div className="text-center mb-3">
+            <img
+              src={currentImage.includes("defaultprofile2") ? currentImage : `/public/${currentImage}`}
+              alt="Profile"
+              className="mx-auto"
+              onClick={handleImageClick}
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+            />
+          </div>
+          <Form.Control
+          type="file"
+          id="mediaInput"
+          onChange={handleImageChange}
+          accept="image/*"
+          style={{ display: "none" }}
+        />
+        </Form.Group>
+        
           <Form.Group controlId="formDisplayName">
             <Form.Label>Display Name</Form.Label>
             <Form.Control

@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {useState, useRef, useEffect } from "react";
 import { Carousel } from "react-bootstrap";
+import { likePost, dislikePost, unlikePost } from "../../api/PostAPI"
 import { FaThumbsUp, FaThumbsDown, FaComments } from "react-icons/fa";
 
 import MediaPlaceholder from "../../images/nomedia.jpg";
@@ -9,8 +10,9 @@ import DefaultProfilePicture from "../../images/defaultprofile2.jpg";
  * Template for a post
  * @param post - { user, media, text, likes, dislikes, comments}
  */
-export default function PostCard({ post }) {
+export default function PostCard({ post, loadPosts }) {
   const {
+    id,
     user: { userID, name, profilePicture },
     media,
     text,
@@ -19,10 +21,51 @@ export default function PostCard({ post }) {
     comments,
   } = post;
 
-  // Handlers for button clicks
-  const handleLike = () => {};
-  const handleDislike = () => {};
-  const handleComments = () => {};
+  
+  const [liked, setLiked] = useState(false); //Track if post is liked by user
+  const [disliked, setDisliked] = useState(false); //Track if post is disliked by user
+
+  //Handles liking post and unliking post if like button is clicked while the user has already liked the post
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (liked) {
+        await unlikePost(id, token); 
+      } else if (disliked) {
+        await unlikePost(id, token);
+        setDisliked((prevDisliked) => !prevDisliked);
+        await likePost(id, token);
+      } else {
+        await likePost(id, token);
+      }
+      loadPosts();
+      setLiked((prevLiked) => !prevLiked); //toggles liked state 
+    } catch (error) {
+      console.error("Error liking/unliking post: ", error);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (liked) {
+        await unlikePost(id, token)
+        setLiked((prevLiked) => !prevLiked); //toggle liked state 
+      } else if (disliked) {    //If already disliked, toggle disliked state to false and delete dislike from database 
+        await unlikePost(id, token);
+        setDisliked((prevDisliked) => !prevDisliked);
+        loadPosts();
+        return;
+      }
+      await dislikePost(id, token);
+      setDisliked((prevDisliked) => !prevDisliked);
+      loadPosts();
+    } catch (error) {
+      console.error("Error disliking post: ", error);
+    }
+  };
+
+  const handleComments = async () => {};
 
   const [expanded, setExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
