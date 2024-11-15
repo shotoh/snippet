@@ -40,6 +40,14 @@ public class PostController {
 		return builder.build();
 	}
 
+	@GetMapping("/trending")
+	@ResponseStatus(HttpStatus.OK)
+	public Response retrieveTrendingPosts() {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.retrieveTrendingPosts())
+				.build();
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Response createPost(@RequestBody @Valid PostCreateDTO postCreateDTO) {
