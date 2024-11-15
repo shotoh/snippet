@@ -87,7 +87,8 @@ export default function NavBar({ onPostCreated }) {
       <Navbar.Collapse className="justify-end mr-8">
         <NavDropdown
           title={
-            <div className="flex items-center py-1.5 px-4 rounded-lg cursor-pointer hover:backdrop-brightness-90 transition ease-in-out">
+            <div 
+            data-testid="nav-dropdown" className="flex items-center py-1.5 px-4 rounded-lg cursor-pointer hover:backdrop-brightness-90 transition ease-in-out">
               <Navbar.Text className="text-white font-montserrat text-center mr-4 leading-tight">
                 {username ? (
                   <div>

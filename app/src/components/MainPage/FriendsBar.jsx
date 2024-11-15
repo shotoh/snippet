@@ -15,26 +15,7 @@ export default function FriendsBar({
   const [showModal, setShowModal] = useState(false);
   const [createNew, setCreateNew] = useState(false);
 
-  const [dummyFriendRequests, setDummyFriendRequests] = useState([
-    {
-      userImage:
-        "https://www.models-resource.com/resources/big_icons/15/14997.png?updated=1460924471",
-      userDisplayName: "Kowalski",
-      userURL: "/profile/kowalksi",
-    },
-    {
-      userImage:
-        "https://images.genius.com/6ee6e843687e01ce4385cc481cd7bc17.750x750x1.jpg",
-      userDisplayName: "Phil Swift",
-      userURL: "/profile/philswift",
-    },
-    {
-      userImage:
-        "https://images.genius.com/6ee6e843687e01ce4385cc481cd7bc17.750x750x1.jpg",
-      userDisplayName: "Phil Swift",
-      userURL: "/profile/philswift",
-    },
-  ]);
+  
 
   function onAccept(friend) {
     console.log(friend);
