@@ -54,7 +54,7 @@ export const fetchTrendingPosts = async () => {
   }
 
   try {
-    const response = await fetch("/api/trending", {
+    const response = await fetch("/api/posts/trending", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const result = await response.json();

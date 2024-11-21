@@ -1,10 +1,16 @@
 import React from "react";
-import TrendingCard from "./TrendingCard.jsx";
+import TrendingCard from "./TrendingCard";
 
 export default function TrendingBar({ posts, error }) {
-  const fetchPosts = async (event) => {};
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
 
-  const createTrendingCard = () => {};
+  if (!posts || posts.length === 0) {
+    return <p className="text-gray-500">No trending posts available.</p>;
+  }
+
+  console.log("Trending posts: ", posts);
 
   return (
     <div className="w-full h-full px-3">
@@ -13,24 +19,9 @@ export default function TrendingBar({ posts, error }) {
         <span className="text-5xl font-bold">Trending</span>
       </div>
       <div id="TrendingContentCreator">
-        <TrendingCard
-          backgroundImage="https://variety.com/wp-content/uploads/2018/12/Jack-Black.jpg"
-          circleImage="https://yt3.googleusercontent.com/ytc/AIdro_mv2AHfwkrm0yOrdapvdVzoW0x3t-pBnADG-VXB3uqqeHo=s160-c-k-c0x00ffffff-no-rj"
-          userURL={"/login"}
-        />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {posts.length === 0 ? (
-          <p>No posts available</p>
-        ) : (
-          posts.map((post) => (
-            <TrendingCard
-              backgroundImage={post.backgroundImage}
-              circleImage={post.circleImage}
-              postURL={post.postURL}
-              userURL={post.userURL}
-            />
-          ))
-        )}
+        {posts.map((post) => (
+          <TrendingCard key={post.id} post={post} />
+        ))}
       </div>
     </div>
   );
