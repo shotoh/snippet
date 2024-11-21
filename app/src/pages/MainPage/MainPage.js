@@ -80,7 +80,11 @@ const MainPage = () => {
         <div className="max-w-screen-xl mx-auto grid grid-cols-12 gap-x-6 mt-4">
           {/* Trending Bar */}
           <div className="col-span-3 bg-white rounded-t-lg !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight min-h-screen">
-            <TrendingBar posts={trendingPosts} error={trendingError} />
+            <TrendingBar 
+            posts={trendingPosts} 
+            error={trendingError}
+            loadTrendingPosts={loadTrendingPosts} 
+            />
           </div>
 
           {/* Feed */}
