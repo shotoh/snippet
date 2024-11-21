@@ -13,20 +13,29 @@ export default function ProfileFeed({ posts, error }) {
   return (
     <div>
       <h1>Feed</h1>
-      {posts.map((post) => (
-        <div key={post.id} className="py-3">
-          <PostCard
-            post={{
-              user: post.user, // ** TODO: profilePicture needs to be figured out in the backend, update this accordingly
-              media: post.media, // ** TODO: Images need to be figured out
-              text: post.text,
-              likes: post.likes,
-              dislikes: post.dislikes,
-              comments: post.comments,
-            }}
-          />
-        </div>
-      ))}
+      {posts.map(
+        (post) => (
+          console.log("post", post),
+          (
+            <div key={post.id} className="py-3">
+              <PostCard
+                post={{
+                  id: post.id,
+                  user: {
+                    name: post.user?.name || "Unknown",
+                    profilePicture: post.user?.profilePicture || null,
+                  },
+                  media: post.images || [], //Defaults to empty array in case post.images is undefined
+                  text: post.text,
+                  likes: post.totalLikes || 0, //Defaults to 0 likes if none are found
+                  dislikes: post.totalDislikes || 0, //Defaults to 0 dislikes if none are found
+                }}
+                // loadPosts={loadPosts}
+              />
+            </div>
+          )
+        )
+      )}
     </div>
   );
 }

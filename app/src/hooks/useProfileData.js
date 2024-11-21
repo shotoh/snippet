@@ -106,9 +106,7 @@ const useProfileData = () => {
         biography: biography,
         profilePicture: image,
       };
-      console.log(
-        data.displayName + "\n" + data.biography
-      );
+      console.log(data.displayName + "\n" + data.biography);
       await updateUserData(userIdFromToken, token, data);
       await fetchData();
     } catch (error) {
@@ -156,7 +154,6 @@ const useProfileData = () => {
       }
 
       setPosts(userPosts);
-      console.log(userPosts);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Error loading user data");

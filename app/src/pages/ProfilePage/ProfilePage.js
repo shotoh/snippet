@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import ProfileBanner from "../../components/ProfilePage/ProfileBanner";
 import ProfileInfo from "../../components/ProfilePage/ProfileInfo";
@@ -7,14 +7,33 @@ import useProfileData from "../../hooks/useProfileData";
 import EditableProfileModal from "../../components/ProfilePage/EditableProfileModal";
 
 const ProfilePage = () => {
-  const { userData, posts, error, fetchData, userIdToDisplay, submitNewUserData, showModal, closeModal, buttonType, openModal, addFriend, removeFriend } =
-    useProfileData();
+  const {
+    userData,
+    posts,
+    error,
+    fetchData,
+    userIdToDisplay,
+    submitNewUserData,
+    showModal,
+    closeModal,
+    buttonType,
+    openModal,
+    addFriend,
+    removeFriend,
+  } = useProfileData();
 
-
+  console.log(posts);
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <EditableProfileModal onSubmit={submitNewUserData}  onClose={closeModal} displayName={userData.username} biography={userData.biography} show={showModal} image={userData.profilePicture}/>
+      <EditableProfileModal
+        onSubmit={submitNewUserData}
+        onClose={closeModal}
+        displayName={userData.username}
+        biography={userData.biography}
+        show={showModal}
+        image={userData.profilePicture}
+      />
       <NavBar username={userData.username} onPostCreated={fetchData} />
       <div className="flex-grow">
         <div className="max-w-screen-xl mx-auto px-4">
