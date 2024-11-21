@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import ProfileBanner from "../../components/ProfilePage/ProfileBanner";
 import ProfileInfo from "../../components/ProfilePage/ProfileInfo";
@@ -20,6 +20,7 @@ const ProfilePage = () => {
     openModal,
     addFriend,
     removeFriend,
+    loadPosts,
   } = useProfileData();
 
   console.log(posts);
@@ -63,7 +64,11 @@ const ProfilePage = () => {
             {/* Right Column: User's Posts */}
             <div className="col-span-12 md:col-span-8">
               <div className="bg-white rounded-lg p-6 shadow-md">
-                <ProfileFeed posts={posts} error={error} />
+                <ProfileFeed
+                  posts={posts}
+                  error={error}
+                  loadPosts={loadPosts}
+                />
               </div>
             </div>
           </div>

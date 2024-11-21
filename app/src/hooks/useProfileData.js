@@ -6,6 +6,7 @@ import {
   getFriendData,
   updateUserData,
   createFriendRequest,
+  getUserPosts,
 } from "../api/ProfileAPI";
 import DefaultProfilePicture from "../images/defaultprofile2.jpg";
 import DefaultBanner from "../images/somepicture.jpg";
@@ -160,6 +161,17 @@ const useProfileData = () => {
     }
   };
 
+  const loadPosts = async () => {
+    try {
+      console.log("test");
+      const postsData = await getUserPosts(userIdToDisplay, token);
+      console.log("Fetched post data: ", postsData);
+      setPosts(postsData);
+    } catch (error) {
+      setError("Error loading posts");
+    }
+  };
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,6 +191,7 @@ const useProfileData = () => {
     openModal,
     addFriend,
     removeFriend,
+    loadPosts,
   };
 };
 

@@ -1,4 +1,3 @@
-import { getFullPost } from "./PostAPI";
 import { uploadProfilePicture } from "./ImageAPI";
 
 /**
@@ -55,10 +54,7 @@ export const getUserPosts = async (userID, token) => {
     console.log("result", result);
 
     if (response.ok && result.status === "success") {
-      const fullPosts = await Promise.all(
-        result.data.map((post) => getFullPost(post.id, token))
-      );
-      return fullPosts;
+      return result.data;
     } else {
       throw new Error("Error fetching posts");
     }
