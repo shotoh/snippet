@@ -6,6 +6,7 @@ import {
   getFriendData,
   updateUserData,
   createFriendRequest,
+  getUserPosts,
 } from "../api/ProfileAPI";
 import DefaultProfilePicture from "../images/defaultprofile2.jpg";
 import DefaultBanner from "../images/somepicture.jpg";
@@ -106,9 +107,7 @@ const useProfileData = () => {
         biography: biography,
         profilePicture: image,
       };
-      console.log(
-        data.displayName + "\n" + data.biography
-      );
+      console.log(data.displayName + "\n" + data.biography);
       await updateUserData(userIdFromToken, token, data);
       await fetchData();
     } catch (error) {
@@ -156,10 +155,20 @@ const useProfileData = () => {
       }
 
       setPosts(userPosts);
-      console.log(userPosts);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Error loading user data");
+    }
+  };
+
+  const loadPosts = async () => {
+    try {
+      console.log("test");
+      const postsData = await getUserPosts(userIdToDisplay, token);
+      console.log("Fetched post data: ", postsData);
+      setPosts(postsData);
+    } catch (error) {
+      setError("Error loading posts");
     }
   };
 
@@ -182,6 +191,7 @@ const useProfileData = () => {
     openModal,
     addFriend,
     removeFriend,
+    loadPosts,
   };
 };
 

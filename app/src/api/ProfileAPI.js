@@ -1,4 +1,3 @@
-import { getFullPost } from "./PostAPI";
 import { uploadProfilePicture } from "./ImageAPI";
 
 /**
@@ -55,10 +54,7 @@ export const getUserPosts = async (userID, token) => {
     console.log("result", result);
 
     if (response.ok && result.status === "success") {
-      const fullPosts = await Promise.all(
-        result.data.map((post) => getFullPost(post.id, token))
-      );
-      return fullPosts;
+      return result.data;
     } else {
       throw new Error("Error fetching posts");
     }
@@ -138,24 +134,22 @@ export const updateUserData = async (userID, token, data) => {
 
   try {
     let jsonBody;
-    if(!data.biography && !data.displayName) {
+    if (!data.biography && !data.displayName) {
       return;
-    }
-    else if(!data.biography) {
+    } else if (!data.biography) {
       jsonBody = JSON.stringify({
-        displayName : data.displayName
-      })
-    } else if(!data.displayName) {
+        displayName: data.displayName,
+      });
+    } else if (!data.displayName) {
       jsonBody = JSON.stringify({
-        biography : data.biography,
-      })
+        biography: data.biography,
+      });
     } else {
       jsonBody = JSON.stringify({
-        biography : data.biography,
-        displayName : data.displayName
-      })
+        biography: data.biography,
+        displayName: data.displayName,
+      });
     }
-
 
     // Update profile info
     console.log(data.displayName + ", " + data.biography);
@@ -163,18 +157,16 @@ export const updateUserData = async (userID, token, data) => {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: jsonBody,
     });
   } catch (err) {
     console.error(err);
   }
-  if(data.profilePicture) {
+  if (data.profilePicture) {
     await uploadProfilePicture(data.profilePicture, userID, token);
-
   }
-
 };
 
 export const createFriendRequest = async (targetUserID, token) => {

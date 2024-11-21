@@ -12,23 +12,21 @@ export default function Feed({ posts, error, loadPosts }) {
 
   return (
     <div>
-      <h1> Feed </h1>
       {posts.map((post) => (
         <div key={post.id} className="py-3">
           <PostCard
-          post={{
-            id: post.id,
-            user: {
-              name: post.user?.username || "Unknown",
-              profilePicture: post.user?.profilePicture || null,
-            },
-            media: post.images || [], //Defaults to empty array in case post.images is undefined
-            text: post.content,
-            likes: post.totalLikes || 0, //Defaults to 0 likes if none are found
-            dislikes: post.totalDislikes || 0, //Defaults to 0 dislikes if none are found
-            comments: post.comments || [],
-          }}
-          loadPosts={loadPosts}
+            post={{
+              id: post.id,
+              user: {
+                name: post.user?.username || "Unknown",
+                profilePicture: post.user?.profilePicture || null,
+              },
+              media: post.images || [], //Defaults to empty array in case post.images is undefined
+              text: post.content,
+              likes: post.totalLikes || 0, //Defaults to 0 likes if none are found
+              dislikes: post.totalDislikes || 0, //Defaults to 0 dislikes if none are found
+            }}
+            loadPosts={loadPosts}
           />
         </div>
       ))}
