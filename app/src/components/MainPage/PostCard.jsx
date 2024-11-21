@@ -1,15 +1,12 @@
-import React, {useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Carousel } from "react-bootstrap";
-import { likePost, dislikePost, unlikePost } from "../../api/PostAPI"
+import { likePost, dislikePost, unlikePost } from "../../api/PostAPI";
 import { FaThumbsUp, FaThumbsDown, FaComments } from "react-icons/fa";
+import Comments from "./Comments";
 
 import MediaPlaceholder from "../../images/nomedia.jpg";
 import DefaultProfilePicture from "../../images/defaultprofile2.jpg";
 
-/**
- * Template for a post
- * @param post - { user, media, text, likes, dislikes, comments}
- */
 export default function PostCard({ post, loadPosts }) {
   const {
     id,
@@ -21,27 +18,49 @@ export default function PostCard({ post, loadPosts }) {
     comments,
   } = post;
 
-  
-  const [liked, setLiked] = useState(false); //Track if post is liked by user
-  const [disliked, setDisliked] = useState(false); //Track if post is disliked by user
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentCount, setCommentCount] = useState(
+    Array.isArray(comments) ? comments.length : comments
+  );
 
-  //Handles liking post and unliking post if like button is clicked while the user has already liked the post
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const response = await fetch(`/api/comments?post=${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+          setCommentCount(result.data.length); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch comment count:", error);
+      }
+    };
+
+    fetchCommentCount();
+  }, [id]);
+
   const handleLike = async () => {
     try {
       const token = localStorage.getItem("authToken");
       if (liked) {
-        await unlikePost(id, token); 
+        await unlikePost(id, token);
       } else if (disliked) {
         await unlikePost(id, token);
-        setDisliked((prevDisliked) => !prevDisliked);
+        setDisliked(false);
         await likePost(id, token);
       } else {
         await likePost(id, token);
       }
       loadPosts();
-      setLiked((prevLiked) => !prevLiked); //toggles liked state 
+      setLiked(!liked);
     } catch (error) {
-      console.error("Error liking/unliking post: ", error);
+      console.error("Error liking/unliking post:", error);
     }
   };
 
@@ -49,46 +68,21 @@ export default function PostCard({ post, loadPosts }) {
     try {
       const token = localStorage.getItem("authToken");
       if (liked) {
-        await unlikePost(id, token)
-        setLiked((prevLiked) => !prevLiked); //toggle liked state 
-      } else if (disliked) {    //If already disliked, toggle disliked state to false and delete dislike from database 
         await unlikePost(id, token);
-        setDisliked((prevDisliked) => !prevDisliked);
+        setLiked(false);
+      } else if (disliked) {
+        await unlikePost(id, token);
+        setDisliked(false);
         loadPosts();
         return;
       }
       await dislikePost(id, token);
-      setDisliked((prevDisliked) => !prevDisliked);
+      setDisliked(!disliked);
       loadPosts();
     } catch (error) {
       console.error("Error disliking post: ", error);
     }
   };
-
-  const handleComments = async () => {};
-
-  const [expanded, setExpanded] = useState(false);
-  const [isClamped, setIsClamped] = useState(false);
-  const textRef = useRef(null);
-
-  const handleToggleExpand = () => {
-    setExpanded(!expanded);
-  };
-
-  useEffect(() => {
-    const element = textRef.current;
-    if (element) {
-      // Apply 'line-clamp-2' class to measure clamping
-      const wasExpanded = expanded;
-      element.classList.add("line-clamp-2");
-      const isTextClamped = element.scrollHeight > element.clientHeight;
-      setIsClamped(isTextClamped);
-      // Restore expanded state
-      if (wasExpanded) {
-        element.classList.remove("line-clamp-2");
-      }
-    }
-  }, [text]);
 
   const profileURL = `/snippet/user/${userID}`;
 
@@ -98,7 +92,6 @@ export default function PostCard({ post, loadPosts }) {
         {/* Media */}
         <div className="col-span-3 h-full relative overflow-hidden bg-gray-100">
           {media.length > 1 ? (
-            // Handles multiple pieces of media
             <Carousel
               interval={null}
               slide={false}
@@ -115,7 +108,6 @@ export default function PostCard({ post, loadPosts }) {
               ))}
             </Carousel>
           ) : (
-            // Handles 0 or 1 pieces of media
             <div className="w-full h-full relative">
               <img
                 className="absolute inset-0 w-full h-full object-scale-down"
@@ -145,11 +137,11 @@ export default function PostCard({ post, loadPosts }) {
             <span>{dislikes}</span>
           </button>
           <button
-            onClick={handleComments}
+            onClick={() => setShowComments(true)}
             className="flex items-center space-x-2 my-4 hover:text-green-500"
           >
             <FaComments className="w-6 h-6" />
-            <span>{comments.length}</span>
+            <span>{commentCount}</span>
           </button>
         </div>
       </div>
@@ -168,26 +160,21 @@ export default function PostCard({ post, loadPosts }) {
             <h2 className="font-bold text-lg cursor-pointer inline">{name}</h2>
           </a>
           <div>
-            <div
-              ref={textRef}
-              className={`text-gray-700 ${
-                expanded ? "line-clamp-none" : "line-clamp-2"
-              } ${isClamped ? "cursor-pointer" : ""}`}
-              onClick={isClamped ? handleToggleExpand : undefined}
-            >
+            <div className={`text-gray-700`}>
               {text}
             </div>
-            {isClamped && expanded && (
-              <span
-                className="text-blue-400 text-sm cursor-pointer"
-                onClick={handleToggleExpand}
-              >
-                Show less
-              </span>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Comments */}
+      {showComments && (
+        <Comments
+          postId={id}
+          onClose={() => setShowComments(false)}
+          updateCommentCount={setCommentCount} 
+        />
+      )}
     </div>
   );
 }

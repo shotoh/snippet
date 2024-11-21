@@ -1,6 +1,8 @@
 package to.us.snippet.posts;
 
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,12 @@ public class PostService {
 
 	public List<PostDTO> retrievePosts() {
 		return repository.findAll().stream().map(mapper::toDTO).toList();
+	}
+
+	public List<PostDTO> retrieveTrendingPosts() {
+		List<PostDTO> list = new ArrayList<>(retrievePosts());
+		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
+		return list;
 	}
 
 	public List<PostDTO> retrievePostsByUser(long userId) {

@@ -100,6 +100,22 @@ public class PostControllerTests {
 	}
 
 	@Test
+	void retrieveTrendingPostsNoAuth() throws Exception {
+		mockMvc.perform(get("/api/posts/trending"))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void retrieveTrendingPosts() throws Exception {
+		mockMvc.perform(get("/api/posts/trending")
+						.header("Authorization", mockToken))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("success"))
+				.andExpect(jsonPath("$.data").isArray());
+	}
+
+	@Test
 	void retrievePostsByUserNoAuth() throws Exception {
 		mockMvc.perform(get("/api/posts?user={userId}", mockUser.getId()))
 				.andExpect(status().isUnauthorized());
