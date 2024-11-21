@@ -26,6 +26,7 @@ export default function ProfileFeed({ posts, error, loadPosts }) {
               text: post.content,
               likes: post.totalLikes || 0, //Defaults to 0 likes if none are found
               dislikes: post.totalDislikes || 0, //Defaults to 0 dislikes if none are found
+              likedState: post.liked, // -1 = Disliked, 0 = Neither, 1 = Liked
             }}
             loadPosts={loadPosts}
           />

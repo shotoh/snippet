@@ -15,6 +15,7 @@ export default function PostCard({ post, loadPosts }) {
     text,
     likes,
     dislikes,
+    likedState,
   } = post;
 
   const [liked, setLiked] = useState(false);
@@ -40,7 +41,17 @@ export default function PostCard({ post, loadPosts }) {
     };
 
     fetchCommentCount();
+    handleLikedState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const handleLikedState = () => {
+    if (likedState === 1) {
+      setLiked(true);
+    } else if (likedState === -1) {
+      setDisliked(true);
+    }
+  };
 
   const handleLike = async () => {
     try {
@@ -121,8 +132,7 @@ export default function PostCard({ post, loadPosts }) {
         <div className="pl-3 col-span-1 h-full flex flex-col justify-end bg-white">
           <button
             onClick={handleLike}
-            className={`flex items-center space-x-2 my-4 hover:text-blue-500 ${
-              liked ? "text-blue-500" : ""
+            className={`flex items-center space-x-2 my-4 hover:text-primaryLight ${
             }`}
           >
             <FaThumbsUp className="w-6 h-6" />
@@ -130,14 +140,16 @@ export default function PostCard({ post, loadPosts }) {
           </button>
           <button
             onClick={handleDislike}
-            className="flex items-center space-x-2 my-4 hover:text-red-500"
+            className={`flex items-center space-x-2 my-4 hover:text-secondaryLight ${
+              disliked ? "text-secondaryLight" : ""
+            }`}
           >
             <FaThumbsDown className="w-6 h-6" />
             <span>{dislikes}</span>
           </button>
           <button
             onClick={() => setShowComments(true)}
-            className="flex items-center space-x-2 my-4 hover:text-green-500"
+            className="flex items-center space-x-2 my-4 hover:text-primaryLight"
           >
             <FaComments className="w-6 h-6" />
             <span>{commentCount}</span>
