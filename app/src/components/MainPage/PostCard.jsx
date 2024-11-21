@@ -133,7 +133,6 @@ export default function PostCard({ post, loadPosts }) {
           <button
             onClick={handleLike}
             className={`flex items-center space-x-2 my-4 hover:text-primaryLight ${
-              liked ? "text-primaryLight" : ""
             }`}
           >
             <FaThumbsUp className="w-6 h-6" />
