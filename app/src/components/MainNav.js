@@ -38,17 +38,17 @@ const MainNav = () => {
           </NavLink>
         </Nav.Link>
         <Nav.Link>
-          <NavLink className="no-underline text-inherit" to="products">
+          <NavLink className="no-underline text-inherit" to="/home/products">
             Products
           </NavLink>
         </Nav.Link>
         <Nav.Link>
-          <NavLink className="no-underline text-inherit" to="about">
+          <NavLink className="no-underline text-inherit" to="/home/about">
             About
           </NavLink>
         </Nav.Link>
         <Nav.Link>
-          <NavLink className="no-underline text-inherit" to="contact">
+          <NavLink className="no-underline text-inherit" to="/home/contact">
             Contact
           </NavLink>
         </Nav.Link>

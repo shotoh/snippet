@@ -3,53 +3,105 @@ import NavBar from "../../components/MainPage/NavBar";
 import TrendingBar from "../../components/MainPage/TrendingBar";
 import Feed from "../../components/MainPage/Feed";
 import FriendsBar from "../../components/MainPage/FriendsBar";
+import {
+  fetchPosts,
+  fetchTrendingPosts,
+  fetchFriendsData,
+  createFriendRequest,
+  rejectFriendRequest,
+  getToken,
+  parseJwt,
+} from "../../api/MainPageAPI";
+
+// TO DO: Abstract friend related code into FriendBar API/Hooks
+// Abstract trending posts related code into Trendingbar API/Hooks
 
 const MainPage = () => {
+  const [showModal, setShowModal] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [error, setError] = useState('');
+  const [trendingPosts, setTrendingPosts] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [error, setError] = useState("");
+  const [trendingError, setTrendingError] = useState("");
+  const [friendsError, setFriendsError] = useState("");
 
-  const fetchPosts = async () => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      setError('User is not authenticated');
-      return;
-    }
+  const token = getToken();
+  const userId = parseJwt(token)?.sub;
 
+  useEffect(() => {
+    loadPosts();
+    loadTrendingPosts();
+    loadFriends();
+    loadFriendRequests();
+  }, []);
+
+  const loadPosts = async () => {
     try {
-      const response = await fetch('/api/posts', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const result = await response.json();
-
-      if (response.ok && result.status === 'success') {
-        setPosts(result.data);
-      } else {
-        setError('Error loading posts');
-      }
-    } catch (err) {
-      console.error('Error loading posts:', err);
-      setError('Error loading posts');
+      const postsData = await fetchPosts();
+      console.log("Fetched post data: ", postsData);
+      setPosts(postsData);
+    } catch (error) {
+      setError("Error loading posts");
     }
   };
 
-  useEffect(() => {
-    fetchPosts(); 
-  }, []);
+  const loadTrendingPosts = async () => {
+    try {
+      const trendingData = await fetchTrendingPosts();
+      setTrendingPosts(trendingData);
+    } catch (error) {
+      setTrendingError("Error loading trending posts");
+    }
+  };
+
+  const loadFriends = async () => {
+    try {
+      const friendsData = await fetchFriendsData("FRIEND");
+      setFriends(friendsData);
+    } catch (error) {
+      setFriendsError("Error loading friends");
+    }
+  };
+
+  const loadFriendRequests = async () => {
+    try {
+      const friendRequestsData = await fetchFriendsData("PENDING");
+      setFriendRequests(friendRequestsData);
+    } catch (error) {
+      setFriendsError("Error loading friend requests");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <NavBar onPostCreated={fetchPosts} />
-      <div className="flex-grow grid grid-cols-12 gap-4 mt-4 pr-4">
-        <div className="col-span-3 bg-orange-400">
-          <TrendingBar />
-        </div>
-        <div className="col-span-6 bg-sky-500">
-          <Feed posts={posts} error={error} />
-        </div>
-        <div className="col-span-3 bg-purple-400">
-          <FriendsBar />
+      <NavBar onPostCreated={loadPosts} />
+      <div className="flex-grow">
+        <div className="max-w-screen-xl mx-auto grid grid-cols-12 gap-x-6 mt-4">
+          {/* Trending Bar */}
+          <div className="col-span-3 bg-white rounded-t-lg !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight min-h-screen">
+            <TrendingBar
+              posts={trendingPosts}
+              error={trendingError}
+              loadTrendingPosts={loadTrendingPosts}
+            />
+          </div>
+
+          {/* Feed */}
+          <div className="col-span-6">
+            <Feed posts={posts} loadPosts={loadPosts} />
+          </div>
+
+          {/* Friends Bar */}
+          <div className="col-span-3 bg-white rounded-t-lg !bg-primaryLight border-t-8 border-r-2 border-l-2 border-secondaryLight">
+            <FriendsBar
+              friends={friends}
+              friendRequests={friendRequests}
+              error={friendsError}
+              sendFriendRequest={createFriendRequest}
+              denyFriendRequest={rejectFriendRequest}
+            />
+          </div>
         </div>
       </div>
     </div>

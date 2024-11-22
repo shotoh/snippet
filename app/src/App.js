@@ -12,12 +12,15 @@ import SimpleBody from "./components/SimpleBody.js";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.js";
 import MainPage from "./pages/MainPage/MainPage.js";
 import MessagePage from "./pages/MessagePage/Messages.js";
+import DiscoverPage from "./pages/DiscoverPage/DiscoverPage.js";
 
 function App() {
   //let component;
 
   return (
+    
     <div className="App">
+
       <Routes>
         <Route path="/" element={<Home />}>
           <Route path="" element={<SimpleBody />} />
@@ -34,6 +37,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/messages" element={<MessagePage />} />
+        <Route path="/discover" element={<DiscoverPage />} />
+        <Route path="/snippet/user/:userId" element={<ProfilePage />} />
       </Routes>
     </div>
   );

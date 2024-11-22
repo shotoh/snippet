@@ -22,17 +22,17 @@ VALUES (1, 'step 1 use a stick', 3846834),
        (10, 'can I have a congrats', 8739463),
        (1, 'iudshfjdsd', 4873264);
 
-INSERT INTO `post_likes` (user_id, post_id, timestamp)
-VALUES (1, 1, 84093274),
-       (1, 2, 84932787),
-       (2, 1, 84937484),
-       (4, 2, 372749832),
-       (10, 10, 43274832),
-       (9, 3, 83473298),
-       (7, 2, 83497204),
-       (6, 6, 382732132),
-       (2, 10, 29832492),
-       (7, 8, 283874982);
+INSERT INTO `post_likes` (user_id, post_id, value, timestamp)
+VALUES (1, 1, 1, 84093274),
+       (1, 2, -1, 84932787),
+       (2, 1, 1, 84937484),
+       (4, 2, -1, 372749832),
+       (10, 10, 1, 43274832),
+       (9, 3, -1, 83473298),
+       (7, 2, -1, 83497204),
+       (6, 6, 1, 382732132),
+       (2, 10, 1, 29832492),
+       (7, 8, 1, 283874982);
 
 INSERT INTO `comments` (user_id, post_id, content, timestamp)
 VALUES (1, 1, 'my own comment', 487328748),
@@ -46,17 +46,17 @@ VALUES (1, 1, 'my own comment', 487328748),
        (4, 5, 'the answer is 3 -8 -2', 89738621),
        (10, 10, 'fkdsjnfkds', 87236287);
 
-INSERT INTO `comment_likes` (user_id, comment_id, timestamp)
-VALUES (2, 1, 840932374),
-       (2, 2, 8493232787),
-       (3, 1, 849373484),
-       (7, 2, 37274459832),
-       (10, 10, 435274832),
-       (6, 3, 834723298),
-       (6, 2, 834937204),
-       (6, 6, 38272432132),
-       (2, 10, 2943832492),
-       (5, 8, 2838274982);
+INSERT INTO `comment_likes` (user_id, comment_id, value, timestamp)
+VALUES (2, 1, 1, 840932374),
+       (2, 2, -1, 8493232787),
+       (3, 1, -1, 849373484),
+       (7, 2, 1, 37274459832),
+       (10, 10, 1, 435274832),
+       (6, 3, 1, 834723298),
+       (6, 2, -1, 834937204),
+       (6, 6, -1, 38272432132),
+       (2, 10, 1, 2943832492),
+       (5, 8, 1, 2838274982);
 
 INSERT INTO `friends` (from_id, to_id, status, timestamp)
 VALUES (1, 2, 'PENDING', 87846329),
@@ -81,15 +81,3 @@ VALUES (1, 2, 'hello', 483297432),
        (8, 10, 'hi rick', 74326424),
        (5, 4, 'where is the secret formula', 74362874),
        (4, 5, 'who are you', 874873242);
-
-INSERT INTO `medias` (post_id, source, timestamp)
-VALUES (2, 'top_frag.jpg', 74983297842),
-       (2, 'victory_royale.png', 4763287423),
-       (3, 'kazoo.png', 76821638721),
-       (3, 'sheet_music', 6287432987),
-       (5, 'problem1.png', 748327489),
-       (5, 'problem2.png', 768463284),
-       (7, 'help.jpg', 4763287468),
-       (6, 'computer.png', 7498768462),
-       (6, 'broken_computer.png', 8746328742),
-       (8, 'mountain_view.png', 479873246);
