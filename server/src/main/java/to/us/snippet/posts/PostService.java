@@ -3,12 +3,16 @@ package to.us.snippet.posts;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import to.us.snippet.auth.AuthService;
 import to.us.snippet.exceptions.ResourceNotFoundException;
+import to.us.snippet.friends.Friend;
+import to.us.snippet.friends.FriendService;
+import to.us.snippet.friends.FriendStatus;
 import to.us.snippet.images.ImageService;
 import to.us.snippet.images.PostImage;
 import to.us.snippet.images.PostImageRepository;
@@ -25,16 +29,18 @@ public class PostService {
 
 	private final AuthService authService;
 	private final ImageService imageService;
+	private final FriendService friendService;
 
 	@Autowired
 	public PostService(PostRepository repository, PostImageRepository imageRepository, PostLikeRepository likeRepository,
-	                   PostMapper mapper, AuthService authService, ImageService imageService) {
+	                   PostMapper mapper, AuthService authService, ImageService imageService, FriendService friendService) {
 		this.repository = repository;
 		this.imageRepository = imageRepository;
 		this.likeRepository = likeRepository;
 		this.mapper = mapper;
 		this.authService = authService;
 		this.imageService = imageService;
+		this.friendService = friendService;
 	}
 
 	public Post getPost(long id) {
@@ -51,9 +57,32 @@ public class PostService {
 	}
 
 	public List<PostDTO> retrieveTrendingPosts() {
-		List<PostDTO> list = new ArrayList<>(retrievePosts());
+		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 10);
 		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
 		return list;
+	}
+
+	public List<PostDTO> retrieveDiscoverPosts() {
+		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 20);
+		list.sort(Comparator.comparingLong(PostDTO::getTimestamp).reversed());
+		return list;
+	}
+
+	public List<PostDTO> retrieveMainPagePosts() {
+		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 20);
+		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
+		List<PostDTO> newList = new ArrayList<>();
+		Iterator<PostDTO> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			PostDTO post = iterator.next();
+			Friend friend = friendService.getFriendByFromAndTo(authService.userId(), post.getUser().getId());
+			if (friend.getStatus() == FriendStatus.FRIEND) {
+				newList.add(post);
+				iterator.remove();
+			}
+		}
+		newList.addAll(list);
+		return newList;
 	}
 
 	public List<PostDTO> retrievePostsByUser(long userId) {
