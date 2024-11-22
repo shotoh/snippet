@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import to.us.snippet.exceptions.UnauthorizedException;
+import to.us.snippet.exceptions.InvalidRequestException;
 import to.us.snippet.responses.Response;
 import to.us.snippet.responses.ResponseBuilder;
 import to.us.snippet.responses.Status;
@@ -42,7 +42,7 @@ public class FriendController {
 		} else if (toId.isPresent()) {
 			return builder.setData(service.retrieveFriendsByTo(toId.get())).build();
 		} else {
-			throw new UnauthorizedException();
+			throw new InvalidRequestException("from", "From is missing");
 		}
 	}
 
