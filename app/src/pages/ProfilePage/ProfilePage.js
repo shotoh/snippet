@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import ProfileBanner from "../../components/ProfilePage/ProfileBanner";
 import ProfileInfo from "../../components/ProfilePage/ProfileInfo";
@@ -7,14 +7,34 @@ import useProfileData from "../../hooks/useProfileData";
 import EditableProfileModal from "../../components/ProfilePage/EditableProfileModal";
 
 const ProfilePage = () => {
-  const { userData, posts, error, fetchData, userIdToDisplay, submitNewUserData, showModal, closeModal, buttonType, openModal, addFriend, removeFriend } =
-    useProfileData();
+  const {
+    userData,
+    posts,
+    error,
+    fetchData,
+    userIdToDisplay,
+    submitNewUserData,
+    showModal,
+    closeModal,
+    buttonType,
+    openModal,
+    addFriend,
+    removeFriend,
+    loadPosts,
+  } = useProfileData();
 
-
+  console.log(posts);
 
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
-      <EditableProfileModal onSubmit={submitNewUserData}  onClose={closeModal} displayName={userData.username} biography={userData.biography} show={showModal} image={userData.profilePicture}/>
+      <EditableProfileModal
+        onSubmit={submitNewUserData}
+        onClose={closeModal}
+        displayName={userData.username}
+        biography={userData.biography}
+        show={showModal}
+        image={userData.profilePicture}
+      />
       <NavBar username={userData.username} onPostCreated={fetchData} />
       <div className="flex-grow">
         <div className="max-w-screen-xl mx-auto px-4">
@@ -44,7 +64,11 @@ const ProfilePage = () => {
             {/* Right Column: User's Posts */}
             <div className="col-span-12 md:col-span-8">
               <div className="bg-white rounded-lg p-6 shadow-md">
-                <ProfileFeed posts={posts} error={error} />
+                <ProfileFeed
+                  posts={posts}
+                  error={error}
+                  loadPosts={loadPosts}
+                />
               </div>
             </div>
           </div>
