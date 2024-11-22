@@ -25,4 +25,6 @@ public class PostDTO {
 	private int totalDislikes;
 
 	private List<String> images;
+
+	private long timestamp;
 }
