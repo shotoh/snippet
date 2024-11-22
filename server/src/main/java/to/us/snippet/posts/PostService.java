@@ -70,7 +70,7 @@ public class PostService {
 
 	public List<PostDTO> retrieveMainPagePosts() {
 		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 20);
-		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
+		list.sort(Comparator.comparingLong(PostDTO::getTimestamp).reversed());
 		List<PostDTO> newList = new ArrayList<>();
 		Iterator<PostDTO> iterator = list.iterator();
 		while (iterator.hasNext()) {
