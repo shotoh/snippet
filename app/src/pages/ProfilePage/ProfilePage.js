@@ -23,8 +23,6 @@ const ProfilePage = () => {
     loadPosts,
   } = useProfileData();
 
-  console.log(posts);
-
   return (
     <div className="min-h-screen bg-slate-200 flex flex-col">
       <EditableProfileModal

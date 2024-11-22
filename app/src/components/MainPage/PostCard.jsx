@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Carousel } from "react-bootstrap";
 import { likePost, dislikePost, unlikePost } from "../../api/PostAPI";
 import { FaThumbsUp, FaThumbsDown, FaComments } from "react-icons/fa";
@@ -162,7 +162,11 @@ export default function PostCard({ post, loadPosts }) {
       <div className="col-span-4 flex items-start p-4 bg-white border-1">
         <a href={profileURL}>
           <img
-            src={profilePicture || DefaultProfilePicture}
+            src={
+              profilePicture
+                ? `/public/${profilePicture}`
+                : DefaultProfilePicture
+            }
             alt="Profile"
             className="w-20 h-20 rounded-full object-cover cursor-pointer"
           />

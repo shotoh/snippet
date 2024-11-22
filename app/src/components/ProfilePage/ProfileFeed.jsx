@@ -19,6 +19,7 @@ export default function ProfileFeed({ posts, error, loadPosts }) {
             post={{
               id: post.id,
               user: {
+                userID: post.user?.id || null,
                 name: post.user?.username || "Unknown",
                 profilePicture: post.user?.profilePicture || null,
               },

@@ -51,7 +51,7 @@ const useProfileData = () => {
 
   const removeFriend = async () => {
     try {
-      const userIdFromToken = parseInt(parseJwt(token).sub);
+      const userIdFromToken = parseInt(parseJwt(token));
       //Find ID of friending
       let url = `/api/friends?from=${userIdFromToken}`;
       let response = await fetch(url, {
@@ -93,6 +93,7 @@ const useProfileData = () => {
       if (response.ok && result.status === "success") {
         console.log("worked!");
         console.log(result.data);
+        window.location.reload(); // Refreshes page
       }
     } catch (err) {
       console.error("error removing friend request:", err);
@@ -107,7 +108,6 @@ const useProfileData = () => {
         biography: biography,
         profilePicture: image,
       };
-      console.log(data.displayName + "\n" + data.biography);
       await updateUserData(userIdFromToken, token, data);
       await fetchData();
     } catch (error) {
@@ -131,6 +131,7 @@ const useProfileData = () => {
       const friendData = await getFriendData(userIdToDisplay, token);
 
       setUserData({
+        id: userResponse.data.id,
         username: userResponse.data.username || "user",
         displayName: userResponse.data.displayName,
         handle: userResponse.data.username || "handle",
@@ -146,7 +147,7 @@ const useProfileData = () => {
       );
 
       //Set shown button (0 = add friend, 1 = remove friend, 2 = edit profile)
-      if (userIdToDisplay === userIdFromToken) {
+      if (parseInt(userIdToDisplay) === parseInt(userIdFromToken)) {
         setButtonType(2);
       } else if (friendsWithThisUser) {
         setButtonType(1);
