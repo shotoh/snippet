@@ -67,6 +67,7 @@ const MainPage = () => {
   const loadFriendRequests = async () => {
     try {
       const friendRequestsData = await fetchFriendsData("PENDING");
+      console.log("gimme that list", friendRequestsData);
       setFriendRequests(friendRequestsData);
     } catch (error) {
       setFriendsError("Error loading friend requests");

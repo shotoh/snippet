@@ -51,7 +51,7 @@ const useProfileData = () => {
 
   const removeFriend = async () => {
     try {
-      const userIdFromToken = parseInt(parseJwt(token).sub);
+      const userIdFromToken = parseInt(parseJwt(token));
       //Find ID of friending
       let url = `/api/friends?from=${userIdFromToken}`;
       let response = await fetch(url, {
@@ -93,6 +93,7 @@ const useProfileData = () => {
       if (response.ok && result.status === "success") {
         console.log("worked!");
         console.log(result.data);
+        window.location.reload(); // Refreshes page
       }
     } catch (err) {
       console.error("error removing friend request:", err);

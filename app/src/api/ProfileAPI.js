@@ -189,6 +189,7 @@ export const createFriendRequest = async (targetUserID, token) => {
 
     if (response.ok && result.status === "success") {
       console.log("worked!");
+      window.location.reload(); // Refreshes page
     }
   } catch (err) {
     console.error("error creating friend request:", err);

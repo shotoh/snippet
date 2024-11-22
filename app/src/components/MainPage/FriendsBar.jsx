@@ -35,6 +35,7 @@ export default function FriendsBar({
   }
 
   useEffect(() => {
+    console.log("friend requests", friendRequests);
     if (friendRequests) {
       setNotifications(friendRequests.length);
     } else {
