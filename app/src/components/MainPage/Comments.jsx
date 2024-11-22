@@ -15,7 +15,7 @@ export default function CommentsPopup({ postId, onClose, updateCommentCount }) {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const userId = JSON.parse(atob(token.split(".")[1])).sub; 
+        const userId = JSON.parse(atob(token.split(".")[1])).sub;
         const userData = await getUserData(userId, token);
         const profilePictureUrl = userData.profilePicture
           ? await getImage(userData.profilePicture, token)
@@ -54,11 +54,12 @@ export default function CommentsPopup({ postId, onClose, updateCommentCount }) {
                 ...comment.user,
                 profilePicture: profilePictureUrl,
               },
+              likedState: comment.liked,
             };
           })
         );
         setComments(updatedComments);
-        updateCommentCount(updatedComments.length); 
+        updateCommentCount(updatedComments.length);
       } else {
         throw new Error(result.message || "Failed to load comments");
       }
@@ -88,8 +89,8 @@ export default function CommentsPopup({ postId, onClose, updateCommentCount }) {
       });
 
       if (response.ok) {
-        setNewComment(""); 
-        fetchComments(); 
+        setNewComment("");
+        fetchComments();
       } else {
         throw new Error("Failed to add comment");
       }
@@ -99,24 +100,53 @@ export default function CommentsPopup({ postId, onClose, updateCommentCount }) {
   };
 
   const handleLikeComment = async (commentId) => {
-    try {
-      const response = await fetch(`/api/comments/${commentId}/like`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const comment = comments.find((c) => c.id === commentId);
+    if (!comment) return;
 
-      if (response.ok) {
-        setComments((prev) =>
-          prev.map((comment) =>
-            comment.id === commentId
-              ? { ...comment, likes: comment.likes + 1 }
-              : comment
-          )
-        );
+    console.log("selected comment", comment);
+    console.log("comment likes", comment.totalLikes);
+    console.log("all comments", comments);
+
+    try {
+      let response;
+      if (comment.likedState === 1) {
+        // Unlike the comment
+        response = await fetch(`/api/comments/${commentId}/like`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          setComments((prev) =>
+            prev.map((c) =>
+              c.id === commentId
+                ? { ...c, totalLikes: c.totalLikes - 1, likedState: 0 }
+                : c
+            )
+          );
+        } else {
+          throw new Error("Failed to unlike comment");
+        }
       } else {
-        throw new Error("Failed to like comment");
+        // Like the comment
+        response = await fetch(`/api/comments/${commentId}/like`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          setComments((prev) =>
+            prev.map((c) =>
+              c.id === commentId
+                ? { ...c, totalLikes: c.totalLikes + 1, likedState: 1 }
+                : c
+            )
+          );
+        } else {
+          throw new Error("Failed to like comment");
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -179,11 +209,13 @@ export default function CommentsPopup({ postId, onClose, updateCommentCount }) {
               </div>
               <div className="flex items-center justify-end text-gray-500 text-xs">
                 <button
-                  className="flex items-center space-x-1"
+                  className={`flex items-center space-x-1 ${
+                    comment.likedState === 1 ? "text-blue-500" : ""
+                  }`}
                   onClick={() => handleLikeComment(comment.id)}
                 >
                   <FaThumbsUp />
-                  <span>{comment.likes}</span>
+                  <span>{comment.totalLikes}</span>
                 </button>
               </div>
             </li>
