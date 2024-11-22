@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import FriendCard from "./FriendCard";
 import { Image, Button } from "react-bootstrap";
 import FriendRequests from "./FriendRequests";
-import defaultProfile from "../../images/defaultprofile.png";
 
 export default function FriendsBar({
   friends,
@@ -14,8 +13,6 @@ export default function FriendsBar({
   const [notifications, setNotifications] = useState(2);
   const [showModal, setShowModal] = useState(false);
   const [createNew, setCreateNew] = useState(false);
-
-  
 
   function onAccept(friend) {
     console.log(friend);
@@ -43,10 +40,11 @@ export default function FriendsBar({
     } else {
       setNotifications(0);
     }
-  }, [friendRequests]);
+    console.log(friends);
+  }, [friendRequests, friends]);
 
   return (
-    <div className="px-2 h-full flex flex-col justify-between h-full">
+    <div className="px-2 h-full flex flex-col justify-between">
       <FriendRequests
         friends={friendRequests}
         onAccept={onAccept}
@@ -126,8 +124,9 @@ export default function FriendsBar({
         ) : (
           friends.map((friend) => (
             <FriendCard
-              userImage={friend.userImage}
+              userImage={friend.profilePicture}
               username={friend.username}
+              userDisplayName={friend.displayName}
               friendID
               userURL={`/snippet/user/${friend.id}`}
             />

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Card, Image, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import defaultProfile from "../../images/defaultprofile.png";
+import DefaultProfile from "../../images/defaultprofile.png";
 function FriendCard({
   userImage,
   username,
@@ -26,10 +26,10 @@ function FriendCard({
         <Button variant="light" className="w-full">
           <div className="flex justify-around">
             <Image
-              src={userImage || defaultProfile}
+              src={userImage ? `/public/${userImage}` : DefaultProfile}
               alt="User image"
               roundedCircle
-              className="my-auto"
+              className="my-auto object-cover"
               style={{
                 width: "50px",
                 height: "50px",
