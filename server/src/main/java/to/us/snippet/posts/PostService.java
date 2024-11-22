@@ -57,26 +57,28 @@ public class PostService {
 	}
 
 	public List<PostDTO> retrieveTrendingPosts() {
-		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 10);
-		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
-		return list;
+		return retrievePosts().stream()
+				.limit(10)
+				.sorted(Comparator.comparingInt(PostDTO::getTotalLikes).reversed())
+				.toList();
 	}
 
 	public List<PostDTO> retrieveDiscoverPosts() {
-		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 20);
-		list.sort(Comparator.comparingLong(PostDTO::getTimestamp).reversed());
-		return list;
+		return retrievePosts().stream()
+				.limit(20)
+				.sorted(Comparator.comparingLong(PostDTO::getTimestamp).reversed())
+				.toList();
 	}
 
 	public List<PostDTO> retrieveMainPagePosts() {
-		List<PostDTO> list = new ArrayList<>(retrievePosts()).subList(0, 20);
-		list.sort(Comparator.comparingInt(PostDTO::getTotalLikes).reversed());
+		List<PostDTO> list = new ArrayList<>(retrievePosts().stream().limit(20).toList());
+		list.sort(Comparator.comparingLong(PostDTO::getTimestamp).reversed());
 		List<PostDTO> newList = new ArrayList<>();
 		Iterator<PostDTO> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			PostDTO post = iterator.next();
 			Friend friend = friendService.getFriendByFromAndTo(authService.userId(), post.getUser().getId());
-			if (friend.getStatus() == FriendStatus.FRIEND) {
+			if (friend != null && friend.getStatus() == FriendStatus.FRIEND) {
 				newList.add(post);
 				iterator.remove();
 			}
