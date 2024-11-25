@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-const EditableProfileModal = ({ show, onClose, image, displayName, biography, onSubmit }) => {
+const EditableProfileModal = ({
+  show,
+  onClose,
+  image,
+  username,
+  biography,
+  onSubmit,
+}) => {
   const [currentImage, setCurrentImage] = useState(image);
   const [selectedFile, setSelectedFile] = useState(null); // Store the File object here
-  const [name, setName] = useState(displayName);
-  const [bio, setBio] = useState(biography);
+  const [name, setName] = useState(username || "");
+  const [bio, setBio] = useState(biography || "");
 
   const handleImageClick = () => {
     document.getElementById("mediaInput").click(); // Trigger file input click
@@ -27,7 +34,7 @@ const EditableProfileModal = ({ show, onClose, image, displayName, biography, on
   // Handler for form submission
   const handleSubmit = () => {
     console.log(name + "\n" + bio + "\n" + selectedFile);
-    onSubmit({ image: selectedFile, displayName: name, biography: bio }); 
+    onSubmit({ image: selectedFile, displayName: name, biography: bio });
     onClose();
   };
 
@@ -37,35 +44,38 @@ const EditableProfileModal = ({ show, onClose, image, displayName, biography, on
         <Modal.Title>Edit Profile</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        
         {/* Form */}
         <Form>
           {/* Replaceable image */}
-        <Form.Group>
-          <div className="text-center mb-3">
-            <img
-              src={currentImage.includes("defaultprofile2") ? currentImage : `/public/${currentImage}`}
-              alt="Profile"
-              className="mx-auto"
-              onClick={handleImageClick}
-              style={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                cursor: "pointer",
-              }}
+          <Form.Group>
+            <div className="text-center mb-3">
+              <img
+                src={
+                  currentImage.includes("defaultprofile2")
+                    ? currentImage
+                    : `/public/${currentImage}`
+                }
+                alt="Profile"
+                className="mx-auto"
+                onClick={handleImageClick}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
+            <Form.Control
+              type="file"
+              id="mediaInput"
+              onChange={handleImageChange}
+              accept="image/*"
+              style={{ display: "none" }}
             />
-          </div>
-          <Form.Control
-          type="file"
-          id="mediaInput"
-          onChange={handleImageChange}
-          accept="image/*"
-          style={{ display: "none" }}
-        />
-        </Form.Group>
-        
+          </Form.Group>
+
           <Form.Group controlId="formDisplayName">
             <Form.Label>Display Name</Form.Label>
             <Form.Control

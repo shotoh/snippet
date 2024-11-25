@@ -96,7 +96,7 @@ export const fetchFriendsData = async (status = "FRIEND") => {
         .map((friend) => ({
           id: friend.to.id,
           username: friend.to.username,
-          displayName: friend.to.username,
+          displayName: friend.to.displayName,
           profilePicture: friend.to.profilePicture || defaultProfile,
         }));
     } else {

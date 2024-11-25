@@ -93,6 +93,16 @@ public class FriendControllerTests {
 	}
 
 	@Test
+	void retrieveFriendsNoParams() throws Exception {
+		mockMvc.perform(get("/api/friends")
+						.header("Authorization", mockToken))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value("fail"))
+				.andExpect(jsonPath("$.data.from").value("From is missing"));
+	}
+
+	@Test
 	void retrieveSpecificFriendNotFound() throws Exception {
 		mockMvc.perform(get("/api/friends?from={id}&to={id}", -1, -1)
 						.header("Authorization", mockToken))

@@ -36,7 +36,7 @@ public class PostController {
 	public Response retrievePosts(@RequestParam(name = "user") Optional<Long> userId) {
 		ResponseBuilder builder = new ResponseBuilder(Status.SUCCESS);
 		userId.map(user -> builder.setData(service.retrievePostsByUser(user)))
-				.orElseGet(() -> builder.setData(service.retrievePosts()));
+				.orElseGet(() -> builder.setData(service.retrieveMainPagePosts()));
 		return builder.build();
 	}
 
@@ -45,6 +45,14 @@ public class PostController {
 	public Response retrieveTrendingPosts() {
 		return new ResponseBuilder(Status.SUCCESS)
 				.setData(service.retrieveTrendingPosts())
+				.build();
+	}
+
+	@GetMapping("/discover")
+	@ResponseStatus(HttpStatus.OK)
+	public Response retrieveDiscoverPosts() {
+		return new ResponseBuilder(Status.SUCCESS)
+				.setData(service.retrieveDiscoverPosts())
 				.build();
 	}
 
