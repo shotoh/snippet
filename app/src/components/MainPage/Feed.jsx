@@ -1,5 +1,6 @@
 import React from "react";
 import PostCard from "./PostCard";
+import DefaultProfile from "../../images/defaultprofile.png";
 
 export default function Feed({ posts, error, loadPosts }) {
   if (error) {
@@ -19,13 +20,14 @@ export default function Feed({ posts, error, loadPosts }) {
           post={{
             id: post.id,
             user: {
-              name: post.user?.username || "Unknown",
-              profilePicture: post.user?.profilePicture || null,
+              name: post.user?.username || "Unknown user",
+              profilePicture: post.user?.profilePicture || DefaultProfile,
             },
             media: post.images || [], //Defaults to empty array in case post.images is undefined
             text: post.content,
             likes: post.totalLikes || 0, //Defaults to 0 likes if none are found
             dislikes: post.totalDislikes || 0, //Defaults to 0 dislikes if none are found
+            likeState: post.liked, // -1 = Disliked, 0 = Neither, 1 = Liked
             comments: post.comments || [],
           }}
           loadPosts={loadPosts}

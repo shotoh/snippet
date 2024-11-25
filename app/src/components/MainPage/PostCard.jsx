@@ -124,7 +124,9 @@ export default function PostCard({ post, loadPosts }) {
         <div className="ml-3 col-span-1 h-full flex flex-col justify-end">
           <button
             onClick={handleLike}
-            className="flex items-center space-x-2 my-4 hover:text-blue-500"
+            className={`flex items-center space-x-2 my-4 hover:text-primaryLight ${
+              liked ? "text-secondaryLight" : ""
+            }`}
           >
             <FaThumbsUp className="w-6 h-6" />
             <span>{likes}</span>
