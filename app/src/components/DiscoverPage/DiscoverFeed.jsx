@@ -19,10 +19,15 @@ export default function DiscoverFeed({ posts, error, loadDiscoverPosts }) {
                       discoverPost={{
                         id: post.id,
                         user: {
+                            userID: post.user?.id || null,
                             name: post.user?.username || "Unknown user",
                             profilePicture: post.user?.profilePicture || DefaultProfile,
                         },
                         media: post.images || [], //Default to empty array if post.images is undefined
+                        text: post.content || "",
+                        likes: post.totalLikes || 0,
+                        dislikes: post.totalDislikes || 0,
+                        likedState: post.liked, 
                       }}
                       loadDiscoverPosts={loadDiscoverPosts}
                       />
