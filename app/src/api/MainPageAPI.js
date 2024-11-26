@@ -186,7 +186,7 @@ export const rejectFriendRequest = async (targetUsername) => {
   if (!token) {
     throw new Error("User is not authenticated");
   }
-
+  console.log("looking for " + targetUsername);
   try {
     const userResponse = await fetch(`/api/users`, {
       method: "GET",
@@ -204,6 +204,7 @@ export const rejectFriendRequest = async (targetUsername) => {
     );
 
     if (!foundUser) return "User Not Found";
+    console.log("found em!");
 
     const userId = parseJwt(token)?.sub;
     const friendDataResponse = await fetch(
@@ -218,10 +219,13 @@ export const rejectFriendRequest = async (targetUsername) => {
     );
 
     const result = await friendDataResponse.json();
+    console.log("friend entries:");
+    console.log(result.data);
     const friendID = result.data.find(
-      (element) => element.from.id === userId
+      (element) => element.to.id == userId
     )?.id;
 
+    console.log("friend entry ID: " + friendID);
     if (!friendID) return "Failed";
 
     const deleteResponse = await fetch(`/api/friends/${friendID}`, {
