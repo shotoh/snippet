@@ -23,7 +23,7 @@ export default function DiscoverFeed({ posts, error, loadDiscoverPosts }) {
               name: post.user?.username || "Unknown user",
               profilePicture: post.user?.profilePicture || DefaultProfile,
             },
-            media: post.images || [], // Defaults to an empty array if post.images is undefined
+            media: post.images || [], //Defaults to an empty array if post.images is undefined
             text: post.content || "",
             likes: post.totalLikes || 0,
             dislikes: post.totalDislikes || 0,
