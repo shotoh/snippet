@@ -40,7 +40,6 @@ export default function DiscoverPage() {
           </InputGroup>
 
           <div className="space-y-4">
-            <p>Posts will go here</p>
             <DiscoverFeed
               posts={posts}
               loadDiscoverPosts={loadDiscoverPosts}

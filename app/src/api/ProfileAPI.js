@@ -202,30 +202,46 @@ export const createFriendRequest = async (targetUserID, token) => {
  * @param {string} newPassword
  * @param {string} token
  */
-export const changeUserPassword = async (
-  currentPassword,
-  newPassword,
-  token
-) => {
+export const changeUserPassword = async (currentPassword, newPassword, token) => {
   if (!token) {
+    console.error("User isn't authenticated, missing token");
     throw new Error("User is not authenticated");
   }
+  
+  try {
+    const response = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        oldPassword: currentPassword,
+        newPassword: newPassword,
+      }),
+    });
 
-  const response = await fetch("/api/auth/change-password", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      oldPassword: currentPassword,
-      newPassword: newPassword,
-    }),
-  });
+    console.log("Server response status: ", response.status);
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(`Password change failed: ${errorData.message}`);
+    //If the response isn't 204
+    if (!response.ok) {
+      let errorMessage = "Unknown error occurred";
+
+      try {
+        const result = await response.json();
+        errorMessage = result?.data?.authorization || result?.message || errorMessage;
+      } catch (error) {
+        console.warn("Response does't have JSON.");
+      }
+
+      console.error("Password change failed: ", errorMessage);
+      throw new Error(`Password change failed: ${errorMessage}`);
+    }
+
+    console.log("Password changed successfully.");
+    return {status: "success"};
+  } catch (error) {
+    console.error("Error occurred while changing password: ", error);
+    throw error;
   }
-  return response.json();
 };
