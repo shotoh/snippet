@@ -47,13 +47,6 @@ function FriendRequests({
         >
           <h3>+</h3>
         </Button>
-        <Button
-          variant="danger"
-          className="ml-auto"
-          onClick={() => setRemoveFriend(!removeFriend)} // Toggle between friend list and form
-        >
-          <h3>-</h3>
-        </Button>
         <Modal.Title className="text-center w-full">
           Friend Requests
         </Modal.Title>
