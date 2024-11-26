@@ -85,12 +85,34 @@ export const fetchFriendsData = async (status = "FRIEND") => {
   }
 
   try {
-    const response = await fetch(`/api/friends?from=${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+
+
+    let response;
+    if(status == "PENDING") {
+      response = await fetch(`/api/friends?to=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } else {
+      response = await fetch(`/api/friends?from=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
+      
+      if(status === "PENDING") {
+        
+        return result.data
+        .filter((friend) => friend.status === status && friend.to.id == userId)
+        .map((friend) => ({
+          id: friend.from.id,
+          username: friend.from.username,
+          displayName: friend.from.displayName,
+          profilePicture: friend.from.profilePicture || defaultProfile,
+        }));
+      }
       return result.data
         .filter((friend) => friend.status === status)
         .map((friend) => ({

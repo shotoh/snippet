@@ -95,8 +95,9 @@ export default function PostCard({ post, loadPosts }) {
   const profileURL = `/snippet/user/${userID}`;
 
   return (
-    <div className={media.length > 0 ? "grid grid-cols-4 grid-rows-[21rem_1fr] border rounded-lg overflow-hidden shadow-md font-montserrat" :  "grid grid-cols-4 grid-rows-1rem_1fr] border rounded-lg overflow-hidden shadow-md font-montserrat"}>
-      {media.length > 0 & (
+    <div className={media.length > 0 ? "grid grid-cols-4 grid-rows-[21rem_1fr] border rounded-lg overflow-hidden shadow-md font-montserrat" :  "border rounded-lg overflow-hidden shadow-md font-montserrat"}>
+      
+      {media.length > 0 && (
           <div className="h-[21rem] col-span-4 grid grid-cols-4 grid-rows-1">
           {/* Media */}
           <div className="col-span-3 h-full relative overflow-hidden bg-gray-100">
@@ -182,6 +183,34 @@ export default function PostCard({ post, loadPosts }) {
             <div className={`text-gray-700`}>{text}</div>
           </div>
         </div>
+        {media.length == 0 && (
+          <div className="pl-3 col-span-1 h-full flex flex-col justify-end bg-white">
+            <button
+              onClick={handleLike}
+              className={`flex items-center space-x-2 my-2 hover:text-primaryLight ${
+                liked ? "text-primaryLight" : ""
+              }`}
+            >
+              <FaThumbsUp className="w-6 h-6" />
+              <span>{likes}</span>
+            </button>
+            <button
+              onClick={handleDislike}
+              className={`flex items-center space-x-2 my-2 hover:text-secondaryLight ${
+                disliked ? "text-secondaryLight" : ""
+              }`}
+            >
+              <FaThumbsDown className="w-6 h-6" />
+              <span>{dislikes}</span>
+            </button>
+            <button
+              onClick={() => setShowComments(true)}
+              className="flex items-center space-x-2 my-2 hover:text-primaryLight"
+            >
+              <FaComments className="w-6 h-6" />
+              <span>{commentCount}</span>
+            </button>
+          </div>)}
       </div>
       
 
