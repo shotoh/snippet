@@ -95,68 +95,72 @@ export default function PostCard({ post, loadPosts }) {
   const profileURL = `/snippet/user/${userID}`;
 
   return (
-    <div className="grid grid-cols-4 grid-rows-[21rem_1fr] border rounded-lg overflow-hidden shadow-md font-montserrat">
-      <div className="h-[21rem] col-span-4 grid grid-cols-4 grid-rows-1">
-        {/* Media */}
-        <div className="col-span-3 h-full relative overflow-hidden bg-gray-100">
-          {media.length > 1 ? (
-            <Carousel
-              interval={null}
-              slide={false}
-              className="flex justify-center items-center w-full h-full overflow-hidden"
+    <div className={media.length > 0 ? "grid grid-cols-4 grid-rows-[21rem_1fr] border rounded-lg overflow-hidden shadow-md font-montserrat" :  "border rounded-lg overflow-hidden shadow-md font-montserrat"}>
+      
+      {media.length > 0 && (
+          <div className="h-[21rem] col-span-4 grid grid-cols-4 grid-rows-1">
+          {/* Media */}
+          <div className="col-span-3 h-full relative overflow-hidden bg-gray-100">
+            {media.length > 1 ? (
+              <Carousel
+                interval={null}
+                slide={false}
+                className="flex justify-center items-center w-full h-full overflow-hidden"
+              >
+                {media.map((file, index) => (
+                  <Carousel.Item key={index}>
+                    <img
+                      className="max-h-[21rem] w-full h-full object-scale-down"
+                      src={`/public/${file}`}
+                      alt={`media-${index}`}
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            ) : (
+              <div className="w-full h-full relative">
+                <img
+                  className="absolute inset-0 w-full h-full object-scale-down"
+                  src={
+                    media.length === 0 ? MediaPlaceholder : `/public/${media[0]}`
+                  }
+                  alt="media-1"
+                />
+              </div>
+            )}
+          </div>
+  
+          {/* Ratings */}
+          <div className="pl-3 col-span-1 h-full flex flex-col justify-end bg-white">
+            <button
+              onClick={handleLike}
+              className={`flex items-center space-x-2 my-4 hover:text-primaryLight ${
+                liked ? "text-primaryLight" : ""
+              }`}
             >
-              {media.map((file, index) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="max-h-[21rem] w-full h-full object-scale-down"
-                    src={`/public/${file}`}
-                    alt={`media-${index}`}
-                  />
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          ) : (
-            <div className="w-full h-full relative">
-              <img
-                className="absolute inset-0 w-full h-full object-scale-down"
-                src={
-                  media.length === 0 ? MediaPlaceholder : `/public/${media[0]}`
-                }
-                alt="media-1"
-              />
-            </div>
-          )}
+              <FaThumbsUp className="w-6 h-6" />
+              <span>{likes}</span>
+            </button>
+            <button
+              onClick={handleDislike}
+              className={`flex items-center space-x-2 my-4 hover:text-secondaryLight ${
+                disliked ? "text-secondaryLight" : ""
+              }`}
+            >
+              <FaThumbsDown className="w-6 h-6" />
+              <span>{dislikes}</span>
+            </button>
+            <button
+              onClick={() => setShowComments(true)}
+              className="flex items-center space-x-2 my-4 hover:text-primaryLight"
+            >
+              <FaComments className="w-6 h-6" />
+              <span>{commentCount}</span>
+            </button>
+          </div>
         </div>
-
-        {/* Ratings */}
-        <div className="pl-3 col-span-1 h-full flex flex-col justify-end bg-white">
-          <button
-            onClick={handleLike}
-            className={`flex items-center space-x-2 my-4 hover:text-primaryLight ${
-              liked ? "text-primaryLight" : ""
-            }`}
-          >
-            <FaThumbsUp className="w-6 h-6" />
-            <span>{likes}</span>
-          </button>
-          <button
-            onClick={handleDislike}
-            className={`flex items-center space-x-2 my-4 hover:text-secondaryLight ${
-              disliked ? "text-secondaryLight" : ""
-            }`}
-          >
-            <FaThumbsDown className="w-6 h-6" />
-            <span>{dislikes}</span>
-          </button>
-          <button
-            onClick={() => setShowComments(true)}
-            className="flex items-center space-x-2 my-4 hover:text-primaryLight"
-          >
-            <FaComments className="w-6 h-6" />
-            <span>{commentCount}</span>
-          </button>
-        </div>
-      </div>
+      )}
+      
 
       {/* Post Info */}
       <div className="col-span-4 flex items-start p-4 bg-white border-1">
@@ -179,7 +183,36 @@ export default function PostCard({ post, loadPosts }) {
             <div className={`text-gray-700`}>{text}</div>
           </div>
         </div>
+        {media.length == 0 && (
+          <div className="pl-3 col-span-1 h-full flex flex-col justify-end bg-white">
+            <button
+              onClick={handleLike}
+              className={`flex items-center space-x-2 my-2 hover:text-primaryLight ${
+                liked ? "text-primaryLight" : ""
+              }`}
+            >
+              <FaThumbsUp className="w-6 h-6" />
+              <span>{likes}</span>
+            </button>
+            <button
+              onClick={handleDislike}
+              className={`flex items-center space-x-2 my-2 hover:text-secondaryLight ${
+                disliked ? "text-secondaryLight" : ""
+              }`}
+            >
+              <FaThumbsDown className="w-6 h-6" />
+              <span>{dislikes}</span>
+            </button>
+            <button
+              onClick={() => setShowComments(true)}
+              className="flex items-center space-x-2 my-2 hover:text-primaryLight"
+            >
+              <FaComments className="w-6 h-6" />
+              <span>{commentCount}</span>
+            </button>
+          </div>)}
       </div>
+      
 
       {/* Comments */}
       {showComments && (
