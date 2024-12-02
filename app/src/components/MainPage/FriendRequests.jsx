@@ -37,6 +37,8 @@ function FriendRequests({
     }
   };
 
+
+  
   return (
     <Modal show={show} onHide={handleClose} backdrop="true" centered>
       <Modal.Header closeButton>

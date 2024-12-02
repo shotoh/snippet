@@ -18,6 +18,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      IMAGE_PATH: ${IMAGE_PATH}
       TOKEN_KEY: ${TOKEN_KEY}
     ports:
       - 8080:8080

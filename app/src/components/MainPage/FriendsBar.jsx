@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FriendCard from "./FriendCard";
 import { Image, Button } from "react-bootstrap";
 import FriendRequests from "./FriendRequests";
+import { fetchFriendsData } from "../../api/MainPageAPI";
 
 export default function FriendsBar({
   friends,
@@ -14,14 +15,16 @@ export default function FriendsBar({
   const [showModal, setShowModal] = useState(false);
   const [createNew, setCreateNew] = useState(false);
 
-  function onAccept(friend) {
+  async function onAccept(friend) {
     console.log(friend);
-    sendFriendRequest(friend.username);
+    await sendFriendRequest(friend.username);
+    window.location.reload();
   }
 
-  function onReject(friend) {
+  async function onReject(friend) {
     console.log(friend);
-    denyFriendRequest(friend.username);
+    await denyFriendRequest(friend.username);
+    window.location.reload();
   }
 
   function openModal() {
