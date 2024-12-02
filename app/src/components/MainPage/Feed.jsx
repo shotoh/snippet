@@ -21,7 +21,7 @@ export default function Feed({ posts, error, loadPosts }) {
               user: {
                 userID: post.user?.id || null,
                 name: post.user?.username || "Unknown user",
-                profilePicture: post.user?.profilePicture || DefaultProfile,
+                profilePicture: post.user?.profilePicture,
               },
               media: post.images || [], //Defaults to empty array in case post.images is undefined
               text: post.content,
