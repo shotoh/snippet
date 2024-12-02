@@ -80,6 +80,7 @@ const PostCreator = ({ show, handleClose, onPostCreate }) => {
 
         onPostCreate(); // Refresh posts in the parent component
         handleClose(); // Close the modal after successful post creation
+        window.location.reload();
       } else {
         // Log error message and display it to the user
         setError(result.message || `Error creating post: ${response.status}`);
