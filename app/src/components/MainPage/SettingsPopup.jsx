@@ -50,9 +50,10 @@ export default function SettingsModal({ show, handleClose }) {
           </NavLink>
         </Nav.Link>
         <Nav.Link>
-          <NavLink className="yes-underline text-inherit" to="/home/contact">
-            {" "}
-            {/* Placeholder, waiting for Help Document to be made */}
+          <NavLink className="yes-underline text-inherit" 
+            to="#"
+            onClick={() => window.open("https://docs.google.com/document/d/14QQrpovUKXw_Z20qzw2-hpLttxHIBCXxvXJrOfukfvU/edit?tab=t.0#heading=h.ke3rj2c3skhy", "_blank")} //Opens new tab for help link
+            >
             Click to recieve Help
           </NavLink>
         </Nav.Link>
