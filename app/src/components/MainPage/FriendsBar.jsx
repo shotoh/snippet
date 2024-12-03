@@ -142,7 +142,7 @@ export default function FriendsBar({
         <a href="/home/contact" className="text-gray-500 leading-none">
           <p>Contact Us</p>
         </a>
-        <a href="" className="text-gray-500 leading-none">
+        <a href="https://forms.gle/PvnGb8Vcrqg7rVCL8" target="_blank" rel="noopener noreferrer" className="text-gray-500 leading-none">
           <p>Report an Issue</p>
         </a>
         <p className="text-gray-300 leading-none">
