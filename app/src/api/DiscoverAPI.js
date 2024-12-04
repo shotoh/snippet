@@ -41,3 +41,29 @@ export const fetchDiscoverPosts = async () => {
         throw error;
     }
 };
+
+
+export const fetchAllUsers = async () => {
+    const token = getToken();
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+
+    try {
+        const response = await fetch("/api/users", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}`},
+        });
+        const result = await response.json();
+
+        if (response.ok && result.status === "success") {
+            //console.log(result.data);
+            return result.data;
+        } else {
+            throw new Error("Error loading discover posts");
+        }
+    } catch (error) {
+        console.error("Error loading discover posts: ", error);
+        throw error;
+    }
+}

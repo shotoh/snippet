@@ -134,7 +134,7 @@ export const updateUserData = async (userID, token, data) => {
 
   try {
     let jsonBody;
-    if (!data.biography && !data.displayName) {
+    if (!data.biography && !data.displayName && !data.profilePicture) {
       return;
     } else if (!data.biography) {
       jsonBody = JSON.stringify({

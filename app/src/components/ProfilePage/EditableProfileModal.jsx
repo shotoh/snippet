@@ -49,11 +49,11 @@ const EditableProfileModal = ({
           {/* Replaceable image */}
           <Form.Group>
             <div className="text-center mb-3">
-              <img
+            <img
                 src={
-                  currentImage.includes("defaultprofile2")
-                    ? currentImage
-                    : `/public/${currentImage}`
+                  currentImage.startsWith("data:image")
+                    ? currentImage // If it's a base64 preview
+                    : `/public/${currentImage}` // Otherwise use the server-side path
                 }
                 alt="Profile"
                 className="mx-auto"

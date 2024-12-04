@@ -66,7 +66,7 @@ export const fetchFriends = async () => {
           id: friend.to.id,
           username: friend.to.username,
           displayName: friend.to.username,
-          profilePicture: friend.to.profilePicture || defaultProfile,
+          profilePicture: friend.to.profilePicture,
         }));
     } else {
       throw new Error("Error loading friends");

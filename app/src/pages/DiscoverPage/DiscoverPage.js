@@ -1,25 +1,48 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../../components/MainPage/NavBar";
 import { InputGroup, Form } from "react-bootstrap";
-import { fetchDiscoverPosts } from "../../api/DiscoverAPI";
+import { fetchDiscoverPosts, fetchAllUsers } from "../../api/DiscoverAPI";
 import DiscoverFeed from "../../components/DiscoverPage/DiscoverFeed";
+import { getPostsfromUser, redirectToUser } from "../../hooks/useDiscoverData";
 
 export default function DiscoverPage() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     loadDiscoverPosts();
   }, []);
 
-  const loadDiscoverPosts = async () => {
+  const loadDiscoverPosts = async (searchTerm = "") => {
     try {
+      if (searchTerm) {
+        const postData = await getPostsfromUser(searchTerm);
+        console.log("Fetched discover post data: ", postData);
+        setPosts(postData);
+        return;
+      }
+
       const postData = await fetchDiscoverPosts();
       console.log("Fetched discover post data: ", postData);
       setPosts(postData);
     } catch (error) {
+      console.error(error);
       setError("Error loading discover posts");
     }
+  };
+
+  const goToUser = async (search) => {
+    try {
+      await redirectToUser(search);
+    } catch (error) {
+      console.error(error);
+      setError("Error going to user");
+    }
+  }
+
+  const handleInputChange = () => {
+    goToUser(input);
   };
 
   return (
@@ -33,6 +56,13 @@ export default function DiscoverPage() {
             <Form.Control
               placeholder="Find your next inspiration!"
               aria-label="Search Inspiration"
+              value={input}
+              onChange={(e) => setInput(e.target.value)} // Update input state on change
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleInputChange();
+                }
+              }}
             />
             <InputGroup.Text>
               <i className="bi bi-search"></i>
