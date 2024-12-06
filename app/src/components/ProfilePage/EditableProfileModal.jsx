@@ -14,6 +14,8 @@ const EditableProfileModal = ({
   const [name, setName] = useState(username || "");
   const [bio, setBio] = useState(biography || "");
 
+
+  
   const handleImageClick = () => {
     document.getElementById("mediaInput").click(); // Trigger file input click
   };
@@ -32,10 +34,11 @@ const EditableProfileModal = ({
   };
 
   // Handler for form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(name + "\n" + bio + "\n" + selectedFile);
-    onSubmit({ image: selectedFile, displayName: name, biography: bio });
-    onClose();
+    await onSubmit({ image: selectedFile, displayName: name, biography: bio });
+    await onClose();
+    window.location.reload();
   };
 
   return (
@@ -53,7 +56,9 @@ const EditableProfileModal = ({
                 src={
                   currentImage.startsWith("data:image")
                     ? currentImage // If it's a base64 preview
-                    : `/public/${currentImage}` // Otherwise use the server-side path
+                    : currentImage.includes("static")
+                    ? currentImage :
+                    `/public/${currentImage}` // Otherwise use the server-side path
                 }
                 alt="Profile"
                 className="mx-auto"
