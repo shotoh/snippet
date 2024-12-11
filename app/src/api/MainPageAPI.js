@@ -110,7 +110,7 @@ export const fetchFriendsData = async (status = "FRIEND") => {
           id: friend.from.id,
           username: friend.from.username,
           displayName: friend.from.displayName,
-          profilePicture: friend.from.profilePicture || defaultProfile,
+          profilePicture: friend.from.profilePicture,
         }));
       }
       return result.data
@@ -119,7 +119,7 @@ export const fetchFriendsData = async (status = "FRIEND") => {
           id: friend.to.id,
           username: friend.to.username,
           displayName: friend.to.displayName,
-          profilePicture: friend.to.profilePicture || defaultProfile,
+          profilePicture: friend.to.profilePicture,
         }));
     } else {
       throw new Error("Error loading friends data");

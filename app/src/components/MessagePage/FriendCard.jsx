@@ -1,4 +1,5 @@
 import React from "react";
+import DefaultProfile from "../../images/defaultprofile.png";
 
 export default function FriendCard({ friend, onClick }) {
   return (
@@ -8,7 +9,7 @@ export default function FriendCard({ friend, onClick }) {
       style={{ cursor: "pointer" }}
     >
       <img
-        src={friend.profilePicture}
+        src={friend.profilePicture ? `/public/${friend.profilePicture}` : DefaultProfile}
         alt={`${friend.displayName}'s profile`}
         className="rounded-circle me-3 my-2"
         width="50"
