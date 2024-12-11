@@ -94,7 +94,7 @@ export default function Login() {
                                 required
                             />
                             <Form.Text className="text-muted">
-                                <a href="">Forgot Password?</a>
+                                <a href="https://docs.google.com/document/d/14QQrpovUKXw_Z20qzw2-hpLttxHIBCXxvXJrOfukfvU/edit?tab=t.0#heading=h.ke3rj2c3skhy">Forgot Password?</a>
                             </Form.Text>
                         </Form.Group>
 
