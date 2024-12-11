@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EditableProfileModal = ({
@@ -14,7 +14,10 @@ const EditableProfileModal = ({
   const [name, setName] = useState(username || "");
   const [bio, setBio] = useState(biography || "");
 
-
+  useEffect(() => {
+    console.log(image);
+    console.log(currentImage);
+  }, []);
   
   const handleImageClick = () => {
     document.getElementById("mediaInput").click(); // Trigger file input click
