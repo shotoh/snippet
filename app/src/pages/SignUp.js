@@ -80,7 +80,7 @@ export default function SignUp() {
 
         if (name === 'username' && value.length > 20) {
             setLoading(false);
-            setErrorMessage("Usernames cannot exeed 20 characters. Please try another username.");
+            setErrorMessage("Usernames cannot exceed 20 characters. Please try another username.");
         }
     };
 
