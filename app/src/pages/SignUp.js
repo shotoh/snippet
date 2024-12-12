@@ -77,6 +77,11 @@ export default function SignUp() {
             const isValid = emailRegex.test(value);
             setEmailValid(isValid); 
         }
+
+        if (name === 'username' && value.length > 20) {
+            setLoading(false);
+            setErrorMessage("Usernames cannot exeed 20 characters. Please try another username.");
+        }
     };
 
     return (
