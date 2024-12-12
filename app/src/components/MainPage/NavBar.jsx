@@ -6,6 +6,8 @@ import NavLink from "react-bootstrap/NavLink";
 import "./xtra.css";
 import PostCreator from "./PostCreator";
 import SettingsPopup from "./SettingsPopup";
+import DefaultProfile from "../../images/defaultprofile.png";
+
 
 export default function NavBar({ onPostCreated }) {
   const [showModal, setShowModal] = useState(false);
@@ -13,6 +15,7 @@ export default function NavBar({ onPostCreated }) {
   const handleClose = () => setShowModal(false);
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState();
+  const [profilePicture, setProfilePicture] = useState("");
 
   const [showSettings, setShowSettings] = useState(false);
   const handleShowSettings = () => setShowSettings(true);
@@ -66,8 +69,17 @@ export default function NavBar({ onPostCreated }) {
 
 
       if (foundUser) {
+        console.log(foundUser);
         setUsername(foundUser.username);
         setUserId(foundUser.id);
+
+        if(typeof(foundUser.profilePicture) === "string") {
+        setProfilePicture(foundUser.profilePicture);
+
+        } else {
+          console.log("PROFILE PIC IS NOT AN OBJECT, PLEASE PANIC");
+        }
+
       } else {
         console.log("User not found");
         return "User Not Found";
@@ -82,7 +94,7 @@ export default function NavBar({ onPostCreated }) {
     getUsername();
   }, []);
 
-  function UserProfile() {
+  function UserProfile({profilePicture}) {
     return (
       <Navbar.Collapse className="justify-end mr-8">
         <NavDropdown
@@ -102,10 +114,11 @@ export default function NavBar({ onPostCreated }) {
                 )}
               </Navbar.Text>
               <img
-                src={require("../../images/macrosoftLogo.png")}
+                src={profilePicture != "" ? ("/public/" + String(profilePicture)) : DefaultProfile}
+                
                 width="55"
                 height="55"
-                className="border-2 border-gray-900 rounded-full bg-white"
+                className="border-2 border-gray-900 rounded-full bg-white w-14 h-14 object-cover"
                 alt="User profile"
               />
             </div>
@@ -136,7 +149,7 @@ export default function NavBar({ onPostCreated }) {
       <Navbar className="flex min-w-full h-20 !bg-primaryLight border-b-4 border-secondaryLight">
         <WebsiteLogo />
         <NavButtons />
-        <UserProfile />
+        <UserProfile profilePicture={profilePicture} />
       </Navbar>
       <PostCreator
         show={showModal}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const EditableProfileModal = ({
@@ -14,6 +14,11 @@ const EditableProfileModal = ({
   const [name, setName] = useState(username || "");
   const [bio, setBio] = useState(biography || "");
 
+  useEffect(() => {
+    console.log(image);
+    console.log(currentImage);
+  }, []);
+  
   const handleImageClick = () => {
     document.getElementById("mediaInput").click(); // Trigger file input click
   };
@@ -32,10 +37,11 @@ const EditableProfileModal = ({
   };
 
   // Handler for form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(name + "\n" + bio + "\n" + selectedFile);
-    onSubmit({ image: selectedFile, displayName: name, biography: bio });
-    onClose();
+    await onSubmit({ image: selectedFile, displayName: name, biography: bio });
+    await onClose();
+    window.location.reload();
   };
 
   return (
@@ -49,11 +55,13 @@ const EditableProfileModal = ({
           {/* Replaceable image */}
           <Form.Group>
             <div className="text-center mb-3">
-              <img
+            <img
                 src={
-                  currentImage.includes("defaultprofile2")
-                    ? currentImage
-                    : `/public/${currentImage}`
+                  currentImage.startsWith("data:image")
+                    ? currentImage // If it's a base64 preview
+                    : currentImage.includes("static")
+                    ? currentImage :
+                    `/public/${currentImage}` // Otherwise use the server-side path
                 }
                 alt="Profile"
                 className="mx-auto"

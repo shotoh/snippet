@@ -79,7 +79,7 @@ function FriendRequests({
           friends.map((friend, index) => (
             <FriendCard
               key={index}
-              userImage={friend.userImage}
+              userImage={friend.profilePicture}
               userDisplayName={friend.userDisplayName}
               username={friend.username}
               userURL={`/snippet/user/${friend.id}`}
