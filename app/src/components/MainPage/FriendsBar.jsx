@@ -59,7 +59,7 @@ export default function FriendsBar({
         createNew={createNew}
       />
 
-      <div id="FriendsTop" className="flex ml-5 my-2 w-full">
+      <div id="FriendsTop" className="flex ml-2 my-2 w-full">
         <h1 className="tracking-wide">
           <b>Friends</b>
         </h1>
@@ -70,14 +70,14 @@ export default function FriendsBar({
           <Image
             src="https://cdn.iconscout.com/icon/free/png-512/free-bell-icon-download-in-svg-png-gif-file-formats--notification-alarm-ring-clock-user-interface-pack-icons-1502555.png?f=webp&w=256"
             roundedCircle
-            className="my-auto ml-8 float-left"
+            className="my-auto ml-4 mb-1 float-left"
             onClick={(e) => {
               e.stopPropagation(); // Prevents the card's onClick event
               openModal();
             }}
             style={{
-              width: "20px",
-              height: "20px",
+              width: "25px",
+              height: "25px",
               cursor: "pointer",
               border: "0px solid white",
             }}
@@ -110,10 +110,10 @@ export default function FriendsBar({
         </div>
         <Button
           variant="primary"
-          className="my-1 ml-10"
+          className="mb-2 mx-auto mt-1 h-12"
           onClick={openModalCreate}
         >
-          Add Friend
+          Add
         </Button>
       </div>
 
