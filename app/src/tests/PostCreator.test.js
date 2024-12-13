@@ -44,6 +44,10 @@ describe('Post Creator Component', () => {
     });
     });
 
+<<<<<<< HEAD
+    
+
+=======
     test("successfully call onPostCreate and handleClose after post creation", async () => {
 
     
@@ -58,4 +62,5 @@ describe('Post Creator Component', () => {
     });
     });
 
+>>>>>>> dev
 });
