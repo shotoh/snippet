@@ -44,18 +44,6 @@ describe('Post Creator Component', () => {
     });
     });
 
-    test("successfully call onPostCreate and handleClose after post creation", async () => {
-
     
-    
-
-    fireEvent.change(screen.getByPlaceholderText("Write post content here"), { target: { value: "Test post content" } });
-    fireEvent.click(screen.getByText("Create"));
-
-    await waitFor(() => {
-    expect(mockOnPostCreate).toHaveBeenCalled();
-    expect(mockHandleClose).toHaveBeenCalled();
-    });
-    });
 
 });

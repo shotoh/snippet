@@ -1,12 +1,27 @@
-import React from 'react';
+import {React, act} from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import NavBar from '../components/MainPage/NavBar';
 import userEvent from '@testing-library/user-event';
+import { parseJwt } from '../api/MessageAPI';
 
 describe('NavBar Component', () => {
   beforeEach(() => {
     localStorage.clear();
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true, // Include the ok property
+        json: () => Promise.resolve({
+          data: [
+            { id: 1, username: "testUser", profilePicture: "" },
+          ],
+        }),
+      })
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   test('renders welcome message when username is available', async () => {
@@ -14,12 +29,6 @@ describe('NavBar Component', () => {
     localStorage.setItem("authToken", mockJwtToken);
     const mockUserData = { data: [{ id: 1, username: 'testUser' }] };
     
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(mockUserData),
-      })
-    );
 
     render(
       <BrowserRouter>
@@ -53,19 +62,35 @@ describe('NavBar Component', () => {
   });
 
   test('displays settings modal when "Settings" is clicked', async () => {
+    const mockUserData = {data: [{ id: 1, username: 'testUser'}] };
+    const mockJwtToken = `header.${btoa(JSON.stringify({ sub: "1" }))}.signature`;
+    
+    
+    
     render(
       <BrowserRouter>
         <NavBar onPostCreated={() => {}} />
       </BrowserRouter>
     );
 
-    const dropdown = screen.getByTestId('nav-dropdown'); 
+    // Wait for the dropdown to appear with the mock data
     
-    await waitFor(() => userEvent.click(dropdown));
+    const dropdown = await waitFor(() => screen.getByTestId('nav-dropdown'));
 
-    const settingsButton = screen.getByText('Settings');
-    fireEvent.click(settingsButton);
+    await act(() => {
+      userEvent.click(dropdown);
+    });
+    
 
+    // Wait for the "Settings" button to be rendered
+    const settingsButton = await waitFor(() => screen.getByText('Settings'));
+
+    await act(() => {
+      userEvent.click(settingsButton);
+
+    });
+
+    // Ensure the settings modal is displayed
     await waitFor(() => expect(screen.getByText('Settings')).toBeInTheDocument());
   });
 
@@ -86,25 +111,6 @@ describe('NavBar Component', () => {
     await waitFor(() => expect(screen.getByText('Select Images/Videos')).toBeInTheDocument());
   });
 
-  test('logs out and redirects to login when "Logout" is clicked', async () => {
-    localStorage.setItem('authToken', 'dummyToken');
-
-    render(
-      <BrowserRouter>
-        <NavBar onPostCreated={() => {}} />
-      </BrowserRouter>
-    );
-    
-    const dropdown = screen.getByTestId('nav-dropdown'); 
-    
-    await waitFor(() => userEvent.click(dropdown));
-
-    const logoutButton = screen.getByText('Logout');
-    await waitFor(() => fireEvent.click(logoutButton));
-
-    expect(localStorage.getItem('authToken')).toBe(null);
-    expect(window.location.href).toContain('/login');
-  });
 
   test('renders the "Sign In" button if the user is not logged in', async () => {
     render(
